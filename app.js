@@ -14,8 +14,6 @@ app.get('/', (req, res, next) => {
     res.json({info: 'Ecommerce app is running here!'});
 });
 
-console.log(port);
-
 app.listen(port, () => {
     console.log(`Ecommerce app is running on port ${port}`);
 });
