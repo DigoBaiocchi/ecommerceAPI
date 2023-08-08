@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const port = 3000;
+const registerRouter = require('./routes/registerRouter');
 
 app.use(bodyParser.json());
 app.use(
@@ -10,8 +11,19 @@ app.use(
     })
 );
 
+app.use((err, req, res, next) => {
+    console.log(err.stack);
+    res.status(500).send('Something broke!');
+});
+
+app.use('/register', registerRouter);
+
 app.get('/', (req, res, next) => {
-    res.json({info: 'Ecommerce app is running here!'});
+    res.send({info: `Ecommerce app is running!`});
+});
+
+app.get('/error', (req, res, next) => {
+    return res.sendFile('error.html', { root: __dirname });
 });
 
 app.listen(port, () => {
