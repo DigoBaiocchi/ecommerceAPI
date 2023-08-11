@@ -29,3 +29,5 @@ app.get('/error', (req, res, next) => {
 app.listen(port, () => {
     console.log(`Ecommerce app is running on port ${port}`);
 });
+
+module.exports = app;

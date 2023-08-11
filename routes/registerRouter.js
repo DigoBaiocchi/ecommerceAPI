@@ -70,4 +70,28 @@ router.get('/', async (req, res, next) => {
     });
 });
 
+router.post('/', (req, res, next) => {
+    const database = {
+        rows: [
+            {id: 1, username: 'Rodrigo', email: 'rodrigo@gmail.com', password: "123456", administrator: true},
+            {id: 2, username: 'Gambit', email: 'gambit@gmail.com', password: "123456", administrator: false}
+        ]
+    }
+    const { username, email, password } = req.body;
+    const usernameAlreadyExists = database.rows.some(data => data.username === username);
+    const emailAlreadyExists = database.rows.some(data => data.email === email);
+    
+    if (usernameAlreadyExists) {
+        return res.status(400).json('Username already exists')
+    }
+    if (emailAlreadyExists) {
+        return res.status(400).json('Email already exists')
+    }
+    if (username && email && password) {
+        return res.status(201).json('User successfully created');
+    } 
+    return res.status(400).json('User not created');
+    
+});
+
 module.exports = router;
