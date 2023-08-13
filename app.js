@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const port = 3000;
 const registerRouter = require('./routes/registerRouter');
+const loginRouter = require('./routes/loginRouter');
 
 app.use(bodyParser.json());
 app.use(
@@ -17,6 +18,7 @@ app.use((err, req, res, next) => {
 });
 
 app.use('/register', registerRouter);
+app.use('/login', loginRouter);
 
 app.get('/', (req, res, next) => {
     res.send({info: `Ecommerce app is running!`});
