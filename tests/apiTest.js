@@ -3,10 +3,11 @@ const request = require('supertest');
 const app = require('../app');
 
 describe('POST /register', () => {
-    const correctData = {"username": "DigoBaiocchi", "email": "rodrigo@gmail.com", "password": "123456"};
+    const correctData = {"id": "1", "username": 'DigoBaiocchi', "email": 'rodrigo@gmail.com', "password": "123456"};
     const incorrectData = {"email": "rodrigo@gmail.com", "password": "123456"};
-    const existentUsername = {"id": "1", "username": 'Rodrigo', "email": 'rodrigo@gmail.com', "password": "123456", "administrator": "true"};
-    const existentEmail = {"id": "1", "username": 'Rodrigos', "email": 'rodrigo@gmail.com', "password": "123456", "administrator": "true"};
+    const noPasswordProvided = {"username": "OtherUser", "email": "newuser@gmail.com", "password": ""};
+    const existentUser = {"username": "Gambito", "email": "gambito@gmail.com", "password": "123456"};
+    const existentEmail = {"id": "1", "username": 'Rodrigos', "email": 'rodrigo@gmail.com', "password": "123456"};
     it('responds with 201 created', (done) => {
         request(app)
             .post('/register')
@@ -20,14 +21,14 @@ describe('POST /register', () => {
                 done();
             });
     });
-    it('responses with 400 not created when username, email or password not provided', (done) => {
+    it('responses with 400 not created when username or email not provided', (done) => {
         request(app)
             .post('/register')
             .send(incorrectData)
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect('"User not created"')
+            .expect('"No username or email provided"')
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -36,7 +37,7 @@ describe('POST /register', () => {
     it('responses with 400 not created when username already exists', (done) => {
         request(app)
             .post('/register')
-            .send(existentUsername)
+            .send(existentUser)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
@@ -54,6 +55,19 @@ describe('POST /register', () => {
             .expect('Content-Type', /json/)
             .expect(400)
             .expect('"Email already exists"')
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+    it('responses with 400 when password is not provided', (done) => {
+        request(app)
+            .post('/register')
+            .send(noPasswordProvided)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect('"No password provided"')
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -92,7 +106,7 @@ describe('GET /register/:email', () => {
 
 describe('PUT /register/:email', () => {
     const dataToBeUpdated = {"password": "654321"};
-    const missingPassword = {"Password": ""};
+    const missingPassword = {"password": ""};
     const email = 'rodrigo@gmail.com';
     const wrongEmail = 'emailnotindb@email.com'
     it('responses with 200 password is updated', (done) => {
@@ -130,6 +144,7 @@ describe('PUT /register/:email', () => {
     it('responses with 400 when email is not found in db', (done) => {
         request(app)
             .put(`/register/${wrongEmail}`)
+            .send(dataToBeUpdated)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
