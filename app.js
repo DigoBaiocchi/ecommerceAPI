@@ -1,7 +1,12 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const passport = require('passport');
+require('./strategies/local');
+const session = require('express-session');
 const port = 3000;
+const { query } = require('./db/index');
+
 const registerRouter = require('./routes/registerRouter');
 const loginRouter = require('./routes/loginRouter');
 
@@ -11,6 +16,19 @@ app.use(
         extended: true
     })
 );
+
+app.use(
+    session({
+        secret: "secret-key",
+        cookie: { maxAge: 1000 * 60 * 60 * 24 },
+        resave: false,
+        saveUninitialized: false,
+        secure: true
+    })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use((err, req, res, next) => {
     console.log(err.stack);
