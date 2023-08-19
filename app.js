@@ -8,7 +8,7 @@ const port = 3000;
 const { query } = require('./db/index');
 
 const registerRouter = require('./routes/registerRouter');
-const loginRouter = require('./routes/loginRouter');
+const authRouter = require('./routes/authRouter');
 
 app.use(bodyParser.json());
 app.use(
@@ -36,7 +36,7 @@ app.use((err, req, res, next) => {
 });
 
 app.use('/register', registerRouter);
-app.use('/login', loginRouter);
+app.use('/auth', authRouter);
 
 app.get('/', (req, res, next) => {
     res.send({info: `Ecommerce app is running!`});
