@@ -14,7 +14,7 @@ router.post(
     passport.authenticate('local', 
     {
         // successReturnToOrRedirect: '/register',
-        failureRedirect: '/login'
+        failureRedirect: '/auth/login'
     })
     , (req, res, next) => {
     console.log('Logged In');
