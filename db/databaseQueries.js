@@ -9,7 +9,7 @@ const {
 } = require('./queries/createTableQueries');
 const { query } = require('./index');
 
-const createDatabaseTables = {
+const Database = {
     async createTables() {
         const createUsersTable = await query(createUsersTableQuery, (data) => {
             if(data) {
@@ -60,18 +60,20 @@ const createDatabaseTables = {
                 console.log('Purchasing_History Table has already been created!');
             }
         });
+    },
+    async selectUserByEmail(email) {
+        return await query('SELECT * FROM users WHERE email = $1', [email]).then(results => results.rows[0]);
+    },
+    async selectAllUsers() {
+        return await query('SELECT * FROM users').then(results => results.rows);
+    },
+    async selectUserById(id) {
+        return await query('SELECT * FROM users WHERE id = $1', [id]).then(results => results.rows[0]);
     }
 }
 
 
 
 module.exports = {
-    // createUsersTable,
-    // createUserInfoTable,
-    // createCategoriesTable,
-    // createProductsTable,
-    // createCategoryProductTable,
-    // createCartTable,
-    // createPurchasingHistoryTable
-    createDatabaseTables
+    Database
 };
