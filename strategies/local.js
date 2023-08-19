@@ -14,8 +14,8 @@ passport.use(new LocalStrategy(
             if (!email || !password) throw new Error('Missing Credentials');
             const user = await Database.selectUserByEmail(email);
             const validPassword = await Database.compareUserPassword(email, password);
-            if(!user) return done(null, false, { msg: 'No user was found!'});
-            if(!validPassword) return done(null, false, { msg: 'Invalid password!' });
+            if (!user) return done(null, false, { msg: 'No user was found!'});
+            if (!validPassword) return done(null, false, { msg: 'Invalid password!' });
             return done(null, user);
         } catch (err) {
             console.log(err);
@@ -27,15 +27,15 @@ passport.use(new LocalStrategy(
 passport.serializeUser((user, done) => {
     console.log('Serializing user...');
     console.log(user);
-    done(null, user.email);
+    done(null, {username: user.username, email: user.email});
 });
 
-passport.deserializeUser(async (email, done) => {
+passport.deserializeUser(async (user, done) => {
     console.log('Deserializing users...');
-    console.log(email);
+    console.log(user);
     try {
-        const user = await Database.selectUserByEmail(email);
-        if (!user) throw new Error('User not found');
+        const userInfo = await Database.selectUserByEmail(user.email);
+        if (!userInfo) throw new Error('User not found');
         done(null, user);
     } catch (err) {
         console.log(err);

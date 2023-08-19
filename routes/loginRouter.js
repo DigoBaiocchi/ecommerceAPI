@@ -19,7 +19,7 @@ router.post(
     , (req, res, next) => {
     console.log('Logged In');
     console.log(req.session);
-    res.status(200);
+    res.status(200).json(`User ${req.session.passport.user.username} is logged in`);
 });
 
 module.exports = router;
