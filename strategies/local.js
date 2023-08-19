@@ -25,14 +25,18 @@ passport.use(new LocalStrategy(
 ));
 
 passport.serializeUser((user, done) => {
-    console.log('Serializing user...');
-    console.log(user);
+    console.log({
+        action: 'Serializing user...',
+        user: user
+    });
     done(null, {username: user.username, email: user.email});
 });
 
 passport.deserializeUser(async (user, done) => {
-    console.log('Deserializing users...');
-    console.log(user);
+    console.log({
+        action: 'Deserializing user...',
+        user: user
+    });
     try {
         const userInfo = await Database.selectUserByEmail(user.email);
         if (!userInfo) throw new Error('User not found');
