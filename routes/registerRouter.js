@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { query } = require('../db/index');
-const { createDatabaseTables } = require('../db/createTables');
+const { Database } = require('../db/databaseQueries');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
@@ -15,22 +15,26 @@ const database = {
 router.get('/', async (req, res, next) => {
     const timeNow = await query('SELECT NOW()');
 
-    createDatabaseTables.createTables();
+    Database.createTables();
 
-    const selectUsersTable = await query("SELECT * FROM users");
+    const selectUsersTable = await Database.selectAllUsers();
+    const selectUser = await Database.selectUserByEmail('gambito@gmail.com');
     res.json({
         info: `Ecommerce app is running here at ${timeNow.rows[0].now}!`,
-        data: selectUsersTable.rows
+        data: selectUsersTable,
+        userData: selectUser,
+        sessioninfo: req.session
     });
 });
 
 router.post('/', async (req, res, next) => {
-    const usersDb = await query("SELECT * FROM users");
+    const usersDb = await Database.selectAllUsers()
     
     const { username, email, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    const usernameAlreadyExists = usersDb.rows.some(data => data.username === username);
-    const emailAlreadyExists = usersDb.rows.some(data => data.email === email);
+    const salt = await bcrypt.genSalt(saltRounds);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const usernameAlreadyExists = usersDb.some(data => data.username === username);
+    const emailAlreadyExists = usersDb.some(data => data.email === email);
     
     if(!username || !email) {
         return res.status(400).json('No username or email provided');
@@ -45,16 +49,16 @@ router.post('/', async (req, res, next) => {
         return res.status(400).json('No password provided');
     }
     if (username && email && password) {
-        const addUser = await query("INSERT INTO users (username, email, password, administrator) VALUES ($1, $2, $3, $4)", [username, email, hashedPassword, false]);
+        const addUser = await Database.addUser(username, email, hashedPassword);
         return res.status(201).json('User successfully created');
     } 
     return res.status(400).json('User not created');
 });
 
 router.get('/:email', async (req, res, next) => {
-    const usersDb = await query("SELECT * FROM users");
+    const usersDb = await Database.selectAllUsers();
     const { email } = req.params;
-    const emailFound = usersDb.rows.some(data => data.email === email);
+    const emailFound = usersDb.some(data => data.email === email);
     if (emailFound) {
         return res.status(200).json(`User found with email ${email}`);
     }
@@ -62,27 +66,29 @@ router.get('/:email', async (req, res, next) => {
 });
 
 router.put('/:email', async (req, res, next) => {
-    const usersDb = await query("SELECT * FROM users");
+    const usersDb = await Database.selectAllUsers();
     const { email } = req.params;
     const { password } = req.body;
-    const newHashedPassword = await bcrypt.hash(password, saltRounds);
-    const validEmail = usersDb.rows.some(data => data.email === email);
+    const salt = await bcrypt.genSalt(saltRounds);
+    const newHashedPassword = await bcrypt.hash(password, salt);
+    const validEmail = usersDb.some(data => data.email === email);
     if (!validEmail) {
         return res.status(400).json({userUpdated: false, message: `email ${email} not found`});
     }
     if(!password) {
         return res.status(400).json({userUpdated: false, message: `password not updated for email ${email}`});    
     }
-    const updatePassword = await query("UPDATE users SET password = $1 WHERE email = $2", [newHashedPassword, email])
+    const updatePassword = await Database.updateUserPassword(newHashedPassword, email);
+    console.log(req.session);
     return res.status(200).json({userUpdated: true, message: `password updated for email ${email}`});
 });
 
 router.delete('/:email', async (req, res, next) => {
-    const usersDb = await query("SELECT * FROM users");
+    const usersDb = await Database.selectAllUsers();
     const { email } = req.params;
-    const validEmail = usersDb.rows.some(data => data.email === email);
+    const validEmail = usersDb.some(data => data.email === email);
     if (validEmail) {
-        const deleteUser = await query("DELETE FROM users WHERE email = $1", [email]);
+        const deleteUser = await Database.deleteUser(email);
         return res.status(200).json({userDeleted: true});
     }
     return res.status(400).json({userDeleted: false});

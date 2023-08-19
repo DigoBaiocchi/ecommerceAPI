@@ -1,3 +1,6 @@
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 const {
 	createUsersTableQuery,
 	createUserInfoTableQuery,
@@ -69,6 +72,22 @@ const Database = {
     },
     async selectUserById(id) {
         return await query('SELECT * FROM users WHERE id = $1', [id]).then(results => results.rows[0]);
+    },
+    async compareUserPassword(email, password) {
+        const user = await this.selectUserByEmail(email);
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        const matchedPassword = await bcrypt.compare(password, user.password);
+
+        return matchedPassword;
+    },
+    async addUser(username, email, password) {
+        return await query("INSERT INTO users (username, email, password, administrator) VALUES ($1, $2, $3, $4)", [username, email, password, false]);
+    },
+    async updateUserPassword(newPassword, email) {
+        return await query("UPDATE users SET password = $1 WHERE email = $2", [newPassword, email]);
+    },
+    async deleteUser(email) {
+        return query("DELETE FROM users WHERE email = $1", [email]);
     }
 }
 
