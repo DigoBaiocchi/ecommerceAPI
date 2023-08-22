@@ -9,6 +9,7 @@ const { query } = require('./db/index');
 
 const registerRouter = require('./routes/registerRouter');
 const authRouter = require('./routes/authRouter');
+const categoriesRouter = require('./routes/categoriesRouter');
 
 app.use(bodyParser.json());
 app.use(
@@ -37,6 +38,7 @@ app.use((err, req, res, next) => {
 
 app.use('/register', registerRouter);
 app.use('/auth', authRouter);
+app.use('/categories', categoriesRouter);
 
 app.get('/', (req, res, next) => {
     res.send({info: `Ecommerce app is running!`});

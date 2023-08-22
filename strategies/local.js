@@ -11,10 +11,10 @@ passport.use(new LocalStrategy(
         console.log(email);
         console.log(password);
         try {
-            if (!email || !password) throw new Error('Missing Credentials');
+            if (!email || !password) return done(null, false, { msg: 'Invalid Credentials'});
             const user = await Database.selectUserByEmail(email);
-            const validPassword = await Database.compareUserPassword(email, password);
             if (!user) return done(null, false, { msg: 'No user was found!'});
+            const validPassword = await Database.compareUserPassword(email, password);
             if (!validPassword) return done(null, false, { msg: 'Invalid password!' });
             return done(null, user);
         } catch (err) {
