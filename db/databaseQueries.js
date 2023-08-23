@@ -87,7 +87,26 @@ const Database = {
         return await query("UPDATE users SET password = $1 WHERE email = $2", [newPassword, email]);
     },
     async deleteUser(email) {
-        return query("DELETE FROM users WHERE email = $1", [email]);
+        return await query("DELETE FROM users WHERE email = $1", [email]);
+    },
+    async getAllCategories() {
+        return await query("SELECT * FROM categories").then(results => results.rows);
+    },
+    async getCategoryByName(name) {
+        return await query("SELECT * FROM categories WHERE name = $1", [name]).then(result => result.rows[0]);
+    },
+    async getCategoryId(name) {
+        const categoryData = await query("SELECT * FROM categories WHERE name = $1", [name]).then(result => result.rows[0]);
+        return categoryData;
+    },
+    async addCategory(name) {
+        return await query("INSERT INTO categories (name) VALUES ($1)", [name]);
+    },
+    async updateCategory(id, name) {
+        return await query("UPDATE categories SET name = $2 WHERE id = $1", [id, name]);
+    },
+    async deleteCategory(name) {
+        return await query("DELETE FROM categories WHERE name = $1", [name]);
     }
 }
 

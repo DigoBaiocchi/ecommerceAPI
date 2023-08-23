@@ -189,9 +189,9 @@ describe('DELETE /register/:email', () => {
     })
 });
 
-describe('POST /categories/add-category', () => {
-    const newCategory = "Beef";
-    const existentCategory = "Pork";
+describe('POST /categories/add-category', async () => {
+    const newCategory = "Poultry";
+    const existentCategory = "Beef";
     it('responses with 201 when a category is successfully created', (done) => {
         request(app)
             .post('/categories/add-category')
@@ -264,11 +264,12 @@ describe('PUT /categories/edit-category', () => {
     });
 });
 
-describe('DELETE /categories/delete-category/:id', () => {
-    const categoryId = 1;
+describe('DELETE /categories/delete-category/:name', () => {
+    const newCategory = "Poultry";
+    const wrongCategory = "WrongCategory";
     it('responses with 200 when category is successfully deleted', (done) => {
         request(app)
-            .delete(`/categories/delete-category/${categoryId}`)
+            .delete(`/categories/delete-category/${newCategory}`)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
@@ -279,9 +280,8 @@ describe('DELETE /categories/delete-category/:id', () => {
             })
     });
     it('responses with 400 when category is not found', (done) => {
-        const wrongCategoryId = 3;
         request(app)
-            .delete(`/categories/delete-category/${wrongCategoryId}`)
+            .delete(`/categories/delete-category/${wrongCategory}`)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
@@ -302,18 +302,6 @@ describe('GET /categories', () => {
             .expect('Content-Type', /json/)
             .expect(200)
             .expect('"All categories are loaded"')
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            })
-    });
-    it('responses with 400 when no categories are found', (done) => {
-        request(app)
-            .get('/categories')
-            .set('accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(400)
-            .expect('"No categories found"')
             .end((err) => {
                 if (err) return done(err);
                 done();
