@@ -309,6 +309,50 @@ describe('GET /categories', () => {
     });
 });
 
+describe('GET /categories/:id', () => {
+    const categoryId = 2;
+    const wrongCategoryId = 1;
+    it('responses with 200 with correct category', (done) => {
+        request(app)
+            .get(`/categories/${categoryId}`)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .expect(`"Category ${categoryId} selected"`)
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+    it('responses with 400 when category does not exist', (done) => {
+        request(app)
+            .get(`/categories/${wrongCategoryId}`)
+            .set('accept', 'application/json')
+            .expect(400)
+            .expect(`"Category ${wrongCategoryId} not found"`)
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+});
+
+// describe('GET /products', () => {
+//     // const categories = Database.getAllCategories();
+//     it('responses with 200 with all products', (done) => {
+//         request(app)
+//             .get('/products')
+//             .set('accept', 'application/json')
+//             .expect('Content-Type', /json/)
+//             .expect(200)
+//             .expect('"All products are loaded"')
+//             .end((err) => {
+//                 if (err) return done(err);
+//                 done();
+//             })
+//     });
+// });
+
 // describe('POST /login', () => {
 //     const completeData = {'email': 'rodrigo@gmail.com', 'password': '123456'};
 //     const missingEmail = {'password': '123456'};

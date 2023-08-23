@@ -99,6 +99,9 @@ const Database = {
         const categoryData = await query("SELECT * FROM categories WHERE name = $1", [name]).then(result => result.rows[0]);
         return categoryData;
     },
+    async getCategoryById(id) {
+        return await query('SELECT * FROM categories WHERE id = $1', [id]).then(result => result.rows[0]);
+    },
     async addCategory(name) {
         return await query("INSERT INTO categories (name) VALUES ($1)", [name]);
     },
@@ -107,6 +110,9 @@ const Database = {
     },
     async deleteCategory(name) {
         return await query("DELETE FROM categories WHERE name = $1", [name]);
+    },
+    async getAllProducts() {
+        return await query("SELECT * FROM products").then(results => results.rows);
     }
 }
 

@@ -9,10 +9,18 @@ router.get('/', async (req, res, next) => {
     const categories = await Database.getAllCategories();
     console.log(categories)
     if (categories.length !== 0) {
-        console.log(Database.getCategoryId(2));
         return res.status(200).json('All categories are loaded');
     }
     return res.status(400).json('No categories found');
+});
+
+router.get('/:id', async (req, res, next) => {
+    const { id } = req.params;
+    const category = await Database.getCategoryById(id);
+    if (!category) {
+        return res.status(400).json(`Category ${id} not found`)
+    }
+    return res.status(200).json(`Category ${id} selected`);
 });
 
 router.post('/add-category', async (req, res, next) => {
@@ -34,6 +42,13 @@ router.put('/edit-category', async (req, res, next) => {
     if (!name) {
         return res.status(400).json(`Name not provided for category ${id}`);
     }
+    
+    const categories = await Database.getAllCategories();
+    const existentCategory = categories.some(category => category.id === id);
+    if(!existentCategory) {
+        return res.status(200).json(`Category ${id} does not exist`);
+    }
+
     const updateCategory = await Database.updateCategory(id, name);
     return res.status(200).json(`Category ${id} has been updated to ${name}`);
 });
