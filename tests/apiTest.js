@@ -191,7 +191,7 @@ describe('DELETE /register/:email', () => {
 
 describe('POST /categories/add-category', async () => {
     const newCategory = "Poultry";
-    const existentCategory = "Beef";
+    const existentCategory = "Fish";
     it('responses with 201 when a category is successfully created', (done) => {
         request(app)
             .post('/categories/add-category')
@@ -234,7 +234,7 @@ describe('POST /categories/add-category', async () => {
 });
 
 describe('PUT /categories/edit-category', () => {
-    const categoryId = 1;
+    const categoryId = 2;
     const newName = 'Fish';
     it('responses with 200 when category name is updated', (done) => {
         request(app)
