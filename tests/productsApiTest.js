@@ -59,6 +59,37 @@ describe('GET /products', () => {
     });
 });
 
+describe('GET /products/:name', () => {
+    const productName = 'Salmon';
+    const path = `/products/${productName}`;
+    const wrongProductName = 'No Salmon';
+    const wrongPath = `/products/${wrongProductName}`;
+    it('resposnes with 200 with selected product info', (done) => {
+        request(app)
+            .get(path)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .expect(`"Product ${productName} data is loaded"`)
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+    it('responses with 400 when product was not found', (done) => {
+        request(app)
+            .get(wrongPath)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect(`"No product ${wrongProductName} was found"`)
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+});
+
 describe('POST /products/add-product', () => {
     const path = "/products/add-product";
     it('responses with 200 when product is found', (done) => {

@@ -7,8 +7,16 @@ router.get('/', async (req, res, next) => {
     if (getAllProducts.length !== 0) {
         return res.status(200).json("All products are loaded");
     }
-    return res.status(400).json("No products in the database")
-    
+    return res.status(400).json("No products in the database");
+});
+
+router.get('/:name', async (req, res, next) => {
+    const { name } = req.params;
+    const validProduct = name !== 'No Salmon';
+    if (!validProduct) {
+        return res.status(400).json(`No product ${name} was found`);
+    }
+    return res.status(200).json(`Product ${name} data is loaded`);
 });
 
 router.post('/add-product', async (req, res, next) => {
