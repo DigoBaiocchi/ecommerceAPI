@@ -113,10 +113,35 @@ const Database = {
     },
     async getAllProducts() {
         return await query("SELECT * FROM products").then(results => results.rows);
+    },
+    async getProductByName(name) {
+        return await query("SELECT * FROM products WHERE name = $1", [name]).then(results => results.rows[0]);
+    },
+    async checkIfProductAlreadyExists(idOrName) {
+        let getProductData;
+
+        if(isNaN(Number(idOrName))) {
+            getProductData = await query("SELECT * FROM products WHERE name = $1", [idOrName]).then(results => results.rows);
+        } else {
+            getProductData = await query("SELECT * FROM products WHERE id = $1", [idOrName]).then(results => results.rows);
+        }
+        
+        if (getProductData.length === 0) {
+            return false;
+        } else {
+            return true;
+        }
+    },
+    async addProduct(name, quantity, description, price) {
+        return await query("INSERT INTO products (name, total_available, description, price) VALUES ($1, $2, $3, $4)", [name, quantity, description, price]);
+    },
+    async updateProduct(id, name, quantity, description, price) {
+        return await query("UPDATE products SET name = $2, total_available = $3, description = $4, price = $5 WHERE id = $1", [id, name, quantity, description, price]);
+    },
+    async deleteProduct(name) {
+        return await query("DELETE FROM products WHERE name = $1", [name]);
     }
 }
-
-
 
 module.exports = {
     Database

@@ -1,13 +1,20 @@
 const request = require('supertest');
 const app = require('../app');
+const { newProductId } = require('../routes/productsRouter');
 
 const newProduct = {
-    'id': 1,
-    'name': 'Salmon',
+    'name': 'Salmon Test',
     'quantity': 3,
     'description': 'Fresh from the sea',
     'price': '$4.99'
 };
+const existintProduct = {
+    'id': 3,
+    'name': 'Tuna',
+    'quantity': 3,
+    'description': 'Fresh from the sea',
+    'price': '$4.99'
+}
 const noProductName = {
     'id': 1,
     'name': '',
@@ -60,7 +67,7 @@ describe('GET /products', () => {
 });
 
 describe('GET /products/:name', () => {
-    const productName = 'Salmon';
+    const productName = 'Tuna';
     const path = `/products/${productName}`;
     const wrongProductName = 'No Salmon';
     const wrongPath = `/products/${wrongProductName}`;
@@ -92,7 +99,7 @@ describe('GET /products/:name', () => {
 
 describe('POST /products/add-product', () => {
     const path = "/products/add-product";
-    it('responses with 200 when product is found', (done) => {
+    it('responses with 200 when product is added', (done) => {
         request(app)
             .post(path)
             .send(newProduct)
@@ -100,6 +107,19 @@ describe('POST /products/add-product', () => {
             .expect('Content-Type', /json/)
             .expect(200)
             .expect(`"Product ${newProduct['name']} successfully added"`)
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+    it('responses with 400 when product name already exists', (done) => {
+        request(app)
+            .post(path)
+            .send(existintProduct)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect(`"Product ${existintProduct['name']} already exists"`)
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -164,11 +184,11 @@ describe('PUT /products/edit-product', () => {
     it('responses with 200 when product name is updated successfully', (done) => {
         request(app)
             .put(path)
-            .send(newProduct)
+            .send(existintProduct)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
-            .expect(`"Product with id ${newProduct['id']} info updated"`)
+            .expect(`"Product with id ${existintProduct['id']} info updated"`)
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -242,7 +262,7 @@ describe('PUT /products/edit-product', () => {
 });
 
 describe('DELETE /products/delete-product/:name', () => {
-    const productName = 'Salmon';
+    const productName = 'Salmon Test';
     const wrongProductName = 'No Salmon';
     const existentProductPath = `/products/delete-product/${productName}`;
     const nonExistentProductPath = `/products/delete-product/${wrongProductName}`;
