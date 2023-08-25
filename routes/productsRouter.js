@@ -21,7 +21,7 @@ router.get('/:name', async (req, res, next) => {
 });
 
 router.post('/add-product', async (req, res, next) => {
-    const { name, quantity, description, price } = req.body;
+    const { categoryId, name, quantity, description, price } = req.body;
     
     if (!name || !quantity || !description || !price) {
         return res.status(400).json('Product not added. Missing required information');
@@ -30,7 +30,7 @@ router.post('/add-product', async (req, res, next) => {
     if (existentProduct) {
         return res.status(400).json(`Product ${name} already exists`)
     }
-    const addProduct = await Database.addProduct(name, quantity, description, price);
+    const addProduct = await Database.addProduct(categoryId, name, quantity, description, price);
     return res.status(200).json(`Product ${name} successfully added`);
 });
 

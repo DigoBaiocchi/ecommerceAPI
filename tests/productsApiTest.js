@@ -3,6 +3,7 @@ const app = require('../app');
 const { newProductId } = require('../routes/productsRouter');
 
 const newProduct = {
+    'categoryId': 2,
     'name': 'Salmon Test',
     'quantity': 3,
     'description': 'Fresh from the sea',
