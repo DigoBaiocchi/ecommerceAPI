@@ -1,6 +1,5 @@
 const request = require('supertest');
 const app = require('../app');
-const { newProductId } = require('../routes/productsRouter');
 
 const newProduct = {
     'categoryId': 2,

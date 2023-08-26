@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const { Database } = require('../db/databaseQueries');
-const newProductId = '';
 
 router.get('/', async (req, res, next) => {
     const getAllProducts = await Database.getAllProducts();
