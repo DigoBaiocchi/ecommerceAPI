@@ -132,6 +132,10 @@ const Database = {
             return true;
         }
     },
+    async checkIfUserInfoAlreadyExists(id) {
+        const getUser = await query("SELECT * FROM user_info WHERE id = $1", [id]).then(results => results.rows);
+
+    },
     async addProduct(categoryId, name, quantity, description, price) {
         const productId = await query("INSERT INTO products (name, total_available, description, price) VALUES ($1, $2, $3, $4) RETURNING id", [name, quantity, description, price]).then(results => results.rows[0].id);
         
@@ -142,6 +146,24 @@ const Database = {
     },
     async deleteProduct(name) {
         return await query("DELETE FROM products WHERE name = $1", [name]);
+    },
+    async addUserInfo(userId, firstName, lastName, address1, address2, city, province, postalCode, creditCard, expDate) {
+        return await query(`INSERT INTO user_info 
+                            (user_id, first_name, last_name, address1, address2, city, province, postal_code, credit_card_number, credit_card_exp_date)
+                            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+                            [userId, firstName, lastName, address1, address2, city, province, postalCode, creditCard, expDate])
+    },
+    async selectUserInfo(userId) {
+        return await query(`SELECT * FROM user_info WHERE user_id = $1`, [userId]).then(results => results.rows[0]);
+    },
+    async updateUserInfo(userId, firstName, lastName, address1, address2, city, province, postalCode, creditCard, expDate) {
+        return await query(`UPDATE user_info 
+            SET first_name = $2, last_name = $3, address1 = $4, address2 = $5, city = $6, province = $7, postal_code = $8, credit_card_number = $9, credit_card_exp_date = $10
+            WHERE user_id = $1`,
+            [userId, firstName, lastName, address1, address2, city, province, postalCode, creditCard, expDate]);
+    },
+    async deleteUserInfo(userId) {
+        return await query(`DELETE FROM user_info WHERE user_id = $1`, [userId]);
     }
 }
 

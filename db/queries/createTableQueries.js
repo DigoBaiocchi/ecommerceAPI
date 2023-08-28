@@ -16,7 +16,7 @@ const createUserInfoTableQuery = `CREATE TABLE IF NOT EXISTS user_info (
 	province varchar(2) NOT NULL,
 	postal_code varchar(7) NOT NULL,
 	credit_card_number varchar(19),
-	credit_card_exp_number date
+	credit_card_exp_date varchar(5)
 );`;
 
 const createCategoriesTableQuery = `CREATE TABLE IF NOT EXISTS categories (
