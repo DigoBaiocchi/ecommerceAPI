@@ -31,4 +31,23 @@ router.get('/', (req, res, next) => {
     return res.status(200).json(`Cart selected for user ${userId}`);
 });
 
+router.put('/', (req, res, next) => {
+    const { userId, productId, totalUnits } = req.body;
+    const validUserId = userId === 6;
+    const validProductId = productId === 37;
+    const totalProductQty = 4;
+
+    if(!validUserId) {
+        return res.status(400).json(`User id ${userId} was not found`);
+    }
+    if(!validProductId) {
+        return res.status(400).json(`Product id ${productId} was not found`);
+    }
+    if(totalUnits < 1 || totalUnits > totalProductQty) {
+        return res.status(400).json(`Product has less than ${totalUnits} units`)
+    }
+
+    return res.status(200).json(`Quantity for product id ${productId} was updated in the cart`);
+});
+
 module.exports = router;

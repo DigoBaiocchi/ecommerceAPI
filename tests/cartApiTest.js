@@ -111,3 +111,59 @@ describe('GET /cart', () => {
             })
     });
 });
+
+describe('PUT /cart', () => {
+    const path = '/cart';
+    it('responses with 200 when a product quantity was updated in the cart', (done) => {
+        request(app)
+            .put(path)
+            .send(data)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .expect(`"Quantity for product id ${data['productId']} was updated in the cart"`)
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+    it('responses with 400 when no user id was found', (done) => {
+        request(app)
+            .put(path)
+            .send(invalidUserData)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect(`"User id ${invalidUserData['userId']} was not found"`)
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+    it('responses with 400 when no product id was found', (done) => {
+        request(app)
+            .put(path)
+            .send(invalidProductData)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect(`"Product id ${invalidProductData['productId']} was not found"`)
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+    it('responses with 400 when no product id was found', (done) => {
+        request(app)
+            .put(path)
+            .send(invalidQtyData)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect(`"Product has less than ${invalidQtyData["totalUnits"]} units"`)
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+});
