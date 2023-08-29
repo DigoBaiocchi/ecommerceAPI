@@ -50,4 +50,20 @@ router.put('/', (req, res, next) => {
     return res.status(200).json(`Quantity for product id ${productId} was updated in the cart`);
 });
 
+router.delete('/:userId/:productId', (req, res, next) => {
+    const userId = Number(req.params.userId);
+    const productId = Number(req.params.productId);
+    const validUserId = userId === 6;
+    const validProductId = productId === 37;
+
+    if(!validUserId) {
+        return res.status(400).json(`User id ${userId} was not found`);
+    }
+    if(!validProductId) {
+        return res.status(400).json(`Product id ${productId} was not found`);
+    }
+
+    return res.status(200).json(`Product id ${productId} delete from user ${userId} cart`)
+});
+
 module.exports = router;

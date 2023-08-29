@@ -153,7 +153,7 @@ describe('PUT /cart', () => {
                 done();
             })
     });
-    it('responses with 400 when no product id was found', (done) => {
+    it('responses with 400 when invalid quantity is sent', (done) => {
         request(app)
             .put(path)
             .send(invalidQtyData)
@@ -161,6 +161,52 @@ describe('PUT /cart', () => {
             .expect('Content-Type', /json/)
             .expect(400)
             .expect(`"Product has less than ${invalidQtyData["totalUnits"]} units"`)
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+});
+
+describe('DELETE /cart/:userId/:productId', () => {
+    const userId = data['userId'];
+    const productId = data['productId'];
+    const invalidUserId = invalidUserData['userId'];
+    const invalidProductId = invalidProductData['productId'];
+    const path = `/cart/${userId}/${productId}`;
+    const badUserIdPath = `/cart/${invalidUserId}/${productId}`;
+    const badProductIdPath = `/cart/${userId}/${invalidProductId}`;
+    it('responses with 200 when product was deleted from the cart', (done) => {
+        request(app)
+            .delete(path)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .expect(`"Product id ${productId} delete from user ${userId} cart"`)
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+    it('responses with 400 when no user id was found', (done) => {
+        request(app)
+            .delete(badUserIdPath)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect(`"User id ${invalidUserData['userId']} was not found"`)
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+    it('responses with 400 when no product id was found', (done) => {
+        request(app)
+            .delete(badProductIdPath)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect(`"Product id ${invalidProductData['productId']} was not found"`)
             .end((err) => {
                 if (err) return done(err);
                 done();
