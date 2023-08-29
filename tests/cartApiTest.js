@@ -80,3 +80,34 @@ describe('POST /cart', () => {
             })
     });
 });
+
+describe('GET /cart', () => {
+    const path = '/cart';
+    const userId = 6;
+    it('responses with 200 with cart for a user was loaded', (done) => {
+        request(app)
+            .get(path)
+            .send(data)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .expect(`"Cart selected for user ${data['userId']}"`)
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+    it('response with 400 when no user id was found', (done) => {
+        request(app)
+            .get(path)
+            .send(invalidUserData)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect(`"User ${invalidUserData['userId']} was not found"`)
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+});
