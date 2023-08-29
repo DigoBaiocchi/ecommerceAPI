@@ -15,7 +15,7 @@ const invalidUserData = {
 
 const invalidProductData = {
     "userId": 6,
-    "productId": 3,
+    "productId": 1,
     "totalUnits": 1
 };
 
