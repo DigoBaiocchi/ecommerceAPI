@@ -21,6 +21,11 @@ router.post('/', async (req, res, next) => {
         return res.status(400).json(`Product has less than ${totalUnits} units`)
     }
 
+    const productAlreadyInCart = await Database.selectProductInCart(userId, productId);
+    if(productAlreadyInCart) {
+        return res.status(400).json(`Product ${userId} is already in the cart`);
+    }
+
     const addProductToCart = await Database.addProductToCart(userId, productId, totalProductQty);
     return res.status(201).json(`Product ${userId} has added to the cart`);
 });

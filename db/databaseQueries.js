@@ -174,6 +174,9 @@ const Database = {
     async selectCartProducts(userId) {
         return await query(`SELECT * FROM cart WHERE user_id = $1`, [userId]).then(results => results.rows[0]);
     },
+    async selectProductInCart(userId, productId) {
+        return await query(`SELECT * FROM cart WHERE user_id = $1 AND product_id = $2`, [userId, productId]).then(results => results.rows[0]);
+    },
     async updateProductQuanityInCart(userId, productId, productQuanity) {
         return await query(`UPDATE cart SET total_units = $3 WHERE user_id = $1 AND product_id = $2`, [userId, productId, productQuanity])
     },

@@ -79,6 +79,19 @@ describe('POST /cart', () => {
                 done();
             })
     });
+    it('responses with 400 when product is already in the cart', (done) => {
+        request(app)
+            .post(path)
+            .send(data)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect(`"Product ${data["userId"]} is already in the cart"`)
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
 });
 
 describe('GET /cart', () => {
