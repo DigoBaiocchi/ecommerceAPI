@@ -8,7 +8,8 @@ const {
 	createProductsTableQuery,
 	createCategoryProductTableQuery,
 	createCartTableQuery,
-	createPurchasingHistoryTableQuery
+	createPurchasingHistoryTableQuery,
+    createCheckoutTableQuery
 } = require('./queries/createTableQueries');
 const { query } = require('./index');
 
@@ -61,6 +62,13 @@ const Database = {
                 console.log('Purchasing_History Table has been creacted!');    
             } else {
                 console.log('Purchasing_History Table has already been created!');
+            }
+        });
+        const createCheckoutTable = await query(createCheckoutTableQuery, (data) => {
+            if(data) {
+                console.log('Checkout Table has been creacted!');    
+            } else {
+                console.log('Checkout Table has already been created!');
             }
         });
     },
