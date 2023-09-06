@@ -29,7 +29,7 @@ passport.serializeUser((user, done) => {
         action: 'Serializing user...',
         user: user
     });
-    done(null, {username: user.username, email: user.email});
+    done(null, {userId: user.id, username: user.username, email: user.email});
 });
 
 passport.deserializeUser(async (user, done) => {
