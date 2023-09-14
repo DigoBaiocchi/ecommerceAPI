@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const { Database } = require('../db/databaseQueries');
-// const { locals } = require('../app');
 
 if (typeof localStorage === "undefined" || localStorage === null) {
     var LocalStorage = require('node-localstorage').LocalStorage;
@@ -59,6 +58,7 @@ router.post('/', async (req, res, next) => {
         
         localStorage.setItem('cart', JSON.stringify(cart));
         console.log(localStorage.getItem('cart'));
+        return res.status(201).json({msg: `Product ${userId} has added to the cart`, cart: req.session});
         
     } else /*if(req.session.passport)*/{
         userId = req.session.passport.user.userId;
@@ -85,35 +85,8 @@ router.post('/', async (req, res, next) => {
             }
             const updateCart = await Database.updateProductQuanityInCart(userId, productId, newAmount);
             return res.status(200).json(`Product ${productId} quantity has been udpated in the cart`);
-        }
-        
-        if(localStorage.getItem('cart')) {
-            
-            console.log('Products are already in temp cart')
-            console.log(cart);
-            cart.forEach(async (el) => {
-                // cart = req.session.cart;
-                const addProductToCartTable = await Database.addProductToCart(userId, el.productId, el.quantity);
-            });
-            // for (let i = 0; i < cart.length; i++) {
-            //     // const addProductToCartTable = await Database.addProductToCart(userId, cart.productId, cart.quantity);
-            //     console.log(userId, req.session.cart.productId, cart.quantity);
-            // }
-            cart = [];
-            localStorage.clear();
-            
-            return res.status(200).json(`Products have been moved from temp cart to database cart.`);
-        }
-        
-        // cart.push({'userId': userId, 'productId': productId, 'quantity': totalUnits});
-        
+        }        
     }
-    
-    
-
-    // const addProductToCart = await Database.addProductToCart(userId, productId, totalProductQty);
-    // addProductToCart(userId, productId, totalUnits);
-    return res.status(201).json({msg: `Product ${userId} has added to the cart`, cart: req.session});
 });
 
 router.get('/', async (req, res, next) => {
