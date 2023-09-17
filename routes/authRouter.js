@@ -20,13 +20,21 @@ router.post(
     , async (req, res, next) => {
     console.log('Logged In');
     console.log(req.user);
+    const userId = req.user.id;
+    let productIsAlreadyInCart; 
+    let updateProductInCartTable;
     
     if (localStorage.getItem('cart')) {
         const cart = JSON.parse(localStorage.getItem('cart'));
         cart.forEach(async (el) => {
-            const addProductToCartTable = await Database.addProductToCart(req.user.id, el.productId, el.quantity);
+            productIsAlreadyInCart = await Database.selectProductInCart(userId, el.productId);
+            if(productIsAlreadyInCart) {
+                updateProductInCartTable = await Database.updateProductQuanityInCart(userId, el.productId, el.quantity);
+            } else {
+                const addProductToCartTable = await Database.addProductToCart(userId, el.productId, el.quantity)
+            }
         });
-    }
+    } 
     localStorage.clear();
     return res.status(200).json(`User ${req.user.username} is logged in`);
 });
