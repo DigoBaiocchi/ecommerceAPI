@@ -20,7 +20,7 @@ router.post('/', async (req, res, next) => {
     const totalProductQty = getProductData.total_available;
     let productAlreadyInCart = 0;
 
-    // check if user is logged in
+    // check if user is not logged in
     if(!req.session.passport) {
         userId = 0;
         cart = [];
