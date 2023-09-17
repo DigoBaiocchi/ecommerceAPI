@@ -117,7 +117,7 @@ router.get('/', async (req, res, next) => {
 
     const userCartData = await Database.selectCartProducts(userId);
 
-    return res.status(200).json({msg: `Cart selected for user ${userId}`, cart: req.session.cart});
+    return res.status(200).json({msg: `Cart selected for user ${userId}`, cart: userCartData});
 });
 
 router.put('/', async (req, res, next) => {

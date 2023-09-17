@@ -180,7 +180,7 @@ const Database = {
         return await query(`INSERT INTO cart (user_id, product_id, total_units) VALUES ($1, $2, $3)`, [userId, productId, productQuantity]);
     },
     async selectCartProducts(userId) {
-        return await query(`SELECT * FROM cart WHERE user_id = $1`, [userId]).then(results => results.rows[0]);
+        return await query(`SELECT * FROM cart WHERE user_id = $1`, [userId]).then(results => results.rows);
     },
     async selectProductInCart(userId, productId) {
         return await query(`SELECT * FROM cart WHERE user_id = $1 AND product_id = $2`, [userId, productId]).then(results => results.rows[0]);
