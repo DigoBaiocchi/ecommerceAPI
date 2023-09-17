@@ -34,13 +34,22 @@ router.post('/', async (req, res, next) => {
             return res.status(400).json(`No product id ${productId} was found`);
         }
 
-        if(totalUnits < 1 || totalUnits > totalProductQty) {
+        if(totalUnits > totalProductQty) {
             return res.status(400).json(`Product has less than ${totalUnits} units`);
+        }
+
+        if(!productAlreadyInCart || productAlreadyInCart.length === 0) {
+            if(totalUnits < 1) {
+                return res.status(400).json(`Total units for product ${productId} needs to be greater than zero to be added to cart`);
+            }
         }
         
         if(productAlreadyInCart && productAlreadyInCart.length !== 0) {
             const newAmount = productAlreadyInCart[0].quantity + totalUnits;
-            if(newAmount < 1 || newAmount > totalProductQty) {
+            if(newAmount < 1) {
+                return res.status(400).json(`Product ${productId} total in the cart can't be zero. Do you want to delete this product ${productId} from cart?`);
+            }
+            if(newAmount > totalProductQty) {
                 return res.status(400).json(`Products has less than ${newAmount} units`);
             }
             for (let i = 0; i < cart.length; i++) {
@@ -73,19 +82,28 @@ router.post('/', async (req, res, next) => {
             return res.status(400).json(`No product id ${productId} was found`);
         }
 
-        if(totalUnits < 1 || totalUnits > totalProductQty) {
+        if(totalUnits > totalProductQty) {
             return res.status(400).json(`Product has less than ${totalUnits} units`)
         }
 
         if(productAlreadyInCart) {
             console.log(productAlreadyInCart)
             const newAmount = productAlreadyInCart.total_units + totalUnits;
-            if (newAmount < 1 || newAmount > totalProductQty) {
+            if(newAmount < 1) {
+                return res.status(400).json(`Product ${productId} total in the cart can't be zero. Do you want to delete this product ${productId} from cart?`);
+            }
+            if (newAmount > totalProductQty) {
                 return res.status(400).json(`Products has less than ${newAmount} units`);
             }
             const updateCart = await Database.updateProductQuanityInCart(userId, productId, newAmount);
             return res.status(200).json(`Product ${productId} quantity has been udpated in the cart`);
-        }        
+        } else {
+            if(totalUnits < 1) {
+                return res.status(400).json(`Total units for product ${productId} needs to be greater than zero to be added to cart`);
+            }
+            const addToCartTable = await Database.addProductToCart(userId, productId, totalUnits);
+            return res.status(201).json(`Product ${productId} was added to cart table`);
+        }
     }
 });
 
