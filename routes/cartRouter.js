@@ -125,13 +125,27 @@ router.delete('/:userId/:productId', async (req, res, next) => {
     const productId = Number(req.params.productId);
 
     const validUserId = await Database.selectUserById(userId);
-    if(!validUserId) {
+    if(!validUserId && userId !== 0) {
         return res.status(400).json(`User id ${userId} was not found`);
     }
 
     const validProductId = await Database.checkIfProductAlreadyExists(productId);
     if(!validProductId) {
         return res.status(400).json(`Product id ${productId} was not found`);
+    }
+
+    // check if user is not logged in
+    if(!req.session.passport) {
+        if(!localStorage.getItem('cart')) {
+            return res.status(400).json(`No products in user's temp cart`);
+        }
+        cart = JSON.parse(localStorage.getItem('cart'));
+        const productAlreadyInCart = cart.filter(product => product.productId === productId);
+        if(!productAlreadyInCart) {
+            return res.status(400).json(`No product ${productId} in the cart`);
+        }
+        cart = cart.filter(product => product.productId !== productId);
+        return res.status(200).json({msg: `Product ${productId} was deleted from user ${userId} cart`, cart: cart});
     }
 
     const deleteProductFromCart = await Database.deleteProductFromCart(userId, productId)
