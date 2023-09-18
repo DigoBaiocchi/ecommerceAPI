@@ -123,6 +123,7 @@ router.get('/', async (req, res, next) => {
 router.delete('/:userId/:productId', async (req, res, next) => {
     const userId = Number(req.params.userId);
     const productId = Number(req.params.productId);
+    let productAlreadyInCart;
 
     const validUserId = await Database.selectUserById(userId);
     if(!validUserId && userId !== 0) {
@@ -140,17 +141,26 @@ router.delete('/:userId/:productId', async (req, res, next) => {
             return res.status(400).json(`No products in user's temp cart`);
         }
         cart = JSON.parse(localStorage.getItem('cart'));
-        const productAlreadyInCart = cart.filter(product => product.productId === productId);
+        productAlreadyInCart = cart.filter(product => product.productId === productId);
         if(!productAlreadyInCart) {
             return res.status(400).json(`No product ${productId} in the cart`);
         }
         cart = cart.filter(product => product.productId !== productId);
         localStorage.setItem('cart', JSON.stringify(cart));
         return res.status(200).json({msg: `Product ${productId} was deleted from user ${userId} cart`, cart: cart});
+    } else {
+        productAlreadyInCart = await Database.selectProductInCart(userId, productId);
+        if(!validUserId) {
+            return res.status(400).json(`User id ${userId} was not found`);
+        }
+        if(!productAlreadyInCart) {
+            return res.status(400).json(`No product ${productId} in the cart`);
+        }
+        const deleteProductFromCart = await Database.deleteProductFromCart(userId, productId)
+        return res.status(200).json(`Product id ${productId} delete from user ${userId} cart`)
     }
 
-    const deleteProductFromCart = await Database.deleteProductFromCart(userId, productId)
-    return res.status(200).json(`Product id ${productId} delete from user ${userId} cart`)
+    
 });
 
 module.exports = router;
