@@ -57,6 +57,15 @@ const createPurchasingHistoryTableQuery = `CREATE TABLE IF NOT EXISTS purchasing
 	price money NOT NULL
 );`;
 
+const createOrdersTableQuery = `CREATE TABLE IF NOT EXISTS orders (
+	order_id SERIAL PRIMARY KEY,
+	user_id integer REFERENCES users (id) ON DELETE CASCADE,
+	product_id integer REFERENCES products(id) ON DELETE CASCADE,
+	total_purchased integer NOT NULL,
+	price money NOT NULL,
+	order_status varchar(15) CONTRAINT order_status_value_check CHECK (order_status = 'Pending' OR 'Completed')
+);`;
+
 module.exports = {
 	createUsersTableQuery,
 	createUserInfoTableQuery,
