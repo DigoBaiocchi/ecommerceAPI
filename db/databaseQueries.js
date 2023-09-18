@@ -190,6 +190,9 @@ const Database = {
     },
     async deleteProductFromCart(userId, productId) {
         return await query(`DELETE FROM cart WHERE user_id = $1 AND product_id = $2`, [userId, productId]);
+    },
+    async deleteAllProductsFromCart(userId) {
+        return await query(`DELETE FROM cart WHERE user_id = $1`, [userId]);
     }
 }
 

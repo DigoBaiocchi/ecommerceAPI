@@ -7,7 +7,6 @@ if (typeof localStorage === "undefined" || localStorage === null) {
     localStorage = new LocalStorage('./scratch');
 }
 
-
 localStorage.clear();
 
 let cart = [];
@@ -159,8 +158,36 @@ router.delete('/:userId/:productId', async (req, res, next) => {
         const deleteProductFromCart = await Database.deleteProductFromCart(userId, productId)
         return res.status(200).json(`Product id ${productId} delete from user ${userId} cart`)
     }
+});
 
-    
+router.delete('/:userId', async (req, res, next) => {
+    const userId = Number(req.params.userId);
+    let productAlreadyInCart;
+
+    const validUserId = await Database.selectUserById(userId);
+    if(!validUserId && userId !== 0) {
+        return res.status(400).json(`User id ${userId} was not found`);
+    }
+
+    // check if user is not logged in
+    if(!req.session.passport) {
+        if(!localStorage.getItem('cart')) {
+            return res.status(400).json(`No products in user's temp cart`);
+        }
+        
+        localStorage.clear();
+        return res.status(200).json({msg: `All products deleted from user ${userId} cart`, cart: localStorage.getItem('cart')});
+    } else {
+        productsInUserCart = await Database.selectCartProducts(userId);
+        if(!validUserId) {
+            return res.status(400).json(`User id ${userId} was not found`);
+        }
+        if(productsInUserCart.length === 0) {
+            return res.status(400).json(`No products in the user ${userId} cart`);
+        }
+        const deleteProductFromCart = await Database.deleteAllProductsFromCart(userId);
+        return res.status(200).json({msg: `All products deleted from user ${userId} cart`, cart: productsInUserCart});
+    }
 });
 
 module.exports = router;
