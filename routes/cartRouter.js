@@ -145,6 +145,7 @@ router.delete('/:userId/:productId', async (req, res, next) => {
             return res.status(400).json(`No product ${productId} in the cart`);
         }
         cart = cart.filter(product => product.productId !== productId);
+        localStorage.setItem('cart', JSON.stringify(cart));
         return res.status(200).json({msg: `Product ${productId} was deleted from user ${userId} cart`, cart: cart});
     }
 
