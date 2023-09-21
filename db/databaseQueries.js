@@ -201,6 +201,14 @@ const Database = {
     },
     async deleteAllProductsFromCart(userId) {
         return await query(`DELETE FROM cart WHERE user_id = $1`, [userId]);
+    },
+    async checkLastOrderNumber() {
+        const listOfOrders = await query(`SELECT order_number FROM orders`).then(results = results.rows);
+        if (listOfOrders.length === 0) {
+            return 0;
+        } else {
+            return Math.max(...listOfOrders.map(order => order.order_number));
+        }
     }
 }
 
