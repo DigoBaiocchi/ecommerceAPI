@@ -48,7 +48,7 @@ const createCheckoutTableQuery = `CREATE TABLE IF NOT EXISTS checkout (
 	product_id integer REFERENCES products(id) ON DELETE CASCADE,
 	total_units integer NOT NULL,
 	price money NOT NULL
-)`;
+);`;
 
 const createPurchasingHistoryTableQuery = `CREATE TABLE IF NOT EXISTS purchasing_history (
 	user_id integer REFERENCES users (id) ON DELETE CASCADE,
