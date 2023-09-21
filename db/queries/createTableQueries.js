@@ -43,19 +43,19 @@ const createCartTableQuery = `CREATE TABLE IF NOT EXISTS cart (
 	total_units integer NOT NULL
 );`;
 
-const createCheckoutTableQuery = `CREATE TABLE IF NOT EXISTS checkout (
-	user_id integer REFERENCES users (id) ON DELETE CASCADE,
-	product_id integer REFERENCES products(id) ON DELETE CASCADE,
-	total_units integer NOT NULL,
-	price money NOT NULL
-);`;
+// const createCheckoutTableQuery = `CREATE TABLE IF NOT EXISTS checkout (
+// 	user_id integer REFERENCES users (id) ON DELETE CASCADE,
+// 	product_id integer REFERENCES products(id) ON DELETE CASCADE,
+// 	total_units integer NOT NULL,
+// 	price money NOT NULL
+// );`;
 
-const createPurchasingHistoryTableQuery = `CREATE TABLE IF NOT EXISTS purchasing_history (
-	user_id integer REFERENCES users (id) ON DELETE CASCADE,
-	product_id integer REFERENCES products(id) ON DELETE CASCADE,
-	total_purchased integer NOT NULL,
-	price money NOT NULL
-);`;
+// const createPurchasingHistoryTableQuery = `CREATE TABLE IF NOT EXISTS purchasing_history (
+// 	user_id integer REFERENCES users (id) ON DELETE CASCADE,
+// 	product_id integer REFERENCES products(id) ON DELETE CASCADE,
+// 	total_purchased integer NOT NULL,
+// 	price money NOT NULL
+// );`;
 
 const createOrdersTableQuery = `CREATE TABLE IF NOT EXISTS orders (
 	order_id integer NOT NULL,
