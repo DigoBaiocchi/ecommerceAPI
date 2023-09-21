@@ -58,12 +58,12 @@ const createPurchasingHistoryTableQuery = `CREATE TABLE IF NOT EXISTS purchasing
 );`;
 
 const createOrdersTableQuery = `CREATE TABLE IF NOT EXISTS orders (
-	order_id SERIAL PRIMARY KEY,
+	order_id integer NOT NULL,
 	user_id integer REFERENCES users (id) ON DELETE CASCADE,
 	product_id integer REFERENCES products(id) ON DELETE CASCADE,
 	total_purchased integer NOT NULL,
 	price money NOT NULL,
-	order_status varchar(15) CONTRAINT order_status_value_check CHECK (order_status = 'Pending' OR 'Completed')
+	order_status varchar(15) CONSTRAINT order_status_value_check CHECK (order_status = 'Pending' OR 'Completed')
 );`;
 
 module.exports = {
@@ -74,5 +74,6 @@ module.exports = {
 	createCategoryProductTableQuery,
 	createCartTableQuery,
 	createPurchasingHistoryTableQuery,
-	createCheckoutTableQuery
+	createCheckoutTableQuery,
+	createOrdersTableQuery
 }
