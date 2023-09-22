@@ -63,7 +63,7 @@ const createOrdersTableQuery = `CREATE TABLE IF NOT EXISTS orders (
 	product_id integer REFERENCES products(id) ON DELETE CASCADE,
 	total_purchased integer NOT NULL,
 	price money NOT NULL,
-	order_status varchar(15) CONSTRAINT order_status_value_check CHECK (order_status = 'Pending' OR 'Completed')
+	order_status varchar(15) CONSTRAINT order_status_value_check CHECK (order_status = 'Pending' OR order_status = 'Completed')
 );`;
 
 module.exports = {
