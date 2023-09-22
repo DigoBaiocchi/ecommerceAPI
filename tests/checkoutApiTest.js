@@ -5,7 +5,7 @@ const data = {
     "userId": 6,
     "productId": 37,
     "totalUnits": 1,
-    "price": '$14.20'
+    "price": '$5.99'
 };
 
 const wrongUserIdData = {
@@ -17,16 +17,16 @@ const wrongUserIdData = {
 
 describe('GET /checkout', () => {
     const path = '/checkout';
-    const goodData = {'userId': data['userId']};
-    const badData = {'userId': wrongUserIdData['userId']};
+    const goodUserIdData = {'userId': data['userId']};
+    const badUserIdData = {'userId': wrongUserIdData['userId']};
     it('responses with 200 with all products in checkout', (done) => {
         request(app)
             .get(path)
-            .send(goodData)
+            .send(goodUserIdData)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
-            .expect(`"All products in the cart are loaded for user ${goodData['userId']}"`)
+            .expect(`"All products in the cart are loaded for user ${goodUserIdData['userId']}"`)
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -35,11 +35,11 @@ describe('GET /checkout', () => {
     it('responses with 400 when no products are found for user', (done) => {
         request(app)
             .get(path)
-            .send(badData)
+            .send(badUserIdData)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect(`"User ${badData['userId']} has no products in the cart"`)
+            .expect(`"User ${badUserIdData['userId']} has no products in the cart"`)
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -76,5 +76,3 @@ describe('POST /checkout', () => {
             })
     });
 });
-
-// describe('')
