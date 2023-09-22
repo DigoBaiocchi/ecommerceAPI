@@ -210,15 +210,15 @@ const Database = {
             return Math.max(...listOfOrders.map(order => order.order_number));
         }
     },
-    async getProductInfoWithPriceFromCart() {
+    async getProductInfoWithPriceFromCart(userId) {
         const query = `
             SELECT cart.user_id, cart.product_id, cart.total_units, products.price 
             FROM cart
             JOIN products
-                ON cart.product_id = products.id;
+                ON cart.product_id = products.id AND cart.user_id = $1;
         `;
 
-        const cartProductsInfo = await query(query).then(results = results.rows);
+        const cartProductsInfo = await query(query, [userId]).then(results = results.rows);
     }
 }
 
