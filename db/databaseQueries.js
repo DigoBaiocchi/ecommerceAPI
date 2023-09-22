@@ -209,6 +209,16 @@ const Database = {
         } else {
             return Math.max(...listOfOrders.map(order => order.order_number));
         }
+    },
+    async getProductInfoWithPriceFromCart() {
+        const query = `
+            SELECT cart.user_id, cart.product_id, cart.total_units, products.price 
+            FROM cart
+            JOIN products
+                ON cart.product_id = products.id;
+        `;
+
+        const cartProductsInfo = await query(query).then(results = results.rows);
     }
 }
 
