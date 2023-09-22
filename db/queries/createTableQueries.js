@@ -58,7 +58,7 @@ const createCartTableQuery = `CREATE TABLE IF NOT EXISTS cart (
 // );`;
 
 const createOrdersTableQuery = `CREATE TABLE IF NOT EXISTS orders (
-	order_id integer NOT NULL,
+	order_number integer NOT NULL,
 	user_id integer REFERENCES users (id) ON DELETE CASCADE,
 	product_id integer REFERENCES products(id) ON DELETE CASCADE,
 	total_purchased integer NOT NULL,
@@ -73,7 +73,7 @@ module.exports = {
 	createProductsTableQuery,
 	createCategoryProductTableQuery,
 	createCartTableQuery,
-	createPurchasingHistoryTableQuery,
-	createCheckoutTableQuery,
+	// createPurchasingHistoryTableQuery,
+	// createCheckoutTableQuery,
 	createOrdersTableQuery
 }
