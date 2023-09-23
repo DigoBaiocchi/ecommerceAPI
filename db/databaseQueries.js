@@ -219,6 +219,11 @@ const Database = {
         `;
         
         return await query(selectProductFromCartQuery, [userId]).then(results => results.rows);
+    },
+    async createOrder(orderNumber, userId, productId, totalPurchased, price, orderStatus) {
+        return await query(
+            `INSERT INTO orders (order_number, user_id, product_id, total_purchased, price, order_status) VALUES ($1, $2, $3, $4, $5, $6)`, 
+            [orderNumber, userId, productId, totalPurchased, price, orderStatus]);
     }
 }
 
