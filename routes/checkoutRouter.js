@@ -2,12 +2,15 @@ const express = require('express');
 const router = express.Router();
 const { Database } = require('../db/databaseQueries');
 
-router.get('/', (req, res, next) => {
+router.get('/', async (req, res, next) => {
     const { userId } = req.body;
-    const validUserId = userId === 6;
+    const validUserId = await Database.selectUserById(userId);
+    
     if(!validUserId) {
         return res.status(400).json(`User ${userId} has no products in the cart`)
     }
+
+    const cartData = await Database.getProductInfoWithPriceFromCart(userId);
     return res.status(200).json(`All products in the cart are loaded for user ${userId}`);
 });
 
