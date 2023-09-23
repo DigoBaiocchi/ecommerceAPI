@@ -211,14 +211,14 @@ const Database = {
         }
     },
     async getProductInfoWithPriceFromCart(userId) {
-        const query = `
+        const selectProductFromCartQuery = `
             SELECT cart.user_id, cart.product_id, cart.total_units, products.price 
             FROM cart
             JOIN products
                 ON cart.product_id = products.id AND cart.user_id = $1;
         `;
-
-        const cartProductsInfo = await query(query, [userId]).then(results = results.rows);
+        
+        return await query(selectProductFromCartQuery, [userId]).then(results => results.rows);
     }
 }
 
