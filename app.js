@@ -13,6 +13,7 @@ const productsRouter = require('./routes/productsRouter');
 const userRouter = require('./routes/userRouter');
 const cartRouter = require('./routes/cartRouter');
 const checkoutRouter = require('./routes/checkoutRouter');
+const orderRouter = require('./routes/ordersRouter');
 
 app.use(bodyParser.json());
 app.use(
@@ -46,6 +47,7 @@ app.use('/products', productsRouter);
 app.use('/user', userRouter);
 app.use('/cart', cartRouter);
 app.use('/checkout', checkoutRouter);
+app.use('/orders', orderRouter)
 
 app.get('/', (req, res, next) => {
     res.send({info: `Ecommerce app is running!`});
