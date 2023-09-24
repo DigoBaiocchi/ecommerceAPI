@@ -75,4 +75,17 @@ describe('POST /checkout', () => {
                 done();
             })
     });
+    it('responses with 400 when user is not logged in', (done) => {
+        request(app)
+            .post(path)
+            .send(wrongUserIdData)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect("`User is not logged in`")
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
 });
