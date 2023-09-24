@@ -15,18 +15,31 @@ router.get('/', async (req, res, next) => {
 });
 
 router.post('/', async (req, res, next) => {
-    const { userId, productId, totalUnits, price } = req.body;
-    
-    const validUserId = userId === 6;
+    const lastOrderNumber = await Database.checkLastOrderNumber();
+
+    if(!req.session.passport) {
+        return res.status(400).json(`User is not logged in`);
+    }
+
+    const userId = req.session.passport.user.userId;
+    const validUserId = await Database.selectUserById(userId);
+
     if (!validUserId) {
         return res.status(400).json(`User id ${userId} was not found`);
     }
 
     const cartData = await Database.getProductInfoWithPriceFromCart(userId);
 
+    if(cartData.length === 0) {
+        return res.status(400).json(`User ${userId} has no products in their cart`);
+    }
+
     cartData.forEach(async cart => {
-        const createOrder = await Database.createOrder(1, userId, productId, totalUnits, price, 'Pending');
-    })
+        const createOrder = await Database.createOrder(lastOrderNumber + 1, cart.user_id, cart.product_id, cart.total_units, cart.price, 'Pending');
+    });
+
+    const clearUserCart = await Database.deleteAllProductsFromCart(userId);
+
     return res.status(201).json(`Order was create with products from id ${userId}'s cart`);
 });
 
