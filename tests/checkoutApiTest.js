@@ -82,7 +82,7 @@ describe('POST /checkout', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect("`User is not logged in`")
+            .expect(`"User is not logged in"`)
             .end((err) => {
                 if (err) return done(err);
                 done();
