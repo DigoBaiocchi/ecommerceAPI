@@ -95,6 +95,38 @@ describe('PUT /orders/userId/orderId', () => {
     });
 });
 
+describe('DELETE /orders/:userId', () => {
+    const userId = 6;
+    const path = `/orders/${userId}`;
+    const badUserId = 1;
+    const badUserPath = `/orders/${badUserId}`;
+
+    it('responses with 200 when all orders were delete from a user', (done) => {
+        request(app)
+            .delete(path)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .expect(`"All user's ${userId} orders were deleted"`)
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+    it('responses with 400 when user id was not found', (done) => {
+        request(app)
+            .delete(badUserPath)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect(`"User id ${badUserId} was not found"`)
+            .end((err) => {
+                if(err) return done(err);
+                done();
+            })
+    });
+});
+
 describe('DELETE /orders/:userId/:orderId', () => {
     const userId = 6;
     const orderId = 1;
@@ -142,34 +174,3 @@ describe('DELETE /orders/:userId/:orderId', () => {
     });
 });
 
-describe('DELETE /orders/:userId', () => {
-    const userId = 6;
-    const path = `/orders/${userId}`;
-    const badUserId = 1;
-    const badUserPath = `/orders/${badUserId}`;
-
-    it('responses with 200 when all orders were delete from a user', (done) => {
-        request(app)
-            .delete(path)
-            .set('accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .expect(`"All user's ${userId} orders were deleted"`)
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            })
-    });
-    it('responses with 400 when user id was not found', (done) => {
-        request(app)
-            .delete(badUserPath)
-            .set('accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(400)
-            .expect(`"User id ${badUserId} was not found"`)
-            .end((err) => {
-                if(err) return done(err);
-                done();
-            })
-    });
-});
