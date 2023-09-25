@@ -48,6 +48,53 @@ describe('GET /orders/:userId', () => {
     });
 });
 
+describe('GET /orders/userId/orderId', () => {
+    const userId = 6;
+    const orderId = 1;
+    const path = `/orders/${userId}/${orderId}`;
+    const badUserId = 1;
+    const badOrderId = 1000;
+    const badUserPath = `/orders/${badUserId}/${orderId}`;
+    const badOrderPath = `/orders/${userId}/${badOrderId}`;
+
+    it('responses with 200 when order has been updated', (done) => {
+        request(app)
+            .get(path)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .expect(`"Order ${orderId} has been selected for user ${userId}"`)
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+    it('responses with 400 when user id was not found', (done) => {
+        request(app)
+            .get(badUserPath)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect(`"User id ${badUserId} was not found"`)
+            .end((err) => {
+                if(err) return done(err);
+                done();
+            })
+    });
+    it('responses with 400 when order number was not found', (done) => {
+        request(app)
+            .get(badOrderPath)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect(`"Order number ${badOrderId} was not found"`)
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+});
+
 describe('PUT /orders/userId/orderId', () => {
     const userId = 6;
     const orderId = 1;
