@@ -224,6 +224,26 @@ const Database = {
         return await query(
             `INSERT INTO orders (order_number, user_id, product_id, total_purchased, price, order_status) VALUES ($1, $2, $3, $4, $5, $6)`, 
             [orderNumber, userId, productId, totalPurchased, price, orderStatus]);
+    },
+    async getAllOrders() {
+        return await query(`SELECT * FROM orders`).then(results => results.rows);
+    },
+    async getAllUserOrders(userId) {
+        return await query(`SELECT * FROM orders WHERE user_id = $1`, [userId]).then(results => results.rows);
+    },
+    async getOrderData(userId, orderId) {
+        return await query(`SELECT * FROM orders WHERE user_id = $1 AND order_number = $2`, [userId, orderId]).then(results => results.rows);
+    },
+    async updateOrderStatus(orderNumber, userId, orderStatus) {
+        return await query(
+            `UPDATE orders SET order_status = $3 WHERE user_id = $2 AND order_number = $1`, 
+            [orderNumber, userId, orderStatus]);
+    },
+    async deleteOrder(orderNumber, userId) {
+        return await query(`DELETE FROM orders WHERE order_number = $1 AND user_id = $2`, [orderNumber, userId]);
+    },
+    async deleteAllUserOrders(userId) {
+        return await query(`DELETE FROM orders WHERE user_id = $1`, [userId]);
     }
 }
 
