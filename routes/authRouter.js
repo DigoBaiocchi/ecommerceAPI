@@ -6,6 +6,21 @@ const { query } = require('../db/index');
 const passport = require('passport');
 const { Database } = require('../db/databaseQueries');
 
+/**
+ * @swagger
+ * /auth/login:
+ *      get:
+ *          tag:
+ *              - Login
+ *          description: Request email and password to log user in
+ *          produces:
+ *              - application/json
+ *          responses:
+ *              200:
+ *                  description: Receives an email and a password
+ * 
+ **/
+
 router.get('/login', (req, res, next) => {
     return res.status(200).json({msg: 'Enter your email and password'});
 });

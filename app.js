@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 require('./strategies/local');
 const session = require('express-session');
+const swaggerJSDoc = require('swagger-jsdoc');
 const port = 3000;
 
 const registerRouter = require('./routes/registerRouter');
@@ -14,6 +15,22 @@ const userRouter = require('./routes/userRouter');
 const cartRouter = require('./routes/cartRouter');
 const checkoutRouter = require('./routes/checkoutRouter');
 const orderRouter = require('./routes/ordersRouter');
+
+const options = {
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'ecommerce API',
+            version: '1.0.0',
+            description: 'Ecommerce rest API with openAPI'
+        },
+        host: 'localhost:3000',
+        basePath: '/',
+    },
+    apis: ['./routes*.js'],
+};
+
+const openapiSpecification = swaggerJSDoc(options);
 
 app.use(bodyParser.json());
 app.use(
@@ -47,7 +64,12 @@ app.use('/products', productsRouter);
 app.use('/user', userRouter);
 app.use('/cart', cartRouter);
 app.use('/checkout', checkoutRouter);
-app.use('/orders', orderRouter)
+app.use('/orders', orderRouter);
+
+app.get('/swagger.json', (req, res, next) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(openapiSpecification)
+});
 
 app.get('/', (req, res, next) => {
     res.send({info: `Ecommerce app is running!`});
