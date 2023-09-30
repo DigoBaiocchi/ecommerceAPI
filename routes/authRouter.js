@@ -8,6 +8,19 @@ const { Database } = require('../db/databaseQueries');
 
 /**
  * @swagger
+ * definitions:
+ *   User:
+ *     properties:
+ *       email:
+ *         type: string
+ *       userName:
+ *         type: string
+ *       password:
+ *         type: integer
+ */
+
+/**
+ * @swagger
  * /auth/login:
  *      get:
  *          tag:
@@ -18,6 +31,8 @@ const { Database } = require('../db/databaseQueries');
  *          responses:
  *              200:
  *                  description: Receives an email and a password
+ *                  schema:
+ *                      $ref: '#definitions/User'
  */
 
 router.get('/login', (req, res, next) => {
