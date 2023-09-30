@@ -39,6 +39,22 @@ router.get('/login', (req, res, next) => {
     return res.status(200).json({msg: 'Enter your email and password'});
 });
 
+/**
+ * @swagger
+ * /auth/login:
+ *      post:
+ *          tag:
+ *              - Login
+ *          description: Get user email and password
+ *          produces:
+ *              - application/json
+ *          responses:
+ *              200:
+ *                  description: Use passport to authenticate email and password
+ *                  schema:
+ *                      $ref: '#definitions/User'
+ */
+
 router.post(
     '/login', 
     passport.authenticate('local', 
