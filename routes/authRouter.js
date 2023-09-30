@@ -84,13 +84,6 @@ router.post(
     return res.status(200).json(`User ${req.user.username} is logged in`);
 });
 
-router.get('/addToCart', async (req, res, next) => {
-    for (let i = 0; i < req.session.cart; i++) {
-            const addProductToCartTable = await Database.addProductToCart(req.user.id, req.session.cart[i].productId, req.session.cart[i].quantity);
-        }
-        req.session.cart = [];
-});
-
 router.get('/logout', (req, res, next) => {
     req.logout((err) => {
         if (err) return next(err);
