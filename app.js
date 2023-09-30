@@ -5,6 +5,7 @@ const passport = require('passport');
 require('./strategies/local');
 const session = require('express-session');
 const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerUI = require('swagger-ui-express');
 const port = 3000;
 
 const registerRouter = require('./routes/registerRouter');
@@ -18,7 +19,7 @@ const orderRouter = require('./routes/ordersRouter');
 
 const options = {
     definition: {
-        openapi: '3.0.0',
+        openapi: '3.1.0',
         info: {
             title: 'ecommerce API',
             version: '1.0.0',
@@ -26,11 +27,17 @@ const options = {
         },
         host: 'localhost:3000',
         basePath: '/',
+        servers:[
+            {
+                url: `http://localhost:${port}/`
+            }
+        ]
     },
-    apis: ['./routes*.js'],
+    apis: ['./routes/*.js'],
 };
 
 const openapiSpecification = swaggerJSDoc(options);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(openapiSpecification));
 
 app.use(bodyParser.json());
 app.use(

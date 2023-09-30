@@ -18,8 +18,7 @@ const { Database } = require('../db/databaseQueries');
  *          responses:
  *              200:
  *                  description: Receives an email and a password
- * 
- **/
+ */
 
 router.get('/login', (req, res, next) => {
     return res.status(200).json({msg: 'Enter your email and password'});
