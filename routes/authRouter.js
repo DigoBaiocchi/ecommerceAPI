@@ -84,6 +84,22 @@ router.post(
     return res.status(200).json(`User ${req.user.username} is logged in`);
 });
 
+/**
+ * @swagger
+ * /auth/logout:
+ *      get:
+ *          tag:
+ *              - Login
+ *          description: Logs user out
+ *          produces:
+ *              - application/json
+ *          responses:
+ *              200:
+ *                  description: Logs user out
+ *                  schema:
+ *                      $ref: '#definitions/User'
+ */
+
 router.get('/logout', (req, res, next) => {
     req.logout((err) => {
         if (err) return next(err);
