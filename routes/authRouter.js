@@ -16,7 +16,7 @@ const { Database } = require('../db/databaseQueries');
  *       userName:
  *         type: string
  *       password:
- *         type: integer
+ *         type: string
  */
 
 /**
