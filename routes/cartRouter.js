@@ -11,6 +11,28 @@ localStorage.clear();
 
 let cart = [];
 
+
+
+/**
+ * @swagger
+ * /cart:
+ *      post:
+ *          tags:
+ *              - Cart
+ *          description: Logs user out
+ *          produces:
+ *              - application/json
+ *          responses:
+ *              200:
+ *                  description: Logs user out
+ *                  schema:
+ *                      $ref: '#definitions/Product'
+ *              400:
+ *                  description: No product id was found
+ *                  schema:
+ *                      $ref: '#definitions/Product/properties/productId'
+ */
+
 router.post('/', async (req, res, next) => {
     const { productId, totalUnits } = req.body;
     let userId = 0;

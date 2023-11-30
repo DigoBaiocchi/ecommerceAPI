@@ -8,31 +8,37 @@ const { Database } = require('../db/databaseQueries');
 
 /**
  * @swagger
- * definitions:
- *   User:
- *     properties:
- *       email:
- *         type: string
- *       userName:
- *         type: string
- *       password:
- *         type: string
+ * components:
+ *      schemas:
+ *          User:
+ *              type: object
+ *              properties:
+ *                  email:
+ *                      type: string
+ *                  userName:
+ *                      type: string
+ *                  password:
+ *                      type: string
  */
 
 /**
  * @swagger
  * /auth/login:
  *      get:
- *          tag:
+ *          tags:
  *              - Login
  *          description: Request email and password to log user in
+ *          requestBody:
+ *              required: true
+ *              contents:
+ *                  application/json
  *          produces:
  *              - application/json
  *          responses:
  *              200:
  *                  description: Receives an email and a password
- *                  schema:
- *                      $ref: '#definitions/User'
+ *                  schemas:
+ *                      $ref: '#/components/schemas/User'
  */
 
 router.get('/login', (req, res, next) => {
@@ -43,7 +49,7 @@ router.get('/login', (req, res, next) => {
  * @swagger
  * /auth/login:
  *      post:
- *          tag:
+ *          tags:
  *              - Login
  *          description: Get user email and password
  *          produces:
@@ -88,7 +94,7 @@ router.post(
  * @swagger
  * /auth/logout:
  *      get:
- *          tag:
+ *          tags:
  *              - Login
  *          description: Logs user out
  *          produces:
