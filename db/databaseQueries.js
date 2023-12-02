@@ -8,8 +8,6 @@ const {
 	createProductsTableQuery,
 	createCategoryProductTableQuery,
 	createCartTableQuery,
-	createPurchasingHistoryTableQuery,
-    createCheckoutTableQuery,
     createOrdersTableQuery
 } = require('./queries/createTableQueries');
 const { query } = require('./index');
@@ -65,20 +63,6 @@ const Database = {
                 console.log('Orders Table has already been created!');
             }
         });
-        // const createPurchasingHistoryTable = await query(createPurchasingHistoryTableQuery, (data) => {
-        //     if(data) {
-        //         console.log('Purchasing_History Table has been creacted!');    
-        //     } else {
-        //         console.log('Purchasing_History Table has already been created!');
-        //     }
-        // });
-        // const createCheckoutTable = await query(createCheckoutTableQuery, (data) => {
-        //     if(data) {
-        //         console.log('Checkout Table has been creacted!');    
-        //     } else {
-        //         console.log('Checkout Table has already been created!');
-        //     }
-        // });
     },
     async selectUserByEmail(email) {
         return await query('SELECT * FROM users WHERE email = $1', [email]).then(results => results.rows[0]);
