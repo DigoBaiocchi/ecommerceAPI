@@ -37,22 +37,22 @@ router.post('/', async (req, res, next) => {
     const emailAlreadyExists = usersDb.some(data => data.email === email);
     
     if(!username || !email) {
-        return res.status(400).json('No username or email provided');
+        return res.status(400).json({msg: 'No username or email provided'});
     }
     if (usernameAlreadyExists) {
-        return res.status(400).json('Username already exists');
+        return res.status(400).json({msg: 'Username already exists'});
     }
     if (emailAlreadyExists) {
-        return res.status(400).json('Email already exists');
+        return res.status(400).json({msg: 'Email already exists'});
     }
     if (!password) {
-        return res.status(400).json('No password provided');
+        return res.status(400).json({msg: 'No password provided'});
     }
     if (username && email && password) {
         const addUser = await Database.addUser(username, email, hashedPassword);
-        return res.status(201).json('User successfully created');
+        return res.status(201).json({msg: 'User successfully created'});
     } 
-    return res.status(400).json('User not created');
+    return res.status(400).json({msg: 'User not created'});
 });
 
 router.get('/:email', async (req, res, next) => {
@@ -60,9 +60,9 @@ router.get('/:email', async (req, res, next) => {
     const { email } = req.params;
     const emailFound = usersDb.some(data => data.email === email);
     if (emailFound) {
-        return res.status(200).json(`User found with email ${email}`);
+        return res.status(200).json({msg: `User found with email ${email}`});
     }
-    return res.status(400).json(`User not found with email ${email}`);
+    return res.status(400).json({msg: `User not found with email ${email}`});
 });
 
 router.put('/:email', async (req, res, next) => {
