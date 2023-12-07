@@ -17,16 +17,16 @@ router.post('/', async (req, res, next) => {
     } = req.body;
     
     if (!firstName || !lastName || !address1 || !city || !province || !postalCode || !creditCard || !expDate) {
-        return res.status(400).json('Missing required information');
+        return res.status(400).json({msg: 'Missing required information'});
     }
 
     const validUserId = userId === 6;
     if (!validUserId) {
-        return res.status(400).json(`User id not found`);
+        return res.status(400).json({msg: `User id not found`});
     }
     
     const addUserInfo = await Database.addUserInfo(userId, firstName, lastName, address1, address2, city, province, postalCode, creditCard, expDate);
-    return res.status(201).json(`User info has been added for user ${userId}`);
+    return res.status(201).json({msg: `User info has been added for user ${userId}`});
 });
 
 router.get('/:id', async (req, res, next) => {
@@ -34,10 +34,10 @@ router.get('/:id', async (req, res, next) => {
     const validUserId = Number(id) === 6;
     
     if (!validUserId) {
-        return res.status(400).json(`User ${id} was not found`);
+        return res.status(400).json({msg: `User ${id} was not found`});
     }
     const selectUserInfo = await Database.selectUserInfo(id);
-    return res.status(200).json(`User ${id} info was loaded`);
+    return res.status(200).json({msg: `User ${id} info was loaded`, data: selectUserInfo});
 });
 
 router.put('/update-info', async (req, res, next) => {
@@ -55,21 +55,21 @@ router.put('/update-info', async (req, res, next) => {
     } = req.body;
 
     if (!firstName || !lastName || !address1 || !city || !province || !postalCode || !creditCard || !expDate) {
-        return res.status(400).json('Missing required information');
+        return res.status(400).json({msg: 'Missing required information'});
     }
 
     const validUserId = await Database.selectUserById(userId);
     if(!validUserId) {
-        return res.status(400).json(`No user ${userId} was found`);
+        return res.status(400).json({msg: `No user ${userId} was found`});
     }
     
     const checkIfUserInfoAlreadyExists = await Database.selectUserInfo(userId);
     
     if(!checkIfUserInfoAlreadyExists) {
-        return res.status(400).json(`No user info for user ${userId}`);
+        return res.status(400).json({msg: `No user info for user ${userId}`});
     }
     const updateUserInfo = await Database.updateUserInfo(userId, firstName, lastName, address1, address2, city, province, postalCode, creditCard, expDate);
-    return res.status(200).json(`Data has been updated sucessfully for user ${userId}`);
+    return res.status(200).json({msg: `Data has been updated sucessfully for user ${userId}`});
 });
 
 router.delete('/delete-user/:id', async (req, res, next) => {
@@ -77,11 +77,11 @@ router.delete('/delete-user/:id', async (req, res, next) => {
 
     const validUserId = Number(id) === 6;
     if(!validUserId) {
-        return res.status(400).json(`User id ${id} was not found`);
+        return res.status(400).json({msg: `User id ${id} was not found`});
     }
 
     const deleteUserInfo = await Database.deleteUserInfo(id);
-    return res.status(200).json(`User id ${id} deleted`);
+    return res.status(200).json({msg: `User id ${id} deleted`});
 });
 
 module.exports = router;
