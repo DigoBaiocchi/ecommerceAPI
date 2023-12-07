@@ -7,31 +7,31 @@ router.get('/', async (req, res, next) => {
     const validUserId = await Database.selectUserById(userId);
     
     if(!validUserId) {
-        return res.status(400).json(`User ${userId} has no products in the cart`)
+        return res.status(400).json({msg: `User ${userId} has no products in the cart`})
     }
 
     const cartData = await Database.getProductInfoWithPriceFromCart(userId);
-    return res.status(200).json(`All products in the cart are loaded for user ${userId}`);
+    return res.status(200).json({msg: `All products in the cart are loaded for user ${userId}`, data: cartData});
 });
 
 router.post('/', async (req, res, next) => {
     const lastOrderNumber = await Database.checkLastOrderNumber();
 
     if(!req.session.passport) {
-        return res.status(400).json(`User is not logged in`);
+        return res.status(400).json({msg: `User is not logged in`});
     }
 
     const userId = req.session.passport.user.userId;
     const validUserId = await Database.selectUserById(userId);
 
     if (!validUserId) {
-        return res.status(400).json(`User id ${userId} was not found`);
+        return res.status(400).json({msg: `User id ${userId} was not found`});
     }
 
     const cartData = await Database.getProductInfoWithPriceFromCart(userId);
 
     if(cartData.length === 0) {
-        return res.status(400).json(`User ${userId} has no products in their cart`);
+        return res.status(400).json({msg: `User ${userId} has no products in their cart`});
     }
 
     cartData.forEach(async cart => {
@@ -40,7 +40,7 @@ router.post('/', async (req, res, next) => {
 
     const clearUserCart = await Database.deleteAllProductsFromCart(userId);
 
-    return res.status(201).json(`Order was create with products from id ${userId}'s cart`);
+    return res.status(201).json({msg: `Order was create with products from id ${userId}'s cart`});
 });
 
 module.exports = router;
