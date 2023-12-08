@@ -128,34 +128,78 @@ router.post('/', async (req, res, next) => {
     }
 });
 
+/**
+ * @swagger
+ * /cart:
+ *      get:
+ *          tags:
+ *              - Cart
+ *          description: Get user's cart
+ *          produces:
+ *              - application/json
+ *          responses:
+ *              200:
+ *                  description: Cart selected for user
+ *                  schema:
+ *                      $ref: '#definitions/Product'
+ *              400:
+ *                  description: User was not found
+ *                  schema:
+ *                      $ref: '#definitions/Product/properties/productId'
+ */
+
 router.get('/', async (req, res, next) => {
     const { userId } = req.body;
     const validUserId = await Database.selectUserById(userId);
-
+    
     if(!validUserId) {
         return res.status(400).json(`User ${userId} was not found`);
     }
-
+    
     const userCartData = await Database.selectCartProducts(userId);
-
+    
     return res.status(200).json({msg: `Cart selected for user ${userId}`, cart: userCartData});
 });
+
+/**
+ * @swagger
+ * /cart:
+ *      delete:
+ *          tags:
+ *              - Cart/:userId/:productId
+ *          description: Delete product from cart
+ *          produces:
+ *              - application/json
+ *          responses:
+ *              200:
+ *                  description: Product was deleted from user userId cart
+ *                  schema:
+ *                      $ref: '#definitions/Product'
+ *              400:
+ *                  description: User id was not found
+ *                  schema:
+ *                      $ref: '#definitions/Product/properties/productId'
+ *              401:
+ *                  description: Product id was not found
+ *                  schema:
+ *                      $ref: '#definitions/Product/properties/productId'
+ */
 
 router.delete('/:userId/:productId', async (req, res, next) => {
     const userId = Number(req.params.userId);
     const productId = Number(req.params.productId);
     let productAlreadyInCart;
-
+    
     const validUserId = await Database.selectUserById(userId);
     if(!validUserId && userId !== 0) {
         return res.status(400).json(`User id ${userId} was not found`);
     }
-
+    
     const validProductId = await Database.checkIfProductAlreadyExists(productId);
     if(!validProductId) {
-        return res.status(400).json(`Product id ${productId} was not found`);
+        return res.status(401).json(`Product id ${productId} was not found`);
     }
-
+    
     // check if user is not logged in
     if(!req.session.passport) {
         if(!localStorage.getItem('cart')) {
@@ -178,9 +222,33 @@ router.delete('/:userId/:productId', async (req, res, next) => {
             return res.status(400).json(`No product ${productId} in the cart`);
         }
         const deleteProductFromCart = await Database.deleteProductFromCart(userId, productId)
-        return res.status(200).json(`Product id ${productId} delete from user ${userId} cart`)
+        return res.status(200).json(`Product id ${productId} was deleted from user ${userId} cart`)
     }
 });
+
+/**
+ * @swagger
+ * /cart:userId/:
+ *      delete:
+ *          tags:
+ *              - Cart/:userId/
+ *          description: Delete user's cart
+ *          produces:
+ *              - application/json
+ *          responses:
+ *              200:
+ *                  description: All products deleted from user's' cart
+ *                  schema:
+ *                      $ref: '#definitions/Product'
+ *              400:
+ *                  description: User id was not found
+ *                  schema:
+ *                      $ref: '#definitions/Product/properties/productId'
+ *              401:
+ *                  description: Product id was not found
+ *                  schema:
+ *                      $ref: '#definitions/Product/properties/productId'
+ */
 
 router.delete('/:userId', async (req, res, next) => {
     const userId = Number(req.params.userId);
@@ -194,7 +262,7 @@ router.delete('/:userId', async (req, res, next) => {
     // check if user is not logged in
     if(!req.session.passport) {
         if(!localStorage.getItem('cart')) {
-            return res.status(400).json(`No products in user's temp cart`);
+            return res.status(401).json(`No products in user's temp cart`);
         }
         
         localStorage.clear();
