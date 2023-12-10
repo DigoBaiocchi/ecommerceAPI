@@ -2,9 +2,43 @@ const express = require('express');
 const router = express.Router();
 const { Database } = require('../db/databaseQueries');
 
-// mock database
-const categories = [{id: 1, name: 'Pork'}];
-
+/**
+ * @swagger
+ * components:
+ *      schemas:
+ *          Category_Object:
+ *              type: object
+ *              properties:
+ *                  id:
+ *                      type: integer
+ *                      example: 10
+ *                  name:
+ *                      type: string
+ *                      example: Electronics
+ *          All_Categories:
+ *              type: object
+ *              properties:
+ *                  msg:
+ *                      type: string
+ *                      example: All categories
+ *                  data:
+ *                      type: array
+ *                      items:
+ *                          $ref: '#/components/schemas/Category_Object'
+ *              xml:
+ *                  name: category
+ *          Category:
+ *              type: object
+ *              properties:
+ *                  msg:
+ *                      type: string
+ *                      example: Category selected
+ *                  data:
+ *                      $ref: '#/components/schemas/Category_Object'
+ *              xml:
+ *                  name: category
+ */
+                      
 /**
  * @swagger
  * /categories:
@@ -15,14 +49,17 @@ const categories = [{id: 1, name: 'Pork'}];
  *          produces:
  *              - application/json
  *          responses:
- *              200:
+ *              '200':
  *                  description: All categories are loaded
- *                  schema:
- *                      $ref: '#definitions/Category'
- *              400:
+ *                  content:
+ *                      application/json:
+ *                        schema:
+ *                          $ref: '#/components/schemas/All_Categories'
+ *                      application/xml:
+ *                        schema:
+ *                          $ref: '#/components/schemas/All_Categories'
+ *              '400':
  *                  description: No categories found
- *                  schema:
- *                      $ref: '#definitions/Category'
  */
 
 router.get('/', async (req, res, next) => {
@@ -36,31 +73,39 @@ router.get('/', async (req, res, next) => {
 
 /**
  * @swagger
- * /categories/:id:
+ * /categories/:categoryId:
  *      get:
  *          tags:
  *              - Category
  *          description: Get category by id
+ *          parameters:
+ *              - name: categoryId
+ *                in: path
+ *                description: ID of category to return
+ *                required: true
  *          produces:
  *              - application/json
  *          responses:
  *              200:
  *                  description: Category id selected
- *                  schema:
- *                      $ref: '#definitions/Category'
+ *                  content:
+ *                      application/json:
+ *                        schema:
+ *                          $ref: '#/components/schemas/Category'
+ *                      application/xml:
+ *                        schema:
+ *                          $ref: '#/components/schemas/Category'
  *              400:
  *                  description: Category id not found
- *                  schema:
- *                      $ref: '#definitions/Category'
  */
 
-router.get('/:id', async (req, res, next) => {
-    const { id } = req.params;
-    const category = await Database.getCategoryById(id);
+router.get('/:categoryId', async (req, res, next) => {
+    const { categoryId } = req.params;
+    const category = await Database.getCategoryById(categoryId);
     if (!category) {
-        return res.status(400).json({msg: `Category ${id} not found`});
+        return res.status(400).json({msg: `Category ${categoryId} not found`});
     }
-    return res.status(200).json({msg: `Category ${id} selected`, data: category});
+    return res.status(200).json({msg: `Category ${categoryId} selected`, data: category});
 });
 
 /**
@@ -70,21 +115,22 @@ router.get('/:id', async (req, res, next) => {
  *          tags:
  *              - Category
  *          description: Add new category
- *          produces:
- *              - application/json
+ *          requestBody:
+ *              description: Created category object
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Category_Object'
+ *                  application/xml:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Category_Object'
  *          responses:
  *              201:
  *                  description: Category name successfully created
- *                  schema:
- *                      $ref: '#definitions/Category'
  *              400:
  *                  description: Category name not provided
- *                  schema:
- *                      $ref: '#definitions/Category'
  *              401:
  *                  description: Category already exists
- *                  schema:
- *                      $ref: '#definitions/Category'
  */
 
 router.post('/add-category', async (req, res, next) => {
@@ -108,21 +154,22 @@ router.post('/add-category', async (req, res, next) => {
  *          tags:
  *              - Category
  *          description: Edit category
- *          produces:
- *              - application/json
+ *          requestBody:
+ *              description: Updated category object
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Category_Object'
+ *                  application/xml:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Category_Object'
  *          responses:
  *              200:
  *                  description: Category id has been updated to name
- *                  schema:
- *                      $ref: '#definitions/Category'
  *              400:
  *                  description: Name not provided for category
- *                  schema:
- *                      $ref: '#definitions/Category'
  *              401:
  *                  description: Category id does not exist
- *                  schema:
- *                      $ref: '#definitions/Category'
  */
 
 router.put('/edit-category', async (req, res, next) => {
@@ -143,32 +190,31 @@ router.put('/edit-category', async (req, res, next) => {
 
 /**
  * @swagger
- * /categories/delete-category/:name:
+ * /categories/delete-category/:categoryName:
  *      delete:
  *          tags:
  *              - Category
  *          description: Delete category
- *          produces:
- *              - application/json
+ *          parameters:
+ *              - name: categoryId
+ *                in: path
+ *                description: ID of category to return
+ *                required: true
  *          responses:
  *              200:
  *                  description: Category has been deleted
- *                  schema:
- *                      $ref: '#definitions/Category'
  *              400:
  *                  description: Category does not exist
- *                  schema:
- *                      $ref: '#definitions/Category'
  */
 
-router.delete('/delete-category/:name', async (req, res, next) => {
-    const { name } = req.params;
+router.delete('/delete-category/:categoryName', async (req, res, next) => {
+    const { categoryName } = req.params;
     const categories = await Database.getAllCategories();
-    const existentCategory = categories.some(category => category.name === name);
+    const existentCategory = categories.some(category => category.name === categoryName);
     if (!existentCategory) {
         return res.status(400).json({msg: "Category does not exist"});
     }
-    const deleteCategory = await Database.deleteCategory(name);
+    const deleteCategory = await Database.deleteCategory(categoryName);
     return res.status(200).json({msg: "Category has been deleted"});
 });
 
