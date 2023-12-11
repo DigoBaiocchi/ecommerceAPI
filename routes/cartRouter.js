@@ -163,10 +163,10 @@ router.get('/', async (req, res, next) => {
 
 /**
  * @swagger
- * /cart:
+ * /cart/:userId/:productId:
  *      delete:
  *          tags:
- *              - Cart/:userId/:productId
+ *              - Cart
  *          description: Delete product from cart
  *          produces:
  *              - application/json
@@ -231,7 +231,7 @@ router.delete('/:userId/:productId', async (req, res, next) => {
  * /cart:userId/:
  *      delete:
  *          tags:
- *              - Cart/:userId/
+ *              - Cart
  *          description: Delete user's cart
  *          produces:
  *              - application/json
