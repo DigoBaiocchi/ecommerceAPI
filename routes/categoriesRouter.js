@@ -196,9 +196,9 @@ router.put('/edit-category', async (req, res, next) => {
  *              - Category
  *          description: Delete category
  *          parameters:
- *              - name: categoryId
+ *              - name: categoryName
  *                in: path
- *                description: ID of category to return
+ *                description: name of category to be deleted
  *                required: true
  *          responses:
  *              200:

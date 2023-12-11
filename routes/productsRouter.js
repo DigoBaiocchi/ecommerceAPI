@@ -4,6 +4,55 @@ const { Database } = require('../db/databaseQueries');
 
 /**
  * @swagger
+ * components:
+ *      schemas:
+ *          Product_Object:
+ *              type: object
+ *              properties:
+ *                  categoryId:
+ *                      type: integer
+ *                      example: 5
+ *                  id:
+ *                      type: integer
+ *                      example: 10
+ *                  name:
+ *                      type: string
+ *                      example: Cellphone
+ *                  quantity:
+ *                      type: integer
+ *                      example: 300
+ *                  description:
+ *                      type: string
+ *                      example: This is a cellphone
+ *                  price:
+ *                      type: money
+ *                      example: $500.99
+ *          All_Products:
+ *              type: object
+ *              properties:
+ *                  msg:
+ *                      type: string
+ *                      example: All products
+ *                  data:
+ *                      type: array
+ *                      items:
+ *                          $ref: '#/components/schemas/Product_Object'
+ *              xml:
+ *                  name: product
+ *          Product:
+ *              type: object
+ *              properties:
+ *                  msg:
+ *                      type: string
+ *                      example: Product data was loaded
+ *                  data:
+ *                      $ref: '#/components/schemas/Product_Object'
+ *              xml:
+ *                  name: product
+ */
+
+/**
+ * @swagger
  * /products:
  *      get:
  *          tags:
@@ -14,12 +63,15 @@ const { Database } = require('../db/databaseQueries');
  *          responses:
  *              200:
  *                  description: All products are loaded
- *                  schema:
- *                      $ref: '#definitions/products'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/components/schemas/All_Products'
+ *                      application/xml:
+ *                          schema:
+ *                              $ref: '#/components/schemas/All_Products'
  *              400:
  *                  description: No products in the database
- *                  schema:
- *                      $ref: '#definitions/products'
  */
 
 router.get('/', async (req, res, next) => {
@@ -42,12 +94,15 @@ router.get('/', async (req, res, next) => {
  *          responses:
  *              200:
  *                  description: Product productName data was loaded
- *                  schema:
- *                      $ref: '#definitions/products'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/components/schemas/Product'
+ *                      application/xml:
+ *                          schema:
+ *                              $ref: '#/components/schemas/Product'
  *              400:
  *                  description: No product productName in the database
- *                  schema:
- *                      $ref: '#definitions/products'
  */
 
 router.get('/:name', async (req, res, next) => {
@@ -56,7 +111,7 @@ router.get('/:name', async (req, res, next) => {
     if (!productData) {
         return res.status(400).json({msg: `No product ${name} was found`});
     }
-    return res.status(200).json({msg: `Product ${name} data is loaded`, data: productData});
+    return res.status(200).json({msg: `Product ${name} data was loaded`, data: productData});
 });
 
 /**
@@ -66,21 +121,22 @@ router.get('/:name', async (req, res, next) => {
  *          tags:
  *              - Products
  *          description: Add product to database
- *          produces:
- *              - application/json
+ *          requestBody:
+ *              description: Update product object
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Product_Object'
+ *                  application/xml:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Product_Object'
  *          responses:
  *              200:
  *                  description: Product was successfully added
- *                  schema:
- *                      $ref: '#definitions/products'
  *              400:
- *                  description: Product not added. Missing required information
- *                  schema:
- *                      $ref: '#definitions/products'
+ *                  description: Product not added. Missing required information+
  *              401:
  *                  description: Product already exists
- *                  schema:
- *                      $ref: '#definitions/products'
  */
 
 router.post('/add-product', async (req, res, next) => {
@@ -104,21 +160,22 @@ router.post('/add-product', async (req, res, next) => {
  *          tags:
  *              - Products
  *          description: Update product in the database
- *          produces:
- *              - application/json
+ *          requestBody:
+ *              description: Update product object
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Product_Object'
+ *                  application/xml:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Product_Object'
  *          responses:
  *              200:
  *                  description: Product was successfully updated
- *                  schema:
- *                      $ref: '#definitions/products'
  *              400:
  *                  description: Product id was not found
- *                  schema:
- *                      $ref: '#definitions/products'
  *              401:
  *                  description: Product not updated. Missing required information
- *                  schema:
- *                      $ref: '#definitions/products'
  */
 
 router.put('/edit-product', async (req, res, next) => {
@@ -138,25 +195,24 @@ router.put('/edit-product', async (req, res, next) => {
 
 /**
  * @swagger
- * /delete-product/:name:
+ * /delete-product/:productName:
  *      delete:
  *          tags:
  *              - Products
  *          description: Delete product from the database
- *          produces:
- *              - application/json
+ *          parameters:
+ *              - name: productName
+ *                in: path
+ *                description: name of product to be deleted
+ *                required: true
  *          responses:
  *              200:
  *                  description: Product has been deleted
- *                  schema:
- *                      $ref: '#definitions/products'
  *              400:
  *                  description: Product was not found
- *                  schema:
- *                      $ref: '#definitions/products'
  */
 
-router.delete('/delete-product/:name', async (req, res, next) => {
+router.delete('/delete-product/:productName', async (req, res, next) => {
     const { name } = req.params;
     const existentProduct = await Database.checkIfProductAlreadyExists(name);
     if(!existentProduct) {
