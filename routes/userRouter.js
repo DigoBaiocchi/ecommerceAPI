@@ -4,26 +4,76 @@ const { Database } = require('../db/databaseQueries');
 
 /**
  * @swagger
+ * components:
+ *      schemas:
+ *          User_Info_Object:
+ *              type: object
+ *              properties:
+ *                  userId:
+ *                      type: string
+ *                      example: 5
+ *                  firstName:
+ *                      type: string
+ *                      example: John
+ *                  lastName:
+ *                      type: string
+ *                      example: Doe
+ *                  address1:
+ *                      type: string
+ *                      example: 55 John Doe St
+ *                  address2:
+ *                      type: string
+ *                      example: Apt #
+ *                  city:
+ *                      type: string
+ *                      example: Toronto
+ *                  province:
+ *                      type: string
+ *                      example: ON
+ *                  postalCode:
+ *                      type: string
+ *                      example: Z9Z 9Z9
+ *                  creditCard:
+ *                      type: string
+ *                      example: 1234567891234567
+ *                  expDate:
+ *                      type: string
+ *                      example: 01/26
+ *          User_Info:
+ *              type: object
+ *              properties:
+ *                  msg:
+ *                      type: string
+ *                      example: User info data was loaded
+ *                  data:
+ *                      $ref: '#/components/schemas/User_Info_Object'
+ *              xml:
+ *                  name: user_info
+ */
+
+/**
+ * @swagger
  * /user:
  *      post:
  *          tags:
  *              - User
  *          description: Create all the databases and run the server
- *          produces:
- *              - application/json
+ *          requestBody:
+ *              description: Update product object
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/User_Info_Object'
+ *                  application/xml:
+ *                      schema:
+ *                          $ref: '#/components/schemas/User_Info_Object'
  *          responses:
  *              201:
  *                  description: User info has been added
- *                  schema:
- *                      $ref: '#definitions/user'
  *              400:
  *                  description: User id not found
- *                  schema:
- *                      $ref: '#definitions/user'
  *              401:
  *                  description: Missing required information
- *                  schema:
- *                      $ref: '#definitions/user'
  */
 
 router.post('/', async (req, res, next) => {
@@ -65,12 +115,15 @@ router.post('/', async (req, res, next) => {
  *          responses:
  *              200:
  *                  description: User info was loaded
- *                  schema:
- *                      $ref: '#definitions/user'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/components/schemas/User_Info'
+ *                      application/xml:
+ *                          schema:
+ *                              $ref: '#/components/schemas/User_Info'
  *              400:
  *                  description: User was not found
- *                  schema:
- *                      $ref: '#definitions/user'
  */
 
 router.get('/:id', async (req, res, next) => {
@@ -91,25 +144,24 @@ router.get('/:id', async (req, res, next) => {
  *          tags:
  *              - User
  *          description: Update user info
- *          produces:
- *              - application/json
+ *          requestBody:
+ *              description: Update product object
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/User_Info_Object'
+ *                  application/xml:
+ *                      schema:
+ *                          $ref: '#/components/schemas/User_Info_Object'
  *          responses:
  *              200:
  *                  description: Data has been sucessfully updated
- *                  schema:
- *                      $ref: '#definitions/user'
  *              400:
  *                  description: User was not found
- *                  schema:
- *                      $ref: '#definitions/user'
  *              401:
  *                  description: Missing required information
- *                  schema:
- *                      $ref: '#definitions/user'
  *              402:
  *                  description: No user info for user
- *                  schema:
- *                      $ref: '#definitions/user'
  */
 
 router.put('/update-info', async (req, res, next) => {
@@ -146,26 +198,25 @@ router.put('/update-info', async (req, res, next) => {
 
 /**
  * @swagger
- * /user/delete-user/:id:
+ * /user/delete-user/:userId:
  *      delete:
  *          tags:
  *              - User
  *          description: Delete user info
- *          produces:
- *              - application/json
+ *          parameters:
+ *              - name: userId
+ *                in: path
+ *                description: Get user id to be deleted
+ *                required: true
  *          responses:
  *              200:
  *                  description: User info was successfully deleted
- *                  schema:
- *                      $ref: '#definitions/user'
  *              400:
  *                  description: User was not found
- *                  schema:
- *                      $ref: '#definitions/user'
  */
 
-router.delete('/delete-user/:id', async (req, res, next) => {
-    const id = Number(req.params.id)
+router.delete('/delete-user/:userId', async (req, res, next) => {
+    const id = Number(req.params.userId);
 
     const validUserId = Number(id) === 6;
     if(!validUserId) {
