@@ -4,6 +4,19 @@ const { Database } = require('../db/databaseQueries');
 
 /**
  * @swagger
+ * components:
+ *      schemas:
+ *          Checkout_Data:
+ *              type: object
+ *              properties:
+ *                  checkoutData:
+ *                      $ref: '#/components/schemas/Order_Object'
+ *              xml:
+ *                  name: User_Order
+ */
+
+/**
+ * @swagger
  * /checkout:
  *      get:
  *          tags:
@@ -40,26 +53,25 @@ router.get('/', async (req, res, next) => {
  *      post:
  *          tags:
  *              - Checkout
- *          description: Create order with products in the checkout section
- *          produces:
- *              - application/json
+ *          description: Create order with products from the checkout section
+ *          requestBody:
+ *              description: Checkout data
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Checkout_Data'
+ *                  application/xml:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Checkout_Data'
  *          responses:
  *              201:
- *                  description: Order was create with products from userId's cart
- *                  schema:
- *                      $ref: '#definitions/Cart'
+ *                  description: Order was created with products from userId's checkout section
  *              400:
  *                  description: User was not found
- *                  schema:
- *                      $ref: '#definitions/Cart'
  *              401:
  *                  description: User is not logged in
- *                  schema:
- *                      $ref: '#definitions/Cart'
  *              402:
  *                  description: User has no products in their cart
- *                  schema:
- *                      $ref: '#definitions/Cart'
  */
 
 router.post('/', async (req, res, next) => {
@@ -76,13 +88,13 @@ router.post('/', async (req, res, next) => {
         return res.status(400).json({msg: `User id ${userId} was not found`});
     }
 
-    const cartData = await Database.getProductInfoWithPriceFromCart(userId);
+    const { checkoutData } = req.body
 
-    if(cartData.length === 0) {
+    if(checkoutData.length === 0) {
         return res.status(402).json({msg: `User ${userId} has no products in their cart`});
     }
 
-    cartData.forEach(async cart => {
+    checkoutData.forEach(async cart => {
         const createOrder = await Database.createOrder(lastOrderNumber + 1, cart.user_id, cart.product_id, cart.total_units, cart.price, 'Pending');
     });
 
