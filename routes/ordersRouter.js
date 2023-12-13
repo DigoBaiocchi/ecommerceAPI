@@ -4,6 +4,65 @@ const { Database } = require('../db/databaseQueries');
 
 /**
  * @swagger
+ * components:
+ *      schemas:
+ *          Order_Object:
+ *              type: Array
+ *              items:
+ *                  type: object
+ *                  properties:
+ *                      orderNumber:
+ *                          type: integer
+ *                          example: 10
+ *                      userId:
+ *                          type: string
+ *                          example: Electronics
+ *                      productId:
+ *                          type: integer
+ *                          example: 7
+ *                      quanitty:
+ *                          type: integer
+ *                          example: 23
+ *                      price:
+ *                          type: money
+ *                          example: $780.00
+ *                      orderStatus:
+ *                          type: string
+ *                          example: Delivered
+ *          Orders:
+ *              type: object
+ *              properties:
+ *                  msg:
+ *                      type: string
+ *                      example: All orders
+ *                  data:
+ *                      $ref: '#/components/schemas/Order_Object'
+ *              xml:
+ *                  name: Orders
+ *          All_User_Orders:
+ *              type: object
+ *              properties:
+ *                  msg:
+ *                      type: string
+ *                      example: All user's orders
+ *                  data:
+ *                      $ref: '#/components/schemas/Order_Object'
+ *              xml:
+ *                  name: All_User_Orders
+ *          User_Order:
+ *              type: object
+ *              properties:
+ *                  msg:
+ *                      type: string
+ *                      example: All user's orders
+ *                  data:
+ *                      $ref: '#/components/schemas/Order_Object'
+ *              xml:
+ *                  name: User_Order\
+ */
+
+/**
+ * @swagger
  * /orders:
  *      get:
  *          tags:
@@ -14,8 +73,13 @@ const { Database } = require('../db/databaseQueries');
  *          responses:
  *              200:
  *                  description: Get all the orders
- *                  schema:
- *                      $ref: '#definitions/orders'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/components/schemas/Orders'
+ *                      application/xml:
+ *                          schema:
+ *                              $ref: '#/components/schemas/Orders'
  */
 
 router.get('/', async (req, res, next) => {
@@ -35,12 +99,15 @@ router.get('/', async (req, res, next) => {
  *          responses:
  *              200:
  *                  description: All orders for user were loaded
- *                  schema:
- *                      $ref: '#definitions/orders'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/components/schemas/All_User_Orders'
+ *                      application/xml:
+ *                          schema:
+ *                              $ref: '#/components/schemas/All_User_Orders'
  *              400:
  *                  description: User id does not exists
- *                  schema:
- *                      $ref: '#definitions/orders'
  */
 
 router.get('/:userId', async (req, res, next) => {
@@ -67,16 +134,17 @@ router.get('/:userId', async (req, res, next) => {
  *          responses:
  *              200:
  *                  description: Order orderId has been selected for user 
- *                  schema:
- *                      $ref: '#definitions/orders'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/components/schemas/User_Order'
+ *                      application/xml:
+ *                          schema:
+ *                              $ref: '#/components/schemas/User_Order'
  *              400:
  *                  description: User id was not found
- *                  schema:
- *                      $ref: '#definitions/orders'
  *              401:
  *                  description: Order number was not found
- *                  schema:
- *                      $ref: '#definitions/orders'
  */
 
 router.get('/:userId/:orderId', async (req, res, next) => {
