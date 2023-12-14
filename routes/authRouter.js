@@ -1,8 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
-const { query } = require('../db/index');
 const passport = require('passport');
 const { Database } = require('../db/databaseQueries');
 
@@ -15,10 +12,10 @@ const { Database } = require('../db/databaseQueries');
  *              properties:
  *                  email:
  *                      type: string
- *                  userName:
- *                      type: string
+ *                      example: emailtest@gmail.com
  *                  password:
  *                      type: string
+ *                      example: thisisapasswordexample123
  */
 
 /**
@@ -28,17 +25,11 @@ const { Database } = require('../db/databaseQueries');
  *          tags:
  *              - Login
  *          description: Request email and password to log user in
- *          requestBody:
- *              required: true
- *              contents:
- *                  application/json
  *          produces:
  *              - application/json
  *          responses:
  *              200:
  *                  description: Receives an email and a password
- *                  schemas:
- *                      $ref: '#/components/schemas/User'
  */
 
 router.get('/login', (req, res, next) => {
@@ -52,13 +43,20 @@ router.get('/login', (req, res, next) => {
  *          tags:
  *              - Login
  *          description: Get user email and password
+ *          requestBody:
+ *              description: Get user email and password to authenticate
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/User'
+ *                  application/xml:
+ *                      schema:
+ *                          $ref: '#/components/schemas/User'
  *          produces:
  *              - application/json
  *          responses:
  *              200:
- *                  description: Use passport to authenticate email and password
- *                  schema:
- *                      $ref: '#definitions/User'
+ *                  description: User is logged in
  */
 
 router.post(
@@ -74,10 +72,11 @@ router.post(
     const userId = req.user.id;
     let productIsAlreadyInCart; 
     let updateProductInCartTable;
+
+    const { checkoutData } = req.body
     
-    if (localStorage.getItem('cart')) {
-        const cart = JSON.parse(localStorage.getItem('cart'));
-        cart.forEach(async (el) => {
+    if (checkoutData.length > 0) {
+        checkoutData.forEach(async (el) => {
             productIsAlreadyInCart = await Database.selectProductInCart(userId, el.productId);
             if(productIsAlreadyInCart) {
                 updateProductInCartTable = await Database.updateProductQuanityInCart(userId, el.productId, el.quantity);
@@ -86,7 +85,7 @@ router.post(
             }
         });
     } 
-    localStorage.clear();
+    
     return res.status(200).json(`User ${req.user.username} is logged in`);
 });
 
@@ -96,14 +95,9 @@ router.post(
  *      get:
  *          tags:
  *              - Login
- *          description: Logs user out
+ *          description: Logging user out
  *          produces:
  *              - application/json
- *          responses:
- *              200:
- *                  description: Logs user out
- *                  schema:
- *                      $ref: '#definitions/User'
  */
 
 router.get('/logout', (req, res, next) => {
