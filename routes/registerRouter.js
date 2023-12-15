@@ -7,31 +7,48 @@ const saltRounds = 10;
 
 /**
  * @swagger
+ * components:
+ *      schemas:
+ *          Register_Object:
+ *              type: object
+ *              properties:
+ *                  username:
+ *                      type: string
+ *                      example: John_Doe
+ *                  email:
+ *                      type: string
+ *                      example: emailtest@gmail.com
+ *                  password:
+ *                      type: string
+ *                      example: thisisapasswordexample123
+ *          User_Data:
+ *              type: object
+ *              properties:
+ *                  msg:
+ *                      type: string
+ *                      example: Email was found in the database
+ *                  data:
+ *                      $ref: '#/components/schemas/Register_Object'
+ *              xml:
+ *                  name: user_info
+ */
+
+/**
+ * @swagger
  * /register:
  *      get:
  *          tags:
  *              - Register
- *          description: Create all the databases and run the server
+ *          description: Asks for username, email and password in order to create user
  *          produces:
  *              - application/json
  *          responses:
  *              200:
- *                  description: Databases have been created and Ecommerce app is running here
- *                  schema:
- *                      $ref: '#definitions/register'
+ *                  description: Provide username, email and password
  */
 
 router.get('/', async (req, res, next) => {
-    const timeNow = await query('SELECT NOW()');
-    
-    const selectUsersTable = await Database.selectAllUsers();
-    const selectUser = await Database.selectUserByEmail('gambito@gmail.com');
-    res.status(200).json({
-        info: `Databases have been created and Ecommerce app is running here at ${timeNow.rows[0].now}!`,
-        data: selectUsersTable,
-        userData: selectUser,
-        sessioninfo: req.session
-    });
+    res.status(200).json({msg: `Provide username, email and password`});
 });
 
 /**
@@ -41,33 +58,28 @@ router.get('/', async (req, res, next) => {
  *          tags:
  *              - Register
  *          description: Register new user
- *          produces:
- *              - application/json
+ *          requestBody:
+ *              description: Get username, email and password to create a new user
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Register_Object'
+ *                  application/xml:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Register_Object'
  *          responses:
  *              201:
  *                  description: User successfully created
- *                  schema:
- *                      $ref: '#definitions/register'
  *              400:
  *                  description: No username or email provided
- *                  schema:
- *                      $ref: '#definitions/register'
  *              401:
  *                  description: Username already exists
- *                  schema:
- *                      $ref: '#definitions/register'
  *              402:
  *                  description: Email already exists
- *                  schema:
- *                      $ref: '#definitions/register'
  *              403:
  *                  description: No password provided
- *                  schema:
- *                      $ref: '#definitions/register'
  *              500:
  *                  description: User not created
- *                  schema:
- *                      $ref: '#definitions/register'
  */
 
 router.post('/', async (req, res, next) => {
@@ -105,17 +117,23 @@ router.post('/', async (req, res, next) => {
  *          tags:
  *              - Register
  *          description: Check if email exists
- *          produces:
- *              - application/json
+ *          parameters:
+ *              - name: email
+ *                in: path
+ *                description: It uses email to get user data
+ *                required: true
  *          responses:
  *              200:
  *                  description: Email was found in the database
- *                  schema:
- *                      $ref: '#definitions/register'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/components/schemas/User_Data'
+ *                      application/xml:
+ *                          schema:
+ *                              $ref: '#/components/schemas/User_Data'
  *              400:
  *                  description: Email was not found in the database
- *                  schema:
- *                      $ref: '#definitions/register'
  */
 
 router.get('/:email', async (req, res, next) => {
@@ -135,21 +153,27 @@ router.get('/:email', async (req, res, next) => {
  *          tags:
  *              - Register
  *          description: Update user password
- *          produces:
- *              - application/json
+ *          parameters:
+ *              - name: email
+ *                in: path
+ *                description: It uses email to update user data
+ *                required: true
+ *          requestBody:
+ *              description: Get username, email and password to create a new user
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Register_Object'
+ *                  application/xml:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Register_Object'
  *          responses:
  *              200:
  *                  description: Password was successfully updated
- *                  schema:
- *                      $ref: '#definitions/register'
  *              400:
  *                  description: Email was not found in the database
- *                  schema:
- *                      $ref: '#definitions/register'
  *              401:
  *                  description: Password was not updated
- *                  schema:
- *                      $ref: '#definitions/register'
  */
 
 router.put('/:email', async (req, res, next) => {
@@ -177,17 +201,16 @@ router.put('/:email', async (req, res, next) => {
  *          tags:
  *              - Register
  *          description: Delete user
- *          produces:
- *              - application/json
+ *          parameters:
+ *              - name: email
+ *                in: path
+ *                description: It uses email to delete user data
+ *                required: true
  *          responses:
  *              200:
- *                  description: User was successfully delete
- *                  schema:
- *                      $ref: '#definitions/register'
+ *                  description: User was successfully deleted
  *              400:
  *                  description: User was not delete
- *                  schema:
- *                      $ref: '#definitions/register'
  */
 
 router.delete('/:email', async (req, res, next) => {
