@@ -24,8 +24,6 @@ const saltRounds = 10;
 router.get('/', async (req, res, next) => {
     const timeNow = await query('SELECT NOW()');
     
-    Database.createTables();
-    
     const selectUsersTable = await Database.selectAllUsers();
     const selectUser = await Database.selectUserByEmail('gambito@gmail.com');
     res.status(200).json({

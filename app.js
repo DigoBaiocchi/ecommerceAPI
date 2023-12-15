@@ -6,6 +6,7 @@ require('./strategies/local');
 const session = require('express-session');
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
+const { Database } = require('./db/databaseQueries');
 const port = 3000;
 
 const registerRouter = require('./routes/registerRouter');
@@ -87,6 +88,7 @@ app.get('/error', (req, res, next) => {
 });
 
 app.listen(port, () => {
+    Database.createTables();
     console.log(`Ecommerce app is running on port ${port}`);
 });
 
