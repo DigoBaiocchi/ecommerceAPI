@@ -27,7 +27,7 @@ const saltRounds = 10;
  *                  msg:
  *                      type: string
  *                      example: Email was found in the database
- *                  data:
+ *                  userData:
  *                      $ref: '#/components/schemas/Register_Object'
  *              xml:
  *                  name: user_info
@@ -137,11 +137,11 @@ router.post('/', async (req, res, next) => {
  */
 
 router.get('/:email', async (req, res, next) => {
-    const usersDb = await Database.selectAllUsers();
     const { email } = req.params;
-    const emailFound = usersDb.some(data => data.email === email);
-    if (emailFound) {
-        return res.status(200).json({msg: `Email was found in the database`});
+    const userData = await Database.selectUserByEmail(email);
+    
+    if (userData) {
+        return res.status(200).json({msg: `Email was found in the database`, userData: userData});
     }
     return res.status(400).json({msg: `Email was not found in the database`});
 });
