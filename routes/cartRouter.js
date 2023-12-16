@@ -2,17 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { Database } = require('../db/databaseQueries');
 
-if (typeof localStorage === "undefined" || localStorage === null) {
-    var LocalStorage = require('node-localstorage').LocalStorage;
-    localStorage = new LocalStorage('./scratch');
-}
-
-localStorage.clear();
-
-let cart = [];
-
-
-
 /**
  * @swagger
  * /cart:
@@ -43,52 +32,7 @@ router.post('/', async (req, res, next) => {
 
     // check if user is not logged in
     if(!req.session.passport) {
-        userId = 0;
-        cart = [];
-        // check if any product was added to temp cart
-        if(localStorage.getItem('cart')) {
-            cart = JSON.parse(localStorage.getItem('cart'));
-            productAlreadyInCart = cart.filter(product => product.productId === productId);
-        }
-
-        if(!validProductId) {
-            return res.status(400).json(`No product id ${productId} was found`);
-        }
-
-        if(totalUnits > totalProductQty) {
-            return res.status(400).json(`Product has less than ${totalUnits} units`);
-        }
-
-        if(!productAlreadyInCart || productAlreadyInCart.length === 0) {
-            if(totalUnits < 1) {
-                return res.status(400).json(`Total units for product ${productId} needs to be greater than zero to be added to cart`);
-            }
-        }
-        
-        if(productAlreadyInCart && productAlreadyInCart.length !== 0) {
-            const newAmount = productAlreadyInCart[0].quantity + totalUnits;
-            if(newAmount < 1) {
-                return res.status(400).json(`Product ${productId} total in the cart can't be zero. Do you want to delete this product ${productId} from cart?`);
-            }
-            if(newAmount > totalProductQty) {
-                return res.status(400).json(`Products has less than ${newAmount} units`);
-            }
-            for (let i = 0; i < cart.length; i++) {
-                if (cart[i].productId === productId) {
-                    cart[i].quantity = newAmount;
-                }
-            }
-            localStorage.setItem('cart', JSON.stringify(cart));
-            console.log(localStorage.getItem('cart'));
-            
-            return res.status(200).json({data: req.session.cart, msg: `Product ${productId} quantity has been updated`});
-        }
-
-        cart.push({'userId': userId, 'productId': productId, 'quantity': totalUnits});
-        
-        localStorage.setItem('cart', JSON.stringify(cart));
-        console.log(localStorage.getItem('cart'));
-        return res.status(201).json({msg: `Product ${userId} has added to the cart`, cart: req.session});
+        return res.status(500).json({msg: `User is not logged in`});
         
     } else /*if(req.session.passport)*/{
         userId = req.session.passport.user.userId;
@@ -100,27 +44,27 @@ router.post('/', async (req, res, next) => {
         }
 
         if(!validProductId) {
-            return res.status(400).json(`No product id ${productId} was found`);
+            return res.status(401).json(`No product id ${productId} was found`);
         }
 
         if(totalUnits > totalProductQty) {
-            return res.status(400).json(`Product has less than ${totalUnits} units`)
+            return res.status(402).json(`Product has less than ${totalUnits} units`)
         }
 
         if(productAlreadyInCart) {
             console.log(productAlreadyInCart)
             const newAmount = productAlreadyInCart.total_units + totalUnits;
             if(newAmount < 1) {
-                return res.status(400).json(`Product ${productId} total in the cart can't be zero. Do you want to delete this product ${productId} from cart?`);
+                return res.status(403).json(`Product ${productId} total in the cart can't be zero. Do you want to delete this product ${productId} from cart?`);
             }
             if (newAmount > totalProductQty) {
-                return res.status(400).json(`Products has less than ${newAmount} units`);
+                return res.status(404).json(`Products has less than ${newAmount} units`);
             }
             const updateCart = await Database.updateProductQuanityInCart(userId, productId, newAmount);
             return res.status(200).json(`Product ${productId} quantity has been udpated in the cart`);
         } else {
             if(totalUnits < 1) {
-                return res.status(400).json(`Total units for product ${productId} needs to be greater than zero to be added to cart`);
+                return res.status(405).json(`Total units for product ${productId} needs to be greater than zero to be added to cart`);
             }
             const addToCartTable = await Database.addProductToCart(userId, productId, totalUnits);
             return res.status(201).json(`Product ${productId} was added to cart table`);
@@ -202,24 +146,14 @@ router.delete('/:userId/:productId', async (req, res, next) => {
     
     // check if user is not logged in
     if(!req.session.passport) {
-        if(!localStorage.getItem('cart')) {
-            return res.status(400).json(`No products in user's temp cart`);
-        }
-        cart = JSON.parse(localStorage.getItem('cart'));
-        productAlreadyInCart = cart.filter(product => product.productId === productId);
-        if(!productAlreadyInCart) {
-            return res.status(400).json(`No product ${productId} in the cart`);
-        }
-        cart = cart.filter(product => product.productId !== productId);
-        localStorage.setItem('cart', JSON.stringify(cart));
-        return res.status(200).json({msg: `Product ${productId} was deleted from user ${userId} cart`, cart: cart});
+        return res.status(500).json({msg: `User is not logged in`});
     } else {
         productAlreadyInCart = await Database.selectProductInCart(userId, productId);
         if(!validUserId) {
-            return res.status(400).json(`User id ${userId} was not found`);
+            return res.status(402).json(`User id ${userId} was not found`);
         }
         if(!productAlreadyInCart) {
-            return res.status(400).json(`No product ${productId} in the cart`);
+            return res.status(403).json(`No product ${productId} in the cart`);
         }
         const deleteProductFromCart = await Database.deleteProductFromCart(userId, productId)
         return res.status(200).json(`Product id ${productId} was deleted from user ${userId} cart`)
@@ -252,7 +186,7 @@ router.delete('/:userId/:productId', async (req, res, next) => {
 
 router.delete('/:userId', async (req, res, next) => {
     const userId = Number(req.params.userId);
-    let productAlreadyInCart;
+    let productsInUserCart;
 
     const validUserId = await Database.selectUserById(userId);
     if(!validUserId && userId !== 0) {
@@ -261,19 +195,14 @@ router.delete('/:userId', async (req, res, next) => {
 
     // check if user is not logged in
     if(!req.session.passport) {
-        if(!localStorage.getItem('cart')) {
-            return res.status(401).json(`No products in user's temp cart`);
-        }
-        
-        localStorage.clear();
-        return res.status(200).json({msg: `All products deleted from user ${userId} cart`, cart: localStorage.getItem('cart')});
+        return res.status(500).json({msg: `User is not logged in`});
     } else {
         productsInUserCart = await Database.selectCartProducts(userId);
         if(!validUserId) {
-            return res.status(400).json(`User id ${userId} was not found`);
+            return res.status(402).json(`User id ${userId} was not found`);
         }
         if(productsInUserCart.length === 0) {
-            return res.status(400).json(`No products in the user ${userId} cart`);
+            return res.status(403).json(`No products in the user ${userId} cart`);
         }
         const deleteProductFromCart = await Database.deleteAllProductsFromCart(userId);
         return res.status(200).json({msg: `All products deleted from user ${userId} cart`, cart: productsInUserCart});
