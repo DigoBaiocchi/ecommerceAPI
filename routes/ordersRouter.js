@@ -153,16 +153,16 @@ router.get('/:userId/:orderId', async (req, res, next) => {
     
     const validUser = await Database.selectUserById(userId);
     if(!validUser) {
-        return res.status(400).json({msg: `User id ${userId} was not found`})
+        return res.status(400).json({ error: `User id was not found` })
     }
     
     const validOrder = await Database.getOrderData(userId, orderId);
     console.log(validOrder)
     if(validOrder.length === 0) {
-        return res.status(401).json({msg: `Order number ${orderId} was not found`})
+        return res.status(401).json({ error: `Order number was not found` })
     }
     
-    return res.status(200).json({msg: `Order ${orderId} has been selected for user ${userId}`, data: validOrder});
+    return res.status(200).json({ message: `Order has been selected for user`, data: validOrder });
 });
 
 /**
@@ -199,23 +199,23 @@ router.patch('/:userId/:orderId', async (req, res, next) => {
     const { orderStatus } = req.body;
     
     if(!orderStatus) {
-        return res.status(402).json({msg: `No order status was provided`});
+        return res.status(402).json({ error: `No order status was provided` });
     }
     
     const validUser = await Database.selectUserById(userId);
     if(!validUser) {
-        return res.status(400).json({msg: `User id ${userId} was not found`});
+        return res.status(400).json({ error: `User id was not found` });
     }
     
     const validOrder = await Database.getOrderData(userId, orderId);
     
     if(validOrder.length === 0) {
-        return res.status(401).json({msg: `Order number ${orderId} was not found`});
+        return res.status(401).json({ error: `Order number was not found` });
     }
     
     const updateOrderStatus = await Database.updateOrderStatus(orderId, userId, orderStatus);
     
-    return res.status(200).json({msg: `Order ${orderId} has been updated for user ${userId}`});
+    return res.status(200).json({ message: `Order has been updated for user` });
 });
 
 /**
@@ -248,18 +248,18 @@ router.delete('/:userId/:orderId', async (req, res, next) => {
     
     const validUser = await Database.selectUserById(userId);
     if(!validUser) {
-        return res.status(400).json({msg: `User id ${userId} was not found`});
+        return res.status(400).json({ error: `User id was not found` });
     }
     
     const validOrder = await Database.getOrderData(userId, orderId);
     
     if(validOrder.length === 0) {
-        return res.status(401).json({msg: `Order number ${orderId} was not found`});
+        return res.status(401).json({ error: `Order number was not found` });
     }
     
     const deleteOrder = await Database.deleteOrder(orderId, userId);
     
-    return res.status(200).json({msg: `Order number ${orderId} was deleted`});
+    return res.status(200).json({ message: `Order number was deleted` });
 });
 
 /**
@@ -287,12 +287,12 @@ router.delete('/:userId', async (req, res, next) => {
 
     const validUser = await Database.selectUserById(userId);
     if(!validUser) {
-        return res.status(400).json({msg: `User id ${userId} was not found`});
+        return res.status(400).json({msg: `User id was not found`});
     }
 
     const deleteAllUserOrders = await Database.deleteAllUserOrders(userId);
 
-    return res.status(200).json({msg: `All user's ${userId} orders were deleted`});
+    return res.status(200).json({msg: `All user's orders were deleted`});
 });
 
 module.exports = router;
