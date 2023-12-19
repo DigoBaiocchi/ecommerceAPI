@@ -48,7 +48,7 @@ const saltRounds = 10;
  */
 
 router.get('/', async (req, res, next) => {
-    res.status(200).json({msg: `Provide username, email and password`});
+    res.status(200).json({ message: `Provide username, email and password` });
 });
 
 /**
@@ -92,22 +92,27 @@ router.post('/', async (req, res, next) => {
     const emailAlreadyExists = usersDb.some(data => data.email === email);
     
     if(!username || !email) {
-        return res.status(400).json({msg: 'No username or email provided'});
+        return res.status(400).json({ error: 'No username or email provided' });
     }
+
     if (usernameAlreadyExists) {
-        return res.status(401).json({msg: 'Username already exists'});
+        return res.status(401).json({ error: 'Username already exists' });
     }
+
     if (emailAlreadyExists) {
-        return res.status(402).json({msg: 'Email already exists'});
+        return res.status(402).json({ error: 'Email already exists' });
     }
+
     if (!password) {
-        return res.status(403).json({msg: 'No password provided'});
+        return res.status(403).json({error: 'No password provided' });
     }
+
     if (username && email && password) {
         const addUser = await Database.addUser(username, email, hashedPassword);
-        return res.status(201).json({msg: 'User successfully created'});
-    } 
-    return res.status(500).json({msg: 'User not created'});
+        return res.status(201).json({ message: 'User successfully created' });
+    }
+     
+    return res.status(500).json({ error: 'User not created' });
 });
 
 /**
@@ -141,9 +146,10 @@ router.get('/:email', async (req, res, next) => {
     const userData = await Database.selectUserByEmail(email);
     
     if (userData) {
-        return res.status(200).json({msg: `Email was found in the database`, userData: userData});
+        return res.status(200).json({ message: `Email was found in the database`, userData: userData });
     }
-    return res.status(400).json({msg: `Email was not found in the database`});
+
+    return res.status(400).json({ error: `Email was not found in the database` });
 });
 
 /**
@@ -182,16 +188,20 @@ router.put('/:email', async (req, res, next) => {
     const { password } = req.body;
     const salt = await bcrypt.genSalt(saltRounds);
     const newHashedPassword = await bcrypt.hash(password, salt);
+
     const validEmail = usersDb.some(data => data.email === email);
     if (!validEmail) {
-        return res.status(400).json({userUpdated: false, msg: `Email was not found in the database`});
+        return res.status(400).json({ error: `Email was not found in the database` });
     }
+
     if(!password) {
-        return res.status(401).json({userUpdated: false, msg: `Password was not updated`});    
+        return res.status(401).json({ error: `Password was not updated` });
     }
+
     const updatePassword = await Database.updateUserPassword(newHashedPassword, email);
     console.log(req.session);
-    return res.status(200).json({userUpdated: true, msg: `Password was successfully updated`});
+
+    return res.status(200).json({ message: `Password was successfully updated` });
 });
 
 /**
@@ -216,12 +226,15 @@ router.put('/:email', async (req, res, next) => {
 router.delete('/:email', async (req, res, next) => {
     const usersDb = await Database.selectAllUsers();
     const { email } = req.params;
+
     const validEmail = usersDb.some(data => data.email === email);
     if (validEmail) {
         const deleteUser = await Database.deleteUser(email);
-        return res.status(200).json({msg: 'User was successfully delete', userDeleted: true});
+
+        return res.status(200).json({ message: 'User was successfully delete' });
     }
-    return res.status(400).json({msg: 'User was not delete', userDeleted: false});
+
+    return res.status(400).json({ error: 'User was not delete' });
     
 });
 
