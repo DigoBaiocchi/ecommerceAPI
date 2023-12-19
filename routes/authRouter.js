@@ -33,7 +33,7 @@ const { Database } = require('../db/databaseQueries');
  */
 
 router.get('/login', (req, res, next) => {
-    return res.status(200).json({msg: 'Enter your email and password'});
+    return res.status(200).json({ error: 'Enter your email and password' });
 });
 
 /**
@@ -86,7 +86,7 @@ router.post(
         });
     } 
     
-    return res.status(200).json(`User ${req.user.username} is logged in`);
+    return res.status(200).json({ message: `User ${req.user.username} is logged in` });
 });
 
 /**
