@@ -77,9 +77,9 @@ const { Database } = require('../db/databaseQueries');
 router.get('/', async (req, res, next) => {
     const getAllProducts = await Database.getAllProducts();
     if (getAllProducts.length !== 0) {
-        return res.status(200).json({msg: "All products are loaded", data: getAllProducts});
+        return res.status(200).json({ message: "All products are loaded", data: getAllProducts });
     }
-    return res.status(400).json({msg: "No products in the database"});
+    return res.status(400).json({ error: "No products in the database" });
 });
 
 /**
@@ -93,7 +93,7 @@ router.get('/', async (req, res, next) => {
  *              - application/json
  *          responses:
  *              200:
- *                  description: Product productName data was loaded
+ *                  description: Product data was loaded
  *                  content:
  *                      application/json:
  *                          schema:
@@ -102,16 +102,16 @@ router.get('/', async (req, res, next) => {
  *                          schema:
  *                              $ref: '#/components/schemas/Product'
  *              400:
- *                  description: No product productName in the database
+ *                  description: Product was not found
  */
 
 router.get('/:name', async (req, res, next) => {
     const { name } = req.params;
     const productData = await Database.getProductByName(name);
     if (!productData) {
-        return res.status(400).json({msg: `No product ${name} was found`});
+        return res.status(400).json({ error: `Product was not found` });
     }
-    return res.status(200).json({msg: `Product ${name} data was loaded`, data: productData});
+    return res.status(200).json({ message: `Product data was loaded`, data: productData });
 });
 
 /**
@@ -143,14 +143,14 @@ router.post('/add-product', async (req, res, next) => {
     const { categoryId, name, quantity, description, price } = req.body;
     
     if (!name || !quantity || !description || !price) {
-        return res.status(400).json({msg: 'Product not added. Missing required information'});
+        return res.status(400).json({ error: 'Product not added. Missing required information' });
     }
     const existentProduct = await Database.checkIfProductAlreadyExists(name);
     if (existentProduct) {
-        return res.status(401).json({msg: `Product ${name} already exists`})
+        return res.status(401).json({ error: `Product already exists` })
     }
     const addProduct = await Database.addProduct(categoryId, name, quantity, description, price);
-    return res.status(200).json({msg: `Product ${name} successfully added`});
+    return res.status(200).json({ message: `Product was successfully added` });
 });
 
 /**
@@ -182,15 +182,15 @@ router.put('/edit-product', async (req, res, next) => {
     const { id, name, quantity, description, price } = req.body;
     
     if(!name || !quantity || !description || !price) {
-        return res.status(401).json({msg: 'Product not updated. Missing required information'});
+        return res.status(401).json({ error: 'Product not updated. Missing required information' });
     }
     
     const existentProduct = await Database.checkIfProductAlreadyExists(id);
     if(!existentProduct) {
-        return res.status(400).json({msg: `Product with id ${id} was not found`});
+        return res.status(400).json({ error: `Product with id was not found` });
     }
     const updateProductData = await Database.updateProduct(id, name, quantity, description, price);
-    return res.status(200).json({msg: `Product with id ${id} info updated`});
+    return res.status(200).json({ message: `Product was successfully updated` });
 });
 
 /**
@@ -216,10 +216,10 @@ router.delete('/delete-product/:productName', async (req, res, next) => {
     const { productName } = req.params;
     const existentProduct = await Database.checkIfProductAlreadyExists(productName);
     if(!existentProduct) {
-        return res.status(400).json({msg: 'Product was not found'})
+        return res.status(400).json({ error: 'Product was not found' })
     }
     const deleteProduct = await Database.deleteProduct(productName);
-    return res.status(200).json({msg: 'Product has been deleted'});
+    return res.status(200).json({ message: 'Product has been deleted' });
 });
 
 module.exports = router;
