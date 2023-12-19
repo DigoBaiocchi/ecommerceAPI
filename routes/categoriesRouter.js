@@ -66,9 +66,10 @@ router.get('/', async (req, res, next) => {
     const categories = await Database.getAllCategories();
     console.log(categories)
     if (categories.length !== 0) {
-        return res.status(200).json({msg: 'All categories are loaded', data: categories});
+        return res.status(200).json({ message: 'All categories are loaded', data: categories });
     }
-    return res.status(400).json({msg: 'No categories found'});
+
+    return res.status(400).json({ error: 'No categories found' });
 });
 
 /**
@@ -103,9 +104,10 @@ router.get('/:categoryId', async (req, res, next) => {
     const { categoryId } = req.params;
     const category = await Database.getCategoryById(categoryId);
     if (!category) {
-        return res.status(400).json({msg: `Category ${categoryId} not found`});
+        return res.status(400).json({ error: `Category id not found` });
     }
-    return res.status(200).json({msg: `Category ${categoryId} selected`, data: category});
+
+    return res.status(200).json({ message: `Category selected`, data: category });
 });
 
 /**
@@ -136,15 +138,17 @@ router.get('/:categoryId', async (req, res, next) => {
 router.post('/add-category', async (req, res, next) => {
     const { name } = req.body;
     if (!name) {
-        return res.status(400).json({msg: 'Category name not provided'});
+        return res.status(400).json({ error: 'Category name not provided' });
     }
+
     const categories = await Database.getAllCategories();
     const existentCategory = categories.some(category => category.name === name);
     if (existentCategory) {
-        return res.status(401).json({msg: 'Category already exists'});
+        return res.status(401).json({ error: 'Category already exists' });
     }
+
     const addCategory = await Database.addCategory(name);
-    return res.status(201).json({msg: `Category ${name} successfully created`});
+    return res.status(201).json({ message: `Category successfully created` });
 });
 
 /**
@@ -175,17 +179,17 @@ router.post('/add-category', async (req, res, next) => {
 router.put('/edit-category', async (req, res, next) => {
     const { id, name } = req.body;
     if (!name) {
-        return res.status(400).json({msg: `Name not provided for category ${id}`});
+        return res.status(400).json({ error: `Name not provided for category` });
     }
     
     const categories = await Database.getAllCategories();
     const existentCategory = categories.some(category => category.id === id);
     if(!existentCategory) {
-        return res.status(401).json({msg: `Category ${id} does not exist`});
+        return res.status(401).json({ error: `Category does not exist` });
     }
     
     const updateCategory = await Database.updateCategory(id, name);
-    return res.status(200).json({msg: `Category ${id} has been updated to ${name}`});
+    return res.status(200).json({ message: `Category name has been updated` });
 });
 
 /**
@@ -210,12 +214,14 @@ router.put('/edit-category', async (req, res, next) => {
 router.delete('/delete-category/:categoryName', async (req, res, next) => {
     const { categoryName } = req.params;
     const categories = await Database.getAllCategories();
+
     const existentCategory = categories.some(category => category.name === categoryName);
     if (!existentCategory) {
-        return res.status(400).json({msg: "Category does not exist"});
+        return res.status(400).json({ error: "Category does not exist" });
     }
+
     const deleteCategory = await Database.deleteCategory(categoryName);
-    return res.status(200).json({msg: "Category has been deleted"});
+    return res.status(200).json({ message: "Category has been deleted" });
 });
 
 
