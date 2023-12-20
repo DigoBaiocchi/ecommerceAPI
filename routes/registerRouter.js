@@ -104,7 +104,7 @@ router.post('/', async (req, res, next) => {
     }
 
     if (!password) {
-        return res.status(403).json({error: 'No password provided' });
+        return res.status(403).json({ error: 'No password provided' });
     }
 
     if (username && email && password) {
@@ -121,7 +121,7 @@ router.post('/', async (req, res, next) => {
  *      get:
  *          tags:
  *              - Register
- *          description: Check if email exists
+ *          description: Check if email exists and retrieve user data
  *          parameters:
  *              - name: email
  *                in: path
