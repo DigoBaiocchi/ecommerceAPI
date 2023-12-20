@@ -15,7 +15,9 @@ describe('POST /register', () => {
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(201)
-            .expect(`"User successfully created"`)
+            .expect({
+                "message": `User successfully created`
+            })
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -28,46 +30,54 @@ describe('POST /register', () => {
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect('"No username or email provided"')
+            .expect({
+                "error": `No username or email provided`
+            })
             .end((err) => {
                 if (err) return done(err);
                 done();
             })
     });
-    it('responses with 400 not created when username already exists', (done) => {
+    it('responses with 401 not created when username already exists', (done) => {
         request(app)
             .post('/register')
             .send(existentUser)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect('"Username already exists"')
+            .expect(401)
+            .expect({
+                "error": `Username already exists`
+            })
             .end((err) => {
                 if (err) return done(err);
                 done();
             })
     });
-    it('responses with 400 not created when email already exists', (done) => {
+    it('responses with 402 not created when email already exists', (done) => {
         request(app)
             .post('/register')
             .send(existentEmail)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect('"Email already exists"')
+            .expect(402)
+            .expect({
+                "error": `Email already exists`
+            })
             .end((err) => {
                 if (err) return done(err);
                 done();
             })
     });
-    it('responses with 400 when password is not provided', (done) => {
+    it('responses with 403 when password is not provided', (done) => {
         request(app)
             .post('/register')
             .send(noPasswordProvided)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect('"No password provided"')
+            .expect(403)
+            .expect({
+                "error": `No password provided`
+            })
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -78,13 +88,17 @@ describe('POST /register', () => {
 describe('GET /register/:email', () => {
     const email = 'rodrigo@gmail.com';
     const wrongEmail = 'somewrongemail@gmail.com'
+    const correctData = {"id": "1", "username": 'DigoBaiocchi', "email": 'rodrigo@gmail.com', "password": "123456"};
     it('responses with 200 when finding email provided in the database', (done) => {
         request(app)
             .get(`/register/${email}`)
             .set('accept', 'application/json')
             .expect('Content-type', /json/)
             .expect(200)
-            .expect(`"User found with email ${email}"`)
+            .expect({
+                "message": `Email was found in the database`,
+                "userData": correctData
+            })
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -96,7 +110,9 @@ describe('GET /register/:email', () => {
         .set('accept', 'application/json')
         .expect('Content-type', /json/)
         .expect(400)
-        .expect(`"User not found with email ${wrongEmail}"`)
+        .expect({
+            "error": `Email was not found in the database`
+        })
         .end((err) => {
             if (err) return done(err);
             done();
@@ -117,8 +133,7 @@ describe('PUT /register/:email', () => {
             .expect('Content-Type', /json/)
             .expect(200)
             .expect({
-                "userUpdated": true,
-                "message": `password updated for email ${email}`
+                "message": `Password was successfully updated`
             })
             .end((err) => {
                 if (err) return done(err);
@@ -131,10 +146,9 @@ describe('PUT /register/:email', () => {
             .send(missingPassword)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
+            .expect(401)
             .expect({
-                "userUpdated": false,
-                "message": `password not updated for email ${email}`
+                "error": `Password was not updated`
             })
             .end((err) => {
                 if (err) return done(err);
@@ -149,8 +163,7 @@ describe('PUT /register/:email', () => {
             .expect('Content-Type', /json/)
             .expect(400)
             .expect({
-                "userUpdated": false,
-                "message": `email ${wrongEmail} not found`
+                "error": `Email was not found in the database`
             })
             .end((err) => {
                 if (err) return done(err);
@@ -168,7 +181,9 @@ describe('DELETE /register/:email', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
-            .expect({"userDeleted": true})
+            .expect({
+                "message": `User was successfully delete`
+            })
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -180,56 +195,12 @@ describe('DELETE /register/:email', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect({"userDeleted": false})
+            .expect({
+                "error": `Email was not found in the database`
+            })
             .end((err) => {
                 if (err) return done(err);
                 done();
             })
     })
 });
-
-// describe('POST /login', () => {
-//     const completeData = {'email': 'rodrigo@gmail.com', 'password': '123456'};
-//     const missingEmail = {'password': '123456'};
-//     const missingPassword = {'email': 'rodrigo@gmail.com'};
-//     it('responses with 200 when email and password are provided for authentication', (done) => {
-//         request(app)
-//             .post('/login')
-//             .send(completeData)
-//             .set('accept', 'application/json')
-//             .expect('Content-Type', /json/)
-//             .expect(200)
-//             .expect(completeData)
-//             .end((err) => {
-//                 if (err) return done(err);
-//                 done();
-//             })
-//     });
-//     it('responses with 400 missing email', (done) => {
-//         request(app)
-//             .post('/login')
-//             .send(missingEmail)
-//             .set('accept', 'application/json')
-//             .expect('Content-Type', /json/)
-//             .expect(400)
-//             .expect('"Email is required for authentication"')
-//             .end((err) => {
-//                 if (err) return done(err);
-//                 done();
-//             })
-//     });
-//     it('responses with 400 missing password', (done) => {
-//         request(app)
-//             .post('/login')
-//             .send(missingPassword)
-//             .set('accept', 'application/json')
-//             .expect('Content-Type', /json/)
-//             .expect(400)
-//             .expect('"Password is required for authentication"')
-//             .end((err) => {
-//                 if (err) return done(err);
-//                 done();
-//             })
-//     });
-// });
-
