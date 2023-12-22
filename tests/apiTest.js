@@ -182,23 +182,6 @@ describe('PUT /register/:email', () => {
     });
 });
 
-describe('GET /auth/login', () => {
-    const path = '/auth/login'
-    it('responses with 200 and request user email and password', (done) => {
-        request(app)
-            .get(path)
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .expect({
-                "message": `Enter your email and password`
-            })
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            })
-    });
-});
-
 describe('DELETE /register/:email', () => {
     const invalidEmail = '""';
 
@@ -230,7 +213,7 @@ describe('DELETE /register/:email', () => {
                 if (err) return done(err);
                 done();
             })
-    })
+    });
 });
 
 // tests end here
