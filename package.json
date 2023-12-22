@@ -4,7 +4,8 @@
   "description": "Codecademy ecommerce API",
   "main": "index.js",
   "scripts": {
-    "devStart": "nodemon app.js"
+    "devStart": "nodemon app.js",
+    "test": "mocha 'tests/registerApiTest.js'"
   },
   "repository": {
     "type": "git",
