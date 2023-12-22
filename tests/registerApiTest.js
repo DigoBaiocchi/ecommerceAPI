@@ -1,13 +1,16 @@
 // Setting up Supertest
 const request = require('supertest');
 const app = require('../app');
+const { Database } = require('../db/databaseQueries');
+
+let newUserData;
 
 describe('POST /register', () => {
-    const correctData = {"id": "1", "username": 'DigoBaiocchi', "email": 'rodrigo@gmail.com', "password": "123456"};
+    const correctData = {"username": 'DigoBaiocchi', "email": 'rodrigo@gmail.com', "password": "123456"};
     const incorrectData = {"email": "rodrigo@gmail.com", "password": "123456"};
     const noPasswordProvided = {"username": "OtherUser", "email": "newuser@gmail.com", "password": ""};
-    const existentUser = {"username": "Gambito", "email": "gambito@gmail.com", "password": "123456"};
     const existentEmail = {"id": "1", "username": 'Rodrigos', "email": 'rodrigo@gmail.com', "password": "123456"};
+
     it('responds with 201 created', (done) => {
         request(app)
             .post('/register')
@@ -18,11 +21,13 @@ describe('POST /register', () => {
             .expect({
                 "message": `User successfully created`
             })
-            .end((err) => {
+            .end(async (err) => {
                 if (err) return done(err);
+                newUserData = await Database.selectUserByEmail(correctData.email);
                 done();
             });
     });
+
     it('responses with 400 not created when username or email not provided', (done) => {
         request(app)
             .post('/register')
@@ -38,10 +43,11 @@ describe('POST /register', () => {
                 done();
             })
     });
+
     it('responses with 401 not created when username already exists', (done) => {
         request(app)
             .post('/register')
-            .send(existentUser)
+            .send(newUserData)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(401)
@@ -53,6 +59,7 @@ describe('POST /register', () => {
                 done();
             })
     });
+
     it('responses with 402 not created when email already exists', (done) => {
         request(app)
             .post('/register')
@@ -68,6 +75,7 @@ describe('POST /register', () => {
                 done();
             })
     });
+
     it('responses with 403 when password is not provided', (done) => {
         request(app)
             .post('/register')
@@ -88,7 +96,7 @@ describe('POST /register', () => {
 describe('GET /register/:email', () => {
     const email = 'rodrigo@gmail.com';
     const wrongEmail = 'somewrongemail@gmail.com'
-    const correctData = {"id": "1", "username": 'DigoBaiocchi', "email": 'rodrigo@gmail.com', "password": "123456"};
+
     it('responses with 200 when finding email provided in the database', (done) => {
         request(app)
             .get(`/register/${email}`)
@@ -97,13 +105,14 @@ describe('GET /register/:email', () => {
             .expect(200)
             .expect({
                 "message": `Email was found in the database`,
-                "userData": correctData
+                "userData": newUserData
             })
             .end((err) => {
                 if (err) return done(err);
                 done();
             })
     });
+
     it('responses with 400 when not finding email provided in the database', (done) => {
         request(app)
         .get(`/register/${wrongEmail}`)
@@ -123,11 +132,11 @@ describe('GET /register/:email', () => {
 describe('PUT /register/:email', () => {
     const dataToBeUpdated = {"password": "654321"};
     const missingPassword = {"password": ""};
-    const email = 'rodrigo@gmail.com';
-    const wrongEmail = 'emailnotindb@email.com'
+    const wrongEmail = 'emailnotindb@email.com';
+
     it('responses with 200 password is updated', (done) => {
         request(app)
-            .put(`/register/${email}`)
+            .put(`/register/${newUserData.email}`)
             .send(dataToBeUpdated)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
@@ -140,9 +149,10 @@ describe('PUT /register/:email', () => {
                 done();
             })
     });
+
     it('responses with 400 when no password is provided', (done) => {
         request(app)
-            .put(`/register/${email}`)
+            .put(`/register/${newUserData.email}`)
             .send(missingPassword)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
@@ -155,6 +165,7 @@ describe('PUT /register/:email', () => {
                 done();
             })
     });
+
     it('responses with 400 when email is not found in db', (done) => {
         request(app)
             .put(`/register/${wrongEmail}`)
@@ -173,11 +184,11 @@ describe('PUT /register/:email', () => {
 });
 
 describe('DELETE /register/:email', () => {
-    const email = 'rodrigo@gmail.com';
     const invalidEmail = '""';
+
     it('responses with 200 when user was deleted', (done) => {
         request(app)
-            .delete(`/register/${email}`)
+            .delete(`/register/${newUserData.email}`)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
@@ -189,6 +200,7 @@ describe('DELETE /register/:email', () => {
                 done();
             })
     });
+    
     it('responses with 400 when email was not found', (done) => {
         request(app)
             .delete(`/register/${invalidEmail}`)
@@ -196,7 +208,7 @@ describe('DELETE /register/:email', () => {
             .expect('Content-Type', /json/)
             .expect(400)
             .expect({
-                "error": `Email was not found in the database`
+                "error": `User was not deleted`
             })
             .end((err) => {
                 if (err) return done(err);
