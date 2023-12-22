@@ -1,9 +1,12 @@
 // Setting up Supertest
 const request = require('supertest');
 const app = require('../app');
+const { Database } = require('../db/databaseQueries');
+
+let newUserData;
 
 describe('POST /register', () => {
-    const correctData = {"id": "1", "username": 'DigoBaiocchi', "email": 'rodrigo@gmail.com', "password": "123456"};
+    const correctData = {"username": 'DigoBaiocchi', "email": 'rodrigo@gmail.com', "password": "123456"};
     const incorrectData = {"email": "rodrigo@gmail.com", "password": "123456"};
     const noPasswordProvided = {"username": "OtherUser", "email": "newuser@gmail.com", "password": ""};
     const existentUser = {"username": "Gambito", "email": "gambito@gmail.com", "password": "123456"};
@@ -18,8 +21,9 @@ describe('POST /register', () => {
             .expect({
                 "message": `User successfully created`
             })
-            .end((err) => {
+            .end(async (err) => {
                 if (err) return done(err);
+                newUserData = await Database.selectUserByEmail(correctData.email);
                 done();
             });
     });
@@ -97,7 +101,7 @@ describe('GET /register/:email', () => {
             .expect(200)
             .expect({
                 "message": `Email was found in the database`,
-                "userData": correctData
+                "userData": newUserData
             })
             .end((err) => {
                 if (err) return done(err);
@@ -124,7 +128,7 @@ describe('PUT /register/:email', () => {
     const dataToBeUpdated = {"password": "654321"};
     const missingPassword = {"password": ""};
     const email = 'rodrigo@gmail.com';
-    const wrongEmail = 'emailnotindb@email.com'
+    const wrongEmail = 'emailnotindb@email.com';
     it('responses with 200 password is updated', (done) => {
         request(app)
             .put(`/register/${email}`)
@@ -137,6 +141,7 @@ describe('PUT /register/:email', () => {
             })
             .end((err) => {
                 if (err) return done(err);
+                console.log(newUserData);
                 done();
             })
     });
@@ -172,7 +177,7 @@ describe('PUT /register/:email', () => {
     });
 });
 
-describe('DELETE /register/:email', () => {
+describe('DELETE /register/:email', async () => {
     const email = 'rodrigo@gmail.com';
     const invalidEmail = '""';
     it('responses with 200 when user was deleted', (done) => {
@@ -186,6 +191,7 @@ describe('DELETE /register/:email', () => {
             })
             .end((err) => {
                 if (err) return done(err);
+                console.log(newUserData.email);
                 done();
             })
     });
@@ -196,7 +202,7 @@ describe('DELETE /register/:email', () => {
             .expect('Content-Type', /json/)
             .expect(400)
             .expect({
-                "error": `Email was not found in the database`
+                "error": `User was not deleted`
             })
             .end((err) => {
                 if (err) return done(err);
