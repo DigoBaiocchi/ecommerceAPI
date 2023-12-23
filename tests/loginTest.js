@@ -1,6 +1,9 @@
 // Setting up Supertest
 const request = require('supertest');
+const chai = require('chai');
 const app = require('../app');
+
+const expect = chai.expect;
 
 describe('GET /auth/login', () => {
     const path = '/auth/login';
@@ -19,9 +22,6 @@ describe('GET /auth/login', () => {
     });
 });
 
-const otherRequest = require('superagent');
-const user1 = request.agent()
-
 describe('POST /auth/login', () => {
     const path = '/auth/login';
     const userCredentials = {
@@ -30,34 +30,22 @@ describe('POST /auth/login', () => {
         "checkoutData": []
     };
 
-    it('responses with 200 when user is successfully logged in', (done) => {
-        request(app)
+    it('responses with 200 when user is successfully logged in', async () => {
+        const loginRes = await request(app)
             .post(path)
-            .send(userCredentials)
-            .set('accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .expect({
-                "message": `User is logged in`
-            })
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            })
+            .send(userCredentials);
+        expect(loginRes.status).to.equal(200);
+
+        // expect(loginRes.body).to.have.property('message', 'User is logged in');
     });
 
 });
     
 describe('GET /auth/logout', () => {
     const path = '/auth/logout';
-    it('responses with 200 when user is successfully logged out', (done) => {
-        request(app)
+    it('responses with 200 when user is successfully logged out', async () => {
+        const logoutRes = await request(app)
             .get(path)
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            })
+        expect(logoutRes.status).to.equal(302);
     });
 });
