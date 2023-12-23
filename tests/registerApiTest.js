@@ -132,8 +132,8 @@ describe('GET /register/:email', () => {
 describe('PUT /register/:email', () => {
     const dataToBeUpdated = {"password": "654321"};
     const missingPassword = {"password": ""};
-    const wrongEmail = 'emailnotindb@email.com';
-
+    
+    const wrongEmail = 'emailnotindb@email.com'
     it('responses with 200 password is updated', (done) => {
         request(app)
             .put(`/register/${newUserData.email}`)
@@ -146,6 +146,7 @@ describe('PUT /register/:email', () => {
             })
             .end((err) => {
                 if (err) return done(err);
+                console.log(newUserData);
                 done();
             })
     });
@@ -184,6 +185,7 @@ describe('PUT /register/:email', () => {
 });
 
 describe('DELETE /register/:email', () => {
+    
     const invalidEmail = '""';
 
     it('responses with 200 when user was deleted', (done) => {
@@ -197,6 +199,7 @@ describe('DELETE /register/:email', () => {
             })
             .end((err) => {
                 if (err) return done(err);
+                console.log(newUserData.email);
                 done();
             })
     });
