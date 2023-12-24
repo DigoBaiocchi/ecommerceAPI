@@ -36,7 +36,7 @@ describe('POST /auth/login', () => {
             .send(userCredentials);
         expect(loginRes.status).to.equal(200);
 
-        // expect(loginRes.body).to.have.property('message', 'User is logged in');
+        expect(loginRes.body).to.have.property('message', 'User is logged in');
     });
 
 });
