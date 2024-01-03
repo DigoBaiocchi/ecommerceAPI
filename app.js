@@ -8,6 +8,7 @@ const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
 const { Database } = require('./db/databaseQueries');
 const dotenv = require('dotenv');
+dotenv.config({ path: '.env.development' })
 const port = process.env.PORT || 3000;
 
 const registerRouter = require('./routes/registerRouter');
