@@ -76,11 +76,6 @@ router.post('/', async (req, res, next) => {
         const userId = req.session.passport.user.userId;
         const productAlreadyInCart = await Database.selectProductInCart(userId, productId);
         
-        const validUserId = await Database.selectUserById(userId);
-        if(!validUserId) {
-            return res.status(400).json({ error: `User id was not found` });
-        }
-        
         const validProductId = await Database.checkIfProductAlreadyExists(productId);
         if(!validProductId) {
             return res.status(401).json({ error: `Product id was not found` });

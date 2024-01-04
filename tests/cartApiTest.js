@@ -96,21 +96,6 @@ describe('POST /cart', () => {
             })
     });
 
-    it('responses with 400 when no user id is found', (done) => {
-        request(app)
-            .post(path)
-            .set('Cookie', cookie)
-            .send(invalidUserData)
-            .set('accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(400)
-            .expect({ "error": `User id was not found` })
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            })
-    });
-
     it('responses with 401 when no product id is found', (done) => {
         request(app)
             .post(path)
