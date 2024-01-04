@@ -19,6 +19,12 @@ const invalidProductData = {
     "totalUnits": 1
 };
 
+const reduceQtyData = {
+    "userId": 6,
+    "productId": 37,
+    "totalUnits": -2
+};
+
 const invalidQtyData = {
     "userId": 6,
     "productId": 37,
@@ -104,6 +110,7 @@ describe('POST /cart', () => {
                 done();
             })
     });
+
     it('responses with 401 when no product id is found', (done) => {
         request(app)
             .post(path)
@@ -132,11 +139,11 @@ describe('POST /cart', () => {
                 done();
             })
     });
-    it('responses with 403 when product is already in the cart', (done) => {
+    it('responses with 403 when product quantity in cart is zero', (done) => {
         request(app)
             .post(path)
             .set('Cookie', cookie)
-            .send(data)
+            .send(reduceQtyData)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(403)
