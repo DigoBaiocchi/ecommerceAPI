@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "devStart": "nodemon app.js",
-    "test": "nodemon --exec \"npx mocha tests/apiTest.js\""
+    "test": "nodemon --exec \"npx mocha tests/cartApiTest.js\""
   },
   "repository": {
     "type": "git",

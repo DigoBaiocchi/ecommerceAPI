@@ -27,17 +27,32 @@ const invalidQtyData = {
 
 describe('POST /cart', () => {
     const path = '/cart';
+    const userData = {
+        "email": "gambito@gmail.com",
+        "password": "12345",
+        "checkoutData": []
+    }
+
     it('responses with 201 when product was added to the cart', (done) => {
         request(app)
-            .post(path)
-            .send(data)
-            .set('accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(201)
-            .expect(`"Product ${data["userId"]} has added to the cart"`)
-            .end((err) => {
-                if (err) return done(err);
-                done();
+            .post('/auth/login/')
+            .send(userData)
+            .end((err, res) => {
+
+                const cookie = res.headers['set-cookie'];
+
+                request(app)
+                    .post(path)
+                    .set('Cookie', cookie)
+                    .send(data)
+                    .set('accept', 'application/json')
+                    .expect('Content-Type', /json/)
+                    .expect(201)
+                    .expect({ "message": `Product ${data["productId"]} was added to cart table`})
+                    .end((err) => {
+                        if (err) return done(err);
+                        done();
+                    })
             })
     });
     it('responses with 400 when no user id is found', (done) => {
