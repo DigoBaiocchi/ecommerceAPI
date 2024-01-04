@@ -32,76 +32,114 @@ describe('POST /cart', () => {
         "password": "12345",
         "checkoutData": []
     }
+    
+    let cookie;
+    
+    before((done) => {
+        request(app)
+        .post('/auth/login/')
+        .send(userData)
+        .end((err, res) => {
+            cookie = res.headers['set-cookie']
+            done();
+        })
+    });
+
+    it('responses with 500 when user is not logged in', (done) => {
+        request(app)
+        .post(path)
+        .send(data)
+        .set('accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(500)
+        .expect({ "error": `User is not logged in` })
+        .end((err) => {
+            if (err) return done(err);
+            done();
+        })
+    });
 
     it('responses with 201 when product was added to the cart', (done) => {
         request(app)
-            .post('/auth/login/')
-            .send(userData)
-            .end((err, res) => {
-
-                const cookie = res.headers['set-cookie'];
-
-                request(app)
-                    .post(path)
-                    .set('Cookie', cookie)
-                    .send(data)
-                    .set('accept', 'application/json')
-                    .expect('Content-Type', /json/)
-                    .expect(201)
-                    .expect({ "message": `Product ${data["productId"]} was added to cart table`})
-                    .end((err) => {
-                        if (err) return done(err);
-                        done();
-                    })
+            .post(path)
+            .set('Cookie', cookie)
+            .send(data)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(201)
+            .expect({ "message": `Product ${data["productId"]} was added to cart table`})
+            .end((err) => {
+                if (err) return done(err);
+                done();
             })
     });
+    
+    it('responses with 200 when product quantity has been updated', (done) => {
+        request(app)
+            .post(path)
+            .set('Cookie', cookie)
+            .send(data)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .expect({ "message": `Product ${data["productId"]} quantity has been udpated in the cart`})
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+
     it('responses with 400 when no user id is found', (done) => {
         request(app)
             .post(path)
+            .set('Cookie', cookie)
             .send(invalidUserData)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect(`"No user id ${invalidUserData["userId"]} was found"`)
+            .expect({ "error": `User id was not found` })
             .end((err) => {
                 if (err) return done(err);
                 done();
             })
     });
-    it('responses with 400 when no product id is found', (done) => {
+    it('responses with 401 when no product id is found', (done) => {
         request(app)
             .post(path)
+            .set('Cookie', cookie)
             .send(invalidProductData)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect(`"No product id ${invalidProductData["productId"]} was found"`)
+            .expect(401)
+            .expect({ "error": `Product id was not found` })
             .end((err) => {
                 if (err) return done(err);
                 done();
             })
     });
-    it('responses with 400 when invalid quantity is sent', (done) => {
+    it('responses with 402 when invalid quantity is sent', (done) => {
         request(app)
             .post(path)
+            .set('Cookie', cookie)
             .send(invalidQtyData)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect(`"Product has less than ${invalidQtyData["totalUnits"]} units"`)
+            .expect(402)
+            .expect({ "error": `Product has less than ${invalidQtyData["totalUnits"]} units` })
             .end((err) => {
                 if (err) return done(err);
                 done();
             })
     });
-    it('responses with 400 when product is already in the cart', (done) => {
+    it('responses with 403 when product is already in the cart', (done) => {
         request(app)
             .post(path)
+            .set('Cookie', cookie)
             .send(data)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect(`"Product ${data["userId"]} is already in the cart"`)
+            .expect(403)
+            .expect({ "error": `Product total in the cart can't be zero. Do you want to delete this product from cart?` })
             .end((err) => {
                 if (err) return done(err);
                 done();
