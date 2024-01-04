@@ -40,6 +40,7 @@ describe('POST /cart', () => {
         .post('/auth/login/')
         .send(userData)
         .end((err, res) => {
+            if (err) return done(err);
             cookie = res.headers['set-cookie']
             done();
         })
