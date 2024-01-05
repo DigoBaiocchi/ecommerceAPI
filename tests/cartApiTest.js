@@ -234,7 +234,7 @@ describe('DELETE /cart/delete-product', () => {
     const invalidProductId = invalidProductData['productId'];
     const path = `/cart/delete-product?productId=${productId}`;
     const badUserIdPath = `/cart/${invalidUserId}/${productId}`;
-    const badProductIdPath = `/cart/${userId}/${invalidProductId}`;
+    const badProductIdPath = `/cart/delete-product?productId=${invalidProductId}`;
     
     let cookie;
     
@@ -289,13 +289,14 @@ describe('DELETE /cart/delete-product', () => {
             })
     });
 
-    it('responses with 400 when no product id was found', (done) => {
+    it('responses with 404 when no product id was found', (done) => {
         request(app)
             .delete(badProductIdPath)
+            .set('Cookie', cookie)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect(`"Product id ${invalidProductData['productId']} was not found"`)
+            .expect(404)
+            .expect({ "error": 'Product id was not found' })
             .end((err) => {
                 if (err) return done(err);
                 done();
