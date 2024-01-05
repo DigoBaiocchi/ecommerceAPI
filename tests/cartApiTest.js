@@ -232,7 +232,7 @@ describe('DELETE /cart/delete-product', () => {
     const productId = data['productId'];
     const invalidUserId = invalidUserData['userId'];
     const invalidProductId = invalidProductData['productId'];
-    const path = `/cart/delete-product`;
+    const path = `/cart/delete-product?productId=${productId}`;
     const badUserIdPath = `/cart/${invalidUserId}/${productId}`;
     const badProductIdPath = `/cart/${userId}/${invalidProductId}`;
     
@@ -251,7 +251,7 @@ describe('DELETE /cart/delete-product', () => {
 
     it('responses with 500 when user is not logged in', (done) => {
         request(app)
-            .delete(`${path}?productId=${productId}`)
+            .delete(path)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(500)
@@ -264,7 +264,7 @@ describe('DELETE /cart/delete-product', () => {
 
     it('responses with 200 when product was deleted from the cart', (done) => {
         request(app)
-            .delete(`${path}?productId=${productId}`)
+            .delete(path)
             .set('Cookie', cookie)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
