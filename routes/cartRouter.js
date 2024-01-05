@@ -143,12 +143,6 @@ router.get('/', async (req, res, next) => {
     if(!req.session.passport) {
         return res.status(500).json({ error: `User is not logged in` });
     } 
-
-    const userId = req.session.passport.user.userId;
-    const validUserId = await Database.selectUserById(userId);
-    if(!validUserId) {
-        return res.status(400).json({ error: `User was not found`});
-    }
     
     const userCartData = await Database.selectCartProducts(userId);
     
