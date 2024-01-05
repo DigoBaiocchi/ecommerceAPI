@@ -7,12 +7,6 @@ const data = {
     "totalUnits": 1
 };
 
-const invalidUserData = {
-    "userId": 5,
-    "productId": 37,
-    "totalUnits": 1
-};
-
 const invalidProductData = {
     "userId": 6,
     "productId": 1,
