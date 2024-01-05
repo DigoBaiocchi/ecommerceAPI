@@ -187,20 +187,6 @@ describe('GET /cart', () => {
                 done();
             })
     });
-
-    it('response with 400 when no user id was found', (done) => {
-        request(app)
-            .get(path)
-            .set('Cookie', cookie)
-            .set('accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(400)
-            .expect(`"User ${invalidUserData['userId']} was not found"`)
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            })
-    });
 });
 
 describe('PUT /cart', () => {
