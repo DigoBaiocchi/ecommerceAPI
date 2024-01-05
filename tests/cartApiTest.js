@@ -228,12 +228,10 @@ describe('PUT /cart', () => {
 });
 
 describe('DELETE /cart/delete-product', () => {
-    const userId = data['userId'];
     const productId = data['productId'];
-    const invalidUserId = invalidUserData['userId'];
     const invalidProductId = invalidProductData['productId'];
     const path = `/cart/delete-product?productId=${productId}`;
-    const badUserIdPath = `/cart/${invalidUserId}/${productId}`;
+    const badQueryParamsPath = `/cart/delete-product`;
     const badProductIdPath = `/cart/delete-product?productId=${invalidProductId}`;
     
     let cookie;
