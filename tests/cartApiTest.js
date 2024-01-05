@@ -37,20 +37,22 @@ const userData = {
     "checkoutData": []
 };
 
+let cookie;
+
+before((done) => {
+    request(app)
+    .post('/auth/login/')
+    .send(userData)
+    .end((err, res) => {
+        if (err) return done(err);
+        cookie = res.headers['set-cookie']
+        done();
+    })
+});
+
+
 describe('POST /cart', () => {
     const path = '/cart';
-    let cookie;
-    
-    before((done) => {
-        request(app)
-        .post('/auth/login/')
-        .send(userData)
-        .end((err, res) => {
-            if (err) return done(err);
-            cookie = res.headers['set-cookie']
-            done();
-        })
-    });
 
     it('responses with 500 when user is not logged in', (done) => {
         request(app)
@@ -142,24 +144,12 @@ describe('POST /cart', () => {
 
 describe('GET /cart', () => {
     const path = '/cart';
-    let cookie;
 
     const updatedData = [{
         "product_id": data["productId"],
         "user_id": data["userId"],
         "total_units": data["totalUnits"] + 1
-    }]
-    
-    before((done) => {
-        request(app)
-        .post('/auth/login/')
-        .send(userData)
-        .end((err, res) => {
-            if (err) return done(err);
-            cookie = res.headers['set-cookie']
-            done();
-        })
-    });
+    }];
 
     it('responses with 500 when user is not logged in', (done) => {
         request(app)
@@ -195,19 +185,6 @@ describe('DELETE /cart/delete-product', () => {
     const path = `/cart/delete-product?productId=${productId}`;
     const badQueryParamsPath = `/cart/delete-product`;
     const badProductIdPath = `/cart/delete-product?productId=${invalidProductId}`;
-    
-    let cookie;
-    
-    before((done) => {
-        request(app)
-        .post('/auth/login/')
-        .send(userData)
-        .end((err, res) => {
-            if (err) return done(err);
-            cookie = res.headers['set-cookie']
-            done();
-        })
-    });
 
     it('responses with 500 when user is not logged in', (done) => {
         request(app)
