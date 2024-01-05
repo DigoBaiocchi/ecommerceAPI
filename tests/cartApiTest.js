@@ -143,6 +143,12 @@ describe('POST /cart', () => {
 describe('GET /cart', () => {
     const path = '/cart';
     let cookie;
+
+    const updatedData = [{
+        "product_id": data["productId"],
+        "user_id": data["userId"],
+        "total_units": data["totalUnits"] + 1
+    }]
     
     before((done) => {
         request(app)
@@ -175,7 +181,7 @@ describe('GET /cart', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
-            .expect({ "message": `Cart selected for user`, "cart": data })
+            .expect({ "message": `Cart selected for user`, "cart": updatedData })
             .end((err) => {
                 if (err) return done(err);
                 done();
