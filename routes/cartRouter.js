@@ -76,6 +76,11 @@ router.post('/', async (req, res, next) => {
         const userId = req.session.passport.user.userId;
         const productAlreadyInCart = await Database.selectProductInCart(userId, productId);
         
+        const validUserId = await Database.selectUserById(userId);
+        if(!validUserId) {
+            return res.status(400).json({ error: `User id was not found` });
+        }
+        
         const validProductId = await Database.checkIfProductAlreadyExists(productId);
         if(!validProductId) {
             return res.status(401).json({ error: `Product id was not found` });
@@ -88,6 +93,7 @@ router.post('/', async (req, res, next) => {
         }
 
         if(productAlreadyInCart) {
+            console.log(productAlreadyInCart)
             const newAmount = productAlreadyInCart.total_units + totalUnits;
             if(newAmount < 1) {
                 return res.status(403).json({ error: `Product total in the cart can't be zero. Do you want to delete this product from cart?` });
@@ -175,14 +181,14 @@ router.get('/', async (req, res, next) => {
  */
 
 router.delete('/delete-product', async (req, res, next) => {
-    // Check if productId query param is not provided  
-    if (!req.query.productId) {
-      return res.status(402).json({ error: 'ProductId parameter was not provided' });
-    }
-  
     // Check if user is not logged in
     if (!req.session.passport) {
       return res.status(500).json({ error: 'User is not logged in' });
+    }
+  
+    // Check if productId query param is not provided  
+    if (!req.query.productId) {
+      return res.status(402).json({ error: 'ProductId parameter was not provided' });
     }
   
     const userId = req.session.passport.user.userId;

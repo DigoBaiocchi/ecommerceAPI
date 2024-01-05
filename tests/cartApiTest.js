@@ -31,14 +31,14 @@ const invalidQtyData = {
     "totalUnits": 5
 };
 
+const userData = {
+    "email": "gambito@gmail.com",
+    "password": "12345",
+    "checkoutData": []
+};
+
 describe('POST /cart', () => {
     const path = '/cart';
-    const userData = {
-        "email": "gambito@gmail.com",
-        "password": "12345",
-        "checkoutData": []
-    }
-    
     let cookie;
     
     before((done) => {
@@ -227,26 +227,55 @@ describe('PUT /cart', () => {
     });
 });
 
-describe('DELETE /cart/:userId/:productId', () => {
+describe('DELETE /cart/delete-product', () => {
     const userId = data['userId'];
     const productId = data['productId'];
     const invalidUserId = invalidUserData['userId'];
     const invalidProductId = invalidProductData['productId'];
-    const path = `/cart/${userId}/${productId}`;
+    const path = `/cart/delete-product`;
     const badUserIdPath = `/cart/${invalidUserId}/${productId}`;
     const badProductIdPath = `/cart/${userId}/${invalidProductId}`;
-    it('responses with 200 when product was deleted from the cart', (done) => {
+    
+    let cookie;
+    
+    before((done) => {
         request(app)
-            .delete(path)
+        .post('/auth/login/')
+        .send(userData)
+        .end((err, res) => {
+            if (err) return done(err);
+            cookie = res.headers['set-cookie']
+            done();
+        })
+    });
+
+    it('responses with 500 when user is not logged in', (done) => {
+        request(app)
+            .delete(`${path}?productId=${productId}`)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(200)
-            .expect(`"Product id ${productId} delete from user ${userId} cart"`)
+            .expect(500)
+            .expect({ "error": `User is not logged in` })
             .end((err) => {
                 if (err) return done(err);
                 done();
             })
     });
+
+    it('responses with 200 when product was deleted from the cart', (done) => {
+        request(app)
+            .delete(`${path}?productId=${productId}`)
+            .set('Cookie', cookie)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .expect({ message: 'Product was deleted from user cart' })
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+
     it('responses with 400 when no user id was found', (done) => {
         request(app)
             .delete(badUserIdPath)
@@ -259,6 +288,7 @@ describe('DELETE /cart/:userId/:productId', () => {
                 done();
             })
     });
+
     it('responses with 400 when no product id was found', (done) => {
         request(app)
             .delete(badProductIdPath)
