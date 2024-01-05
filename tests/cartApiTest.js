@@ -274,13 +274,14 @@ describe('DELETE /cart/delete-product', () => {
             })
     });
 
-    it('responses with 400 when no user id was found', (done) => {
+    it('responses with 402 when productId query param is not provided', (done) => {
         request(app)
-            .delete(badUserIdPath)
+            .delete(badQueryParamsPath)
+            .set('Cookie', cookie)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect(`"User id ${invalidUserData['userId']} was not found"`)
+            .expect(402)
+            .expect({ "error": 'ProductId parameter was not provided' })
             .end((err) => {
                 if (err) return done(err);
                 done();
