@@ -135,8 +135,6 @@ router.post('/', async (req, res, next) => {
  *                      application/xml:
  *                          schema:
  *                              $ref: '#/components/schemas/Get_Products_Data_From_Cart'
- *              400:
- *                  description: User was not found
  *              500:
  *                  description: User is not logged in
  */
