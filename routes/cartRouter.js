@@ -99,7 +99,7 @@ router.post('/', async (req, res, next) => {
         const getProductData = await Database.getProductById(productId);
         const totalProductQty = getProductData.total_available;
         if(totalUnits > totalProductQty) {
-            return res.status(400).json({ error: `Product has less than ${totalUnits} units` })
+            return res.status(400).json({ error: `Product does not have that many units` })
         }
 
         if(productAlreadyInCart) {
@@ -115,7 +115,7 @@ router.post('/', async (req, res, next) => {
             return res.status(200).json({ message: `Product ${productId} quantity has been udpated in the cart` });
         } else {
             if(totalUnits < 1) {
-                return res.status(400).json({ error: `Total units for product needs to be greater than zero to be added to cart` });
+                return res.status(400).json({ error: `Product total in the cart can't be zero. Do you want to delete this product from cart?` });
             }
             const addToCartTable = await Database.addProductToCart(userId, productId, totalUnits);
             return res.status(201).json({ message: `Product ${productId} was added to cart table` });

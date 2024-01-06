@@ -107,7 +107,7 @@ describe('CART TESTS', () => {
                     done();
                 })
         });
-        it('responses with 402 when invalid quantity is sent', (done) => {
+        it('responses with 400 when invalid quantity is sent', (done) => {
             request(app)
                 .post(path)
                 .set('Cookie', cookie)
@@ -115,13 +115,13 @@ describe('CART TESTS', () => {
                 .set('accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400)
-                .expect({ "error": `Product has less than ${invalidQtyData["totalUnits"]} units` })
+                .expect({ "error": `Product does not have that many units` })
                 .end((err) => {
                     if (err) return done(err);
                     done();
                 })
         });
-        it('responses with 403 when product quantity in cart is zero', (done) => {
+        it('responses with 400 when product quantity in cart is zero', (done) => {
             request(app)
                 .post(path)
                 .set('Cookie', cookie)
