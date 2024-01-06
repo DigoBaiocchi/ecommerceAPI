@@ -181,12 +181,12 @@ describe('CART TESTS', () => {
         const badQueryParamsPath = `/cart/delete-product`;
         const badProductIdPath = `/cart/delete-product?productId=${invalidProductId}`;
     
-        it('responses with 500 when user is not logged in', (done) => {
+        it('responses with 401 when user is not logged in', (done) => {
             request(app)
                 .delete(path)
                 .set('accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(500)
+                .expect(401)
                 .expect({ "error": `User is not logged in` })
                 .end((err) => {
                     if (err) return done(err);

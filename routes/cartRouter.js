@@ -26,6 +26,12 @@ const { Database } = require('../db/databaseQueries');
  *                      example: Cart selected for user
  *                  cartData:
  *                      $ref: '#/components/schemas/Add_Product_Cart_Object'
+ *          Error_UserIsNotLoggedIn:
+ *              type: object
+ *              properties:
+ *                  error:
+ *                      type: string
+ *                      example: User is not logged in
  *          Error_InsufficientProductUnits:
  *              type: object
  *              properties:
@@ -38,6 +44,18 @@ const { Database } = require('../db/databaseQueries');
  *                  error:
  *                      type: string
  *                      example: Product total in the cart can't be zero. Do you want to delete this product from cart?
+ *          Error_ProductIdNotFound:
+ *              type: object
+ *              properties:
+ *                  error:
+ *                      type: string
+ *                      example: Product id was not found
+ *          Error_NoProductsInCart:
+ *              type: object
+ *              properties:
+ *                  error:
+ *                      type: string
+ *                      example: No products in the cart
  */
 
 /**
@@ -62,17 +80,36 @@ const { Database } = require('../db/databaseQueries');
  *              201:
  *                  description: Product was added to cart table
  *              400:
- *                  description: Bad Request
+ *                  description: Bad Request - multiple responses
  *                  content:
  *                      application/json:
  *                          schema:
  *                              oneOf:
  *                                  - $ref: '#/components/schemas/Error_InsufficientProductUnits'
  *                                  - $ref: '#/components/schemas/Error_QuantityIsZero'
+ *                      application/xml:
+ *                          schema:
+ *                              oneOf:
+ *                                  - $ref: '#/components/schemas/Error_InsufficientProductUnits'
+ *                                  - $ref: '#/components/schemas/Error_QuantityIsZero'
  *              401:
  *                  description: User is not logged in
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/components/schemas/Error_UserIsNotLoggedIn'
+ *                      application/xml:
+ *                          schema:
+ *                              $ref: '#/components/schemas/Error_UserIsNotLoggedIn'
  *              404:
  *                  description: Product id was not found
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/components/schemas/Error_ProductIdNotFound'
+ *                      application/xml:
+ *                          schema:
+ *                              $ref: '#/components/schemas/Error_ProductIdNotFound'
  */
 
 router.post('/', async (req, res, next) => {
@@ -167,20 +204,36 @@ router.get('/', async (req, res, next) => {
  *          responses:
  *              200:
  *                  description: Product was deleted from user userId cart
- *              400:
- *                  description: User id was not found
  *              401:
- *                  description: Product id was not found
+ *                  description: User is not logged in
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/components/schemas/Error_UserIsNotLoggedIn'
+ *                      application/xml:
+ *                          schema:
+ *                              $ref: '#/components/schemas/Error_UserIsNotLoggedIn'
  *              402:
  *                  description: No products in the cart
- *              500:
- *                  description: User is not logged in
+ *              404:
+ *                  description: Not Found - multiple responses
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              oneOf:
+ *                                  - $ref: '#/components/schemas/Error_ProductIdNotFound'
+ *                                  - $ref: '#/components/schemas/Error_NoProductsInCart'
+ *                      application/xml:
+ *                          schema:
+ *                              oneOf:
+ *                                  - $ref: '#/components/schemas/Error_ProductIdNotFound'
+ *                                  - $ref: '#/components/schemas/Error_NoProductsInCart'
  */
 
 router.delete('/delete-product', async (req, res, next) => {
     // Check if user is not logged in
     if (!req.session.passport) {
-      return res.status(500).json({ error: 'User is not logged in' });
+      return res.status(401).json({ error: 'User is not logged in' });
     }
   
     // Check if productId query param is not provided  
