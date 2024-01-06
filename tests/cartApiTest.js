@@ -236,4 +236,54 @@ describe('CART TESTS', () => {
                 })
         });
     });
+
+    describe('DELETE /cart/delete-cart', () => {
+        const path = '/cart/delete-cart';
+
+        it("responses with 200 when user's cart was deleted", (done) => {
+            request(app)
+                .post('/cart')
+                .set('Cookie', cookie)
+                .send(data)
+                .set('accept', 'application/json')
+                .end((err) => {
+                    if (err) return done(err);
+                    request(app)
+                        .delete(path)
+                        .set('Cookie', cookie)
+                        .expect('Content-Type', /json/)
+                        .expect(200)
+                        .expect({ "message": `All products deleted from user cart` })
+                        .end((err) => {
+                            if (err) return done(err);
+                            done();
+                        })
+                })
+        });
+
+        it('responses with 500 when user is not logged in', (done) => {
+            request(app)
+                .delete(path)
+                .expect('Content-Type', /json/)
+                .expect(500)
+                .expect({ "error": `User is not logged in` })
+                .end((err) => {
+                    if (err) return done(err);
+                    done();
+                })
+        });
+
+        it('responses with 401 when user has no products in the cart', (done) => {
+            request(app)
+                .delete(path)
+                .set('Cookie', cookie)
+                .expect('Content-Type', /json/)
+                .expect(401)
+                .expect({ "error": `No products in the cart` })
+                .end((err) => {
+                    if (err) return done(err);
+                    done();
+                })
+        });
+    });
 });
