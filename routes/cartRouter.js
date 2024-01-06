@@ -26,8 +26,24 @@ const { Database } = require('../db/databaseQueries');
  *                      example: Cart selected for user
  *                  cartData:
  *                      $ref: '#/components/schemas/Add_Product_Cart_Object'
- *              xml:
- *                  name: cart_data          
+ *          Error_UserNotFound:
+ *              type: object
+ *              properties:
+ *                  error:
+ *                      type: string
+ *                      example: User id was not found
+ *          Error_InsufficientProductUnits:
+ *              type: object
+ *              properties:
+ *                  error:
+ *                      type: string
+ *                      example: Product has less than ${totalUnits} units
+ *          Error_QuantityIsZero:
+ *              type: object
+ *              properties:
+ *                  error:
+ *                      type: string
+ *                      example: Product total in the cart can't be zero. Do you want to delete this product from cart?
  */
 
 /**
@@ -52,15 +68,14 @@ const { Database } = require('../db/databaseQueries');
  *              201:
  *                  description: Product was added to cart table
  *              400:
- *                  description: User id was not found
- *              400:
- *                  description: Product has less than ${totalUnits} units
- *              400:
- *                  description: Product total in the cart can't be zero. Do you want to delete this product from cart?
- *              400:
- *                  description: Product does not have that many units
- *              400:
- *                  description: Total units for product needs to be greater than zero to be added to cart
+ *                  description: Bad Request
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              oneOf:
+ *                                  - $ref: '#/components/schemas/Error_UserNotFound'
+ *                                  - $ref: '#/components/schemas/Error_InsufficientProductUnits'
+ *                                  - $ref: '#/components/schemas/Error_QuantityIsZero'
  *              401:
  *                  description: User is not logged in
  *              404:
