@@ -53,59 +53,54 @@ const { Database } = require('../db/databaseQueries');
  *                  description: Product was added to cart table
  *              400:
  *                  description: User id was not found
- *              401:
- *                  description: Product id was not found
- *              402:
+ *              400:
  *                  description: Product has less than ${totalUnits} units
- *              403:
+ *              400:
  *                  description: Product total in the cart can't be zero. Do you want to delete this product from cart?
- *              404:
+ *              400:
  *                  description: Product does not have that many units
- *              405:
+ *              400:
  *                  description: Total units for product needs to be greater than zero to be added to cart
- *              500:
+ *              401:
  *                  description: User is not logged in
+ *              404:
+ *                  description: Product id was not found
  */
 
 router.post('/', async (req, res, next) => {
     // check if user is not logged in
     if(!req.session.passport) {
-        return res.status(500).json({ error: `User is not logged in` });
+        return res.status(401).json({ error: `User is not logged in` });
     } else {
         const { productId, totalUnits } = req.body;
         const userId = req.session.passport.user.userId;
         const productAlreadyInCart = await Database.selectProductInCart(userId, productId);
         
-        const validUserId = await Database.selectUserById(userId);
-        if(!validUserId) {
-            return res.status(400).json({ error: `User id was not found` });
-        }
-        
         const validProductId = await Database.checkIfProductAlreadyExists(productId);
         if(!validProductId) {
-            return res.status(401).json({ error: `Product id was not found` });
+            return res.status(404).json({ error: `Product id was not found` });
         }
         
         const getProductData = await Database.getProductById(productId);
         const totalProductQty = getProductData.total_available;
         if(totalUnits > totalProductQty) {
-            return res.status(402).json({ error: `Product has less than ${totalUnits} units` })
+            return res.status(400).json({ error: `Product has less than ${totalUnits} units` })
         }
 
         if(productAlreadyInCart) {
             console.log(productAlreadyInCart)
             const newAmount = productAlreadyInCart.total_units + totalUnits;
             if(newAmount < 1) {
-                return res.status(403).json({ error: `Product total in the cart can't be zero. Do you want to delete this product from cart?` });
+                return res.status(400).json({ error: `Product total in the cart can't be zero. Do you want to delete this product from cart?` });
             }
             if (newAmount > totalProductQty) {
-                return res.status(404).json({ error: `Product does not have that many units` });
+                return res.status(400).json({ error: `Product does not have that many units` });
             }
             const updateCart = await Database.updateProductQuanityInCart(userId, productId, newAmount);
             return res.status(200).json({ message: `Product ${productId} quantity has been udpated in the cart` });
         } else {
             if(totalUnits < 1) {
-                return res.status(405).json({ error: `Total units for product needs to be greater than zero to be added to cart` });
+                return res.status(400).json({ error: `Total units for product needs to be greater than zero to be added to cart` });
             }
             const addToCartTable = await Database.addProductToCart(userId, productId, totalUnits);
             return res.status(201).json({ message: `Product ${productId} was added to cart table` });

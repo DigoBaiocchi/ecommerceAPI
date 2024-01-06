@@ -49,13 +49,13 @@ describe('CART TESTS', () => {
     describe('POST /cart', () => {
         const path = '/cart';
     
-        it('responses with 500 when user is not logged in', (done) => {
+        it('responses with 401 when user is not logged in', (done) => {
             request(app)
             .post(path)
             .send(data)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(500)
+            .expect(401)
             .expect({ "error": `User is not logged in` })
             .end((err) => {
                 if (err) return done(err);
@@ -93,14 +93,14 @@ describe('CART TESTS', () => {
                 })
         });
     
-        it('responses with 401 when no product id is found', (done) => {
+        it('responses with 404 when no product id is found', (done) => {
             request(app)
                 .post(path)
                 .set('Cookie', cookie)
                 .send(invalidProductData)
                 .set('accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(401)
+                .expect(404)
                 .expect({ "error": `Product id was not found` })
                 .end((err) => {
                     if (err) return done(err);
@@ -114,7 +114,7 @@ describe('CART TESTS', () => {
                 .send(invalidQtyData)
                 .set('accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(402)
+                .expect(400)
                 .expect({ "error": `Product has less than ${invalidQtyData["totalUnits"]} units` })
                 .end((err) => {
                     if (err) return done(err);
@@ -128,7 +128,7 @@ describe('CART TESTS', () => {
                 .send(reduceQtyData)
                 .set('accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(403)
+                .expect(400)
                 .expect({ "error": `Product total in the cart can't be zero. Do you want to delete this product from cart?` })
                 .end((err) => {
                     if (err) return done(err);
