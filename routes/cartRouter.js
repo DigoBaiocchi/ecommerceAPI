@@ -26,12 +26,6 @@ const { Database } = require('../db/databaseQueries');
  *                      example: Cart selected for user
  *                  cartData:
  *                      $ref: '#/components/schemas/Add_Product_Cart_Object'
- *          Error_UserNotFound:
- *              type: object
- *              properties:
- *                  error:
- *                      type: string
- *                      example: User id was not found
  *          Error_InsufficientProductUnits:
  *              type: object
  *              properties:
@@ -73,7 +67,6 @@ const { Database } = require('../db/databaseQueries');
  *                      application/json:
  *                          schema:
  *                              oneOf:
- *                                  - $ref: '#/components/schemas/Error_UserNotFound'
  *                                  - $ref: '#/components/schemas/Error_InsufficientProductUnits'
  *                                  - $ref: '#/components/schemas/Error_QuantityIsZero'
  *              401:
@@ -99,7 +92,7 @@ router.post('/', async (req, res, next) => {
         const getProductData = await Database.getProductById(productId);
         const totalProductQty = getProductData.total_available;
         if(totalUnits > totalProductQty) {
-            return res.status(400).json({ error: `Product does not have that many units` })
+            return res.status(400).json({ error: `Product does not have that many units` });
         }
 
         if(productAlreadyInCart) {
