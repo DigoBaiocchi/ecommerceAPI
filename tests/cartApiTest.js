@@ -208,13 +208,13 @@ describe('CART TESTS', () => {
                 })
         });
     
-        it('responses with 402 when productId query param is not provided', (done) => {
+        it('responses with 400 when productId query param is not provided', (done) => {
             request(app)
                 .delete(badQueryParamsPath)
                 .set('Cookie', cookie)
                 .set('accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(402)
+                .expect(400)
                 .expect({ "error": 'ProductId parameter was not provided' })
                 .end((err) => {
                     if (err) return done(err);
@@ -230,6 +230,19 @@ describe('CART TESTS', () => {
                 .expect('Content-Type', /json/)
                 .expect(404)
                 .expect({ "error": 'Product id was not found' })
+                .end((err) => {
+                    if (err) return done(err);
+                    done();
+                })
+        });
+
+        it('responses with 404 when user has no products in the cart', (done) => {
+            request(app)
+                .delete(path)
+                .set('Cookie', cookie)
+                .expect('Content-Type', /json/)
+                .expect(404)
+                .expect({ "error": `No products in the cart` })
                 .end((err) => {
                     if (err) return done(err);
                     done();

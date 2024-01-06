@@ -56,6 +56,12 @@ const { Database } = require('../db/databaseQueries');
  *                  error:
  *                      type: string
  *                      example: No products in the cart
+ *          Error_ProductIdParamNotProvided:
+ *              type: object
+ *              properties:
+ *                  error:
+ *                      type: string
+ *                      example: ProductId parameter was not provided
  */
 
 /**
@@ -204,6 +210,15 @@ router.get('/', async (req, res, next) => {
  *          responses:
  *              200:
  *                  description: Product was deleted from user userId cart
+ *              400:
+ *                  description: ProductId parameter was not provided
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/components/schemas/Error_ProductIdParamNotProvided'
+ *                      application/xml:
+ *                          schema:
+ *                              $ref: '#/components/schemas/Error_ProductIdParamNotProvided'
  *              401:
  *                  description: User is not logged in
  *                  content:
@@ -213,8 +228,6 @@ router.get('/', async (req, res, next) => {
  *                      application/xml:
  *                          schema:
  *                              $ref: '#/components/schemas/Error_UserIsNotLoggedIn'
- *              402:
- *                  description: No products in the cart
  *              404:
  *                  description: Not Found - multiple responses
  *                  content:
@@ -238,7 +251,7 @@ router.delete('/delete-product', async (req, res, next) => {
   
     // Check if productId query param is not provided  
     if (!req.query.productId) {
-      return res.status(402).json({ error: 'ProductId parameter was not provided' });
+      return res.status(400).json({ error: 'ProductId parameter was not provided' });
     }
   
     const userId = req.session.passport.user.userId;
@@ -254,7 +267,7 @@ router.delete('/delete-product', async (req, res, next) => {
     // Check if the product is already in the cart
     const productAlreadyInCart = await Database.selectProductInCart(userId, productId);
     if (!productAlreadyInCart) {
-      return res.status(402).json({ error: 'No products in the cart' });
+      return res.status(404).json({ error: 'No products in the cart' });
     }
   
     // Delete the product from the cart
@@ -273,10 +286,24 @@ router.delete('/delete-product', async (req, res, next) => {
  *          responses:
  *              200:
  *                  description: All products deleted from user's' cart
- *              404:
- *                  description: No products in the cart
  *              401:
  *                  description: User is not logged in
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/components/schemas/Error_UserIsNotLoggedIn'
+ *                      application/xml:
+ *                          schema:
+ *                              $ref: '#/components/schemas/Error_UserIsNotLoggedIn'
+ *              404:
+ *                  description: No products in the cart
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/components/schemas/Error_NoProductsInCart'
+ *                      application/xml:
+ *                          schema:
+ *                              $ref: '#/components/schemas/Error_NoProductsInCart'
  */
 
 router.delete('/delete-cart', async (req, res, next) => {
