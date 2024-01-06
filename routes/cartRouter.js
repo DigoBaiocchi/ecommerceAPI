@@ -220,24 +220,22 @@ router.delete('/delete-product', async (req, res, next) => {
  *          responses:
  *              200:
  *                  description: All products deleted from user's' cart
- *              400:
- *                  description: User id was not found
- *              401:
+ *              404:
  *                  description: No products in the cart
- *              500:
+ *              401:
  *                  description: User is not logged in
  */
 
 router.delete('/delete-cart', async (req, res, next) => {
     // check if user is not logged in
     if(!req.session.passport) {
-        return res.status(500).json({ error: `User is not logged in` });
+        return res.status(401).json({ error: `User is not logged in` });
     } else {
         const userId = req.session.passport.user.userId;
         
         const productsInUserCart = await Database.selectCartProducts(userId);
         if(productsInUserCart.length === 0) {
-            return res.status(401).json({ error: `No products in the cart` });
+            return res.status(404).json({ error: `No products in the cart` });
         }
         const deleteProductFromCart = await Database.deleteAllProductsFromCart(userId);
         return res.status(200).json({ message: `All products deleted from user cart` });

@@ -261,11 +261,11 @@ describe('CART TESTS', () => {
                 })
         });
 
-        it('responses with 500 when user is not logged in', (done) => {
+        it('responses with 401 when user is not logged in', (done) => {
             request(app)
                 .delete(path)
                 .expect('Content-Type', /json/)
-                .expect(500)
+                .expect(401)
                 .expect({ "error": `User is not logged in` })
                 .end((err) => {
                     if (err) return done(err);
@@ -273,12 +273,12 @@ describe('CART TESTS', () => {
                 })
         });
 
-        it('responses with 401 when user has no products in the cart', (done) => {
+        it('responses with 404 when user has no products in the cart', (done) => {
             request(app)
                 .delete(path)
                 .set('Cookie', cookie)
                 .expect('Content-Type', /json/)
-                .expect(401)
+                .expect(404)
                 .expect({ "error": `No products in the cart` })
                 .end((err) => {
                     if (err) return done(err);
