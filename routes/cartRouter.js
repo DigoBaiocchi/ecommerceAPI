@@ -148,10 +148,6 @@ router.get('/', async (req, res, next) => {
     } 
 
     const userId = req.session.passport.user.userId;
-    const validUserId = await Database.selectUserById(userId);
-    if(!validUserId) {
-        return res.status(400).json({ error: `User was not found`});
-    }
     
     const userCartData = await Database.selectCartProducts(userId);
     
@@ -195,12 +191,6 @@ router.delete('/delete-product', async (req, res, next) => {
     }
   
     const userId = req.session.passport.user.userId;
-  
-    // Check if the user ID is valid
-    const validUserId = await Database.selectUserById(userId);
-    if (!validUserId) {
-      return res.status(400).json({ error: 'User id was not found' });
-    }
   
     // Check if the product ID is valid
     const productId = Number(req.query.productId);
@@ -246,10 +236,6 @@ router.delete('/delete-cart', async (req, res, next) => {
         return res.status(500).json({ error: `User is not logged in` });
     } else {
         const userId = req.session.passport.user.userId;
-        const validUserId = await Database.selectUserById(userId);
-        if(!validUserId) {
-            return res.status(400).json({ error: `User id was not found` });
-        }
         
         const productsInUserCart = await Database.selectCartProducts(userId);
         if(productsInUserCart.length === 0) {
