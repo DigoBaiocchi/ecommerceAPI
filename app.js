@@ -8,7 +8,7 @@ const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
 const { Database } = require('./db/databaseQueries');
 const dotenv = require('dotenv');
-dotenv.config({ path: '.env.development' })
+dotenv.config({ path: '.env.development.local' })
 const port = process.env.PORT || 3000;
 
 const registerRouter = require('./routes/registerRouter');
@@ -28,7 +28,7 @@ const options = {
             version: '1.0.0',
             description: 'Ecommerce rest API with openAPI'
         },
-        host: 'localhost:3000',
+        host: `localhost:${port}/`,
         basePath: '/',
         servers:[
             {
