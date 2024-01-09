@@ -64,7 +64,7 @@ const { Database } = require('../db/databaseQueries');
 
 router.get('/', async (req, res, next) => {
     const categories = await Database.getAllCategories();
-    console.log(categories)
+    console.log(categories);
     if (categories.length !== 0) {
         return res.status(200).json({ message: 'All categories are loaded', data: categories });
     }
