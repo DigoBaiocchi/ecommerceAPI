@@ -194,15 +194,15 @@ router.patch('/edit-category', async (req, res, next) => {
 
 /**
  * @swagger
- * /categories/delete-category/:categoryName:
+ * /categories/delete-category/:categoryId:
  *      delete:
  *          tags:
  *              - Category
  *          description: Delete category
  *          parameters:
- *              - name: categoryName
+ *              - name: categoryId
  *                in: path
- *                description: name of category to be deleted
+ *                description: id of category to be deleted
  *                required: true
  *          responses:
  *              200:
