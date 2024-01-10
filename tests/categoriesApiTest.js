@@ -53,8 +53,6 @@ describe('POST /categories/add-category', async () => {
 
 describe('GET /categories', () => {
     it('responses with 200 with all categories', (done) => {
-
-        // console.log(newCategoryData.id);
         request(app)
             .get('/categories')
             .set('accept', 'application/json')
