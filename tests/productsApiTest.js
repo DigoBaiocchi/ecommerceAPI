@@ -51,6 +51,89 @@ const wrongProduct = {
     'price': '$4.99'
 };
 
+
+describe('POST /products/add-product', () => {
+    const path = "/products/add-product";
+    it('responses with 200 when product is added', (done) => {
+        request(app)
+            .post(path)
+            .send(newProduct)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .expect(`"Product ${newProduct['name']} successfully added"`)
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+    it('responses with 400 when product name already exists', (done) => {
+        request(app)
+            .post(path)
+            .send(existintProduct)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect(`"Product ${existintProduct['name']} already exists"`)
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+        });
+        it('responses with 400 when no product name is provided', (done) => {
+            request(app)
+            .post(path)
+            .send(noProductName)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect('"Product not added. Missing required information"')
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+        });
+        it('responses with 400 when no product quantity is provided', (done) => {
+            request(app)
+            .post(path)
+            .send(noProductQuantity)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect('"Product not added. Missing required information"')
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+        });
+        it('responses with 400 when no product quantity is provided', (done) => {
+            request(app)
+            .post(path)
+            .send(noProductDescription)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect('"Product not added. Missing required information"')
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+        });
+        it('responses with 400 when no product quantity is provided', (done) => {
+            request(app)
+            .post(path)
+            .send(noProductPrice)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect('"Product not added. Missing required information"')
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+        });
+    });
+    
 describe('GET /products', () => {
     it('responses with 200 with all products', (done) => {
         request(app)
@@ -58,7 +141,7 @@ describe('GET /products', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
-            .expect('"All products are loaded"')
+            .expect({ "message": "All products are loaded", "data": [newProduct] })
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -90,88 +173,6 @@ describe('GET /products/:name', () => {
             .expect('Content-Type', /json/)
             .expect(400)
             .expect(`"No product ${wrongProductName} was found"`)
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            })
-    });
-});
-
-describe('POST /products/add-product', () => {
-    const path = "/products/add-product";
-    it('responses with 200 when product is added', (done) => {
-        request(app)
-            .post(path)
-            .send(newProduct)
-            .set('accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .expect(`"Product ${newProduct['name']} successfully added"`)
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            })
-    });
-    it('responses with 400 when product name already exists', (done) => {
-        request(app)
-            .post(path)
-            .send(existintProduct)
-            .set('accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(400)
-            .expect(`"Product ${existintProduct['name']} already exists"`)
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            })
-    });
-    it('responses with 400 when no product name is provided', (done) => {
-        request(app)
-            .post(path)
-            .send(noProductName)
-            .set('accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(400)
-            .expect('"Product not added. Missing required information"')
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            })
-    });
-    it('responses with 400 when no product quantity is provided', (done) => {
-        request(app)
-            .post(path)
-            .send(noProductQuantity)
-            .set('accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(400)
-            .expect('"Product not added. Missing required information"')
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            })
-    });
-    it('responses with 400 when no product quantity is provided', (done) => {
-        request(app)
-            .post(path)
-            .send(noProductDescription)
-            .set('accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(400)
-            .expect('"Product not added. Missing required information"')
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            })
-    });
-    it('responses with 400 when no product quantity is provided', (done) => {
-        request(app)
-            .post(path)
-            .send(noProductPrice)
-            .set('accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(400)
-            .expect('"Product not added. Missing required information"')
             .end((err) => {
                 if (err) return done(err);
                 done();
