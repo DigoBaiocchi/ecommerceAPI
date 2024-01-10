@@ -69,7 +69,7 @@ router.get('/', async (req, res, next) => {
         return res.status(200).json({ message: 'All categories are loaded', data: categories });
     }
 
-    return res.status(400).json({ error: 'No categories found' });
+    return res.status(400).json({ error: 'No categories in the database' });
 });
 
 /**
@@ -88,7 +88,7 @@ router.get('/', async (req, res, next) => {
  *              - application/json
  *          responses:
  *              200:
- *                  description: Category id selected
+ *                  description: Category data was loaded
  *                  content:
  *                      application/json:
  *                        schema:
@@ -97,17 +97,17 @@ router.get('/', async (req, res, next) => {
  *                        schema:
  *                          $ref: '#/components/schemas/Category'
  *              400:
- *                  description: Category id not found
+ *                  description: Category was not found
  */
 
 router.get('/:categoryId', async (req, res, next) => {
     const { categoryId } = req.params;
     const category = await Database.getCategoryById(categoryId);
     if (!category) {
-        return res.status(400).json({ error: `Category id not found` });
+        return res.status(400).json({ error: `Category was not found` });
     }
 
-    return res.status(200).json({ message: `Category selected`, data: category });
+    return res.status(200).json({ message: `Category data was loaded`, data: category });
 });
 
 /**

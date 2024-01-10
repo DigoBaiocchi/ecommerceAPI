@@ -107,10 +107,10 @@ router.get('/', async (req, res, next) => {
  *                  description: Product was not found
  */
 
-router.get('/:name', async (req, res, next) => {
-    const { name } = req.params;
+router.get('/:productId', async (req, res, next) => {
+    const { productId } = req.params;
 
-    const productData = await Database.getProductByName(name);
+    const productData = await Database.getProductById(productId);
     if (!productData) {
         return res.status(400).json({ error: `Product was not found` });
     }
