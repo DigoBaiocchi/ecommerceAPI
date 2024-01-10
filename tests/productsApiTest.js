@@ -51,6 +51,8 @@ const wrongProduct = {
     'price': '$4.99'
 };
 
+let categoryData;
+
 
 describe('POST /products/add-product', () => {
     const path = "/products/add-product";
@@ -149,18 +151,18 @@ describe('GET /products', () => {
     });
 });
 
-describe('GET /products/:name', () => {
-    const productName = 'Tuna';
-    const path = `/products/${productName}`;
-    const wrongProductName = 'No Salmon';
-    const wrongPath = `/products/${wrongProductName}`;
+describe('GET /products/:productId', () => {
+    const productId = 'Tuna';
+    const path = `/products/${productId}`;
+    const wrongProductId = 0;
+    const wrongPath = `/products/${wrongProductId}`;
     it('resposnes with 200 with selected product info', (done) => {
         request(app)
             .get(path)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
-            .expect(`"Product ${productName} data is loaded"`)
+            .expect({ "message": `Product data was loaded`, "data": categoryData })
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -172,7 +174,7 @@ describe('GET /products/:name', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect(`"No product ${wrongProductName} was found"`)
+            .expect({ "error": `Product was not found` })
             .end((err) => {
                 if (err) return done(err);
                 done();
