@@ -1,9 +1,11 @@
 const request = require('supertest');
 const app = require('../app');
+const { Database } = require('../db/databaseQueries');
+
+let newCategoryData;
 
 describe('POST /categories/add-category', async () => {
     const newCategory = "Poultry";
-    const existentCategory = "Fish";
 
     it('responses with 201 when a category is successfully created', (done) => {
         request(app)
@@ -13,8 +15,9 @@ describe('POST /categories/add-category', async () => {
             .expect('Content-Type', /json/)
             .expect(201)
             .expect({ "message": `Category successfully created` })
-            .end((err) => {
+            .end(async (err) => {
                 if (err) return done(err);
+                newCategoryData = await Database.getCategoryByName(newCategory);
                 done();
             })
     });
@@ -36,7 +39,7 @@ describe('POST /categories/add-category', async () => {
     it('responses with 401 when category already exists', (done) => {
         request(app)
             .post('/categories/add-category')
-            .send({"name": existentCategory})
+            .send({"name": newCategory})
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(401)
@@ -48,14 +51,59 @@ describe('POST /categories/add-category', async () => {
     });
 });
 
-describe('PUT /categories/edit-category', () => {
-    const categoryId = 2;
-    const newName = 'Fish';
+describe('GET /categories', () => {
+    it('responses with 200 with all categories', (done) => {
 
+        // console.log(newCategoryData.id);
+        request(app)
+            .get('/categories')
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .expect({ message: 'All categories are loaded', "data": [newCategoryData] })
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+});
+
+describe('GET /categories/:id', () => {
+    const categoryId = 1;
+    const wrongCategoryId = 1;
+    it('responses with 200 with correct category', (done) => {
+        request(app)
+            .get(`/categories/${newCategoryData.id}`)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .expect({ "message": `Category selected`, "data": newCategoryData })
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+    it('responses with 400 when category does not exist', (done) => {
+        request(app)
+            .get(`/categories/${wrongCategoryId}`)
+            .set('accept', 'application/json')
+            .expect(400)
+            .expect({ "error": `Category id not found` })
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+});
+
+describe('PUT /categories/edit-category', () => {
+    const categoryId = 1;
+    const newName = 'Fish';
     it('responses with 200 when category name is updated', (done) => {
+        console.log(newCategoryData)
         request(app)
             .put('/categories/edit-category')
-            .send({"id": categoryId, "name": newName})
+            .send({"id": newCategoryData.id, "name": newName})
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
@@ -95,12 +143,11 @@ describe('PUT /categories/edit-category', () => {
     });
 });
 
-describe('DELETE /categories/delete-category/:name', () => {
-    const newCategory = "Poultry";
-    const wrongCategory = "WrongCategory";
+describe('DELETE /categories/delete-category/:id', () => {
+    const wrongCategory = 0;
     it('responses with 200 when category is successfully deleted', (done) => {
         request(app)
-            .delete(`/categories/delete-category/${newCategory}`)
+            .delete(`/categories/delete-category/${newCategoryData.id}`)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
@@ -109,7 +156,7 @@ describe('DELETE /categories/delete-category/:name', () => {
                 if(err) return done(err);
                 done();
             })
-    });
+    })
     it('responses with 400 when category is not found', (done) => {
         request(app)
             .delete(`/categories/delete-category/${wrongCategory}`)
@@ -119,49 +166,6 @@ describe('DELETE /categories/delete-category/:name', () => {
             .expect({ "error": "Category does not exist" })
             .end((err) => {
                 if(err) return done(err);
-                done();
-            })
-    });
-});
-
-describe('GET /categories', () => {
-    it('responses with 200 with all categories', (done) => {
-        request(app)
-            .get('/categories')
-            .set('accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .expect({ message: 'All categories are loaded', "data": [{ "id": 2, "name": "Fish"}] })
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            })
-    });
-});
-
-describe('GET /categories/:id', () => {
-    const categoryId = 2;
-    const wrongCategoryId = 1;
-    it('responses with 200 with correct category', (done) => {
-        request(app)
-            .get(`/categories/${categoryId}`)
-            .set('accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .expect({ "message": `Category selected`, "data": { "id": 2, "name": "Fish"} })
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            })
-    });
-    it('responses with 400 when category does not exist', (done) => {
-        request(app)
-            .get(`/categories/${wrongCategoryId}`)
-            .set('accept', 'application/json')
-            .expect(400)
-            .expect({ "error": `Category id not found` })
-            .end((err) => {
-                if (err) return done(err);
                 done();
             })
     });

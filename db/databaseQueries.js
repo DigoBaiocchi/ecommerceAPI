@@ -108,8 +108,8 @@ const Database = {
     async updateCategory(id, name) {
         return await query("UPDATE categories SET name = $2 WHERE id = $1", [id, name]);
     },
-    async deleteCategory(name) {
-        return await query("DELETE FROM categories WHERE name = $1", [name]);
+    async deleteCategory(id) {
+        return await query("DELETE FROM categories WHERE id = $1", [id]);
     },
     async getAllProducts() {
         return await query("SELECT * FROM products").then(results => results.rows);

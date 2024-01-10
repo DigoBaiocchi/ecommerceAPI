@@ -211,16 +211,16 @@ router.put('/edit-category', async (req, res, next) => {
  *                  description: Category does not exist
  */
 
-router.delete('/delete-category/:categoryName', async (req, res, next) => {
-    const { categoryName } = req.params;
+router.delete('/delete-category/:categoryId', async (req, res, next) => {
+    const { categoryId } = req.params;
     const categories = await Database.getAllCategories();
 
-    const existentCategory = categories.some(category => category.name === categoryName);
+    const existentCategory = await categories.some(category => category.id === Number(categoryId));
     if (!existentCategory) {
         return res.status(400).json({ error: "Category does not exist" });
     }
 
-    const deleteCategory = await Database.deleteCategory(categoryName);
+    const deleteCategory = await Database.deleteCategory(categoryId);
     return res.status(200).json({ message: "Category has been deleted" });
 });
 
