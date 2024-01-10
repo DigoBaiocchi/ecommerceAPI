@@ -1,13 +1,7 @@
 const request = require('supertest');
 const app = require('../app');
+const { Database } = require('../db/databaseQueries');
 
-const newProduct = {
-    'categoryId': 2,
-    'name': 'Salmon Test',
-    'quantity': 3,
-    'description': 'Fresh from the sea',
-    'price': '$4.99'
-};
 const existintProduct = {
     'id': 3,
     'name': 'Tuna',
@@ -51,32 +45,56 @@ const wrongProduct = {
     'price': '$4.99'
 };
 
-let categoryData;
+let newCategoryData;
+let productData;
 
+before((done) => {
+    request(app)
+        .post('/categories/add-category')
+        .send({'name': 'newCategory'})
+        .set('accept', 'application/json')
+        .end((err) => {
+            if (err) return done(err);
+            Database.getCategoryByName('newCategory')
+                .then(categoryData => {
+                    newCategoryData = categoryData;
+                    productData = {
+                        'categoryId': newCategoryData.id,
+                        'name': 'Salmon Test',
+                        'quantity': 3,
+                        'description': 'Fresh from the sea',
+                        'price': '$4.99'
+                    };
+                    done();
+                })
+        })
+});
 
 describe('POST /products/add-product', () => {
     const path = "/products/add-product";
+    
     it('responses with 200 when product is added', (done) => {
         request(app)
             .post(path)
-            .send(newProduct)
+            .send(productData)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
-            .expect(`"Product ${newProduct['name']} successfully added"`)
+            .expect({ "message": `Product was successfully added` })
             .end((err) => {
                 if (err) return done(err);
                 done();
             })
+
     });
-    it('responses with 400 when product name already exists', (done) => {
+    it('responses with 401 when product name already exists', (done) => {
         request(app)
             .post(path)
-            .send(existintProduct)
+            .send(productData)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect(`"Product ${existintProduct['name']} already exists"`)
+            .expect(401)
+            .expect({ "error": `Product already exists` })
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -89,7 +107,7 @@ describe('POST /products/add-product', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect('"Product not added. Missing required information"')
+            .expect({ "error": 'Product not added. Missing required information' })
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -102,7 +120,7 @@ describe('POST /products/add-product', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect('"Product not added. Missing required information"')
+            .expect({ "error": 'Product not added. Missing required information' })
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -115,7 +133,7 @@ describe('POST /products/add-product', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect('"Product not added. Missing required information"')
+            .expect({ "error": 'Product not added. Missing required information' })
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -128,7 +146,7 @@ describe('POST /products/add-product', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect('"Product not added. Missing required information"')
+            .expect({ "error": 'Product not added. Missing required information' })
             .end((err) => {
                 if (err) return done(err);
                 done();

@@ -4,7 +4,7 @@ const { Database } = require('../db/databaseQueries');
 
 let newCategoryData;
 
-describe('POST /categories/add-category', async () => {
+describe('POST /categories/add-category', () => {
     const newCategory = "Poultry";
 
     it('responses with 201 when a category is successfully created', (done) => {
@@ -75,7 +75,7 @@ describe('GET /categories/:id', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
-            .expect({ "message": `Category selected`, "data": newCategoryData })
+            .expect({ "message": `Category data was loaded`, "data": newCategoryData })
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -86,7 +86,7 @@ describe('GET /categories/:id', () => {
             .get(`/categories/${wrongCategoryId}`)
             .set('accept', 'application/json')
             .expect(400)
-            .expect({ "error": `Category id not found` })
+            .expect({ "error": `Category was not found` })
             .end((err) => {
                 if (err) return done(err);
                 done();
