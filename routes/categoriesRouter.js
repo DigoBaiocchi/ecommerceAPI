@@ -176,7 +176,7 @@ router.post('/add-category', async (req, res, next) => {
  *                  description: Category id does not exist
  */
 
-router.put('/edit-category', async (req, res, next) => {
+router.patch('/edit-category', async (req, res, next) => {
     const { id, name } = req.body;
     if (!name) {
         return res.status(400).json({ error: `Name not provided for category` });

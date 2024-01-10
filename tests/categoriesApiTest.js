@@ -96,13 +96,12 @@ describe('GET /categories/:id', () => {
     });
 });
 
-describe('PUT /categories/edit-category', () => {
+describe('PATCH /categories/edit-category', () => {
     const categoryId = 1;
     const newName = 'Fish';
     it('responses with 200 when category name is updated', (done) => {
-        console.log(newCategoryData)
         request(app)
-            .put('/categories/edit-category')
+            .patch('/categories/edit-category')
             .send({"id": newCategoryData.id, "name": newName})
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
@@ -116,7 +115,7 @@ describe('PUT /categories/edit-category', () => {
 
     it('responses with 400 when no category name is provided', (done) => {
         request(app)
-            .put('/categories/edit-category')
+            .patch('/categories/edit-category')
             .send({"id": categoryId, "name": ''})
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
@@ -130,7 +129,7 @@ describe('PUT /categories/edit-category', () => {
 
     it('responses with 401 when category does not exist', (done) => {
         request(app)
-            .put('/categories/edit-category')
+            .patch('/categories/edit-category')
             .send({"id": 1000, "name": newName})
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
