@@ -147,8 +147,8 @@ const Database = {
     async updateProduct(id, name, quantity, description, price) {
         return await query("UPDATE products SET name = $2, total_available = $3, description = $4, price = $5 WHERE id = $1", [id, name, quantity, description, price]);
     },
-    async deleteProduct(name) {
-        return await query("DELETE FROM products WHERE name = $1", [name]);
+    async deleteProduct(id) {
+        return await query("DELETE FROM products WHERE id = $1", [id]);
     },
     async addUserInfo(userId, firstName, lastName, address1, address2, city, province, postalCode, creditCard, expDate) {
         return await query(`INSERT INTO user_info 

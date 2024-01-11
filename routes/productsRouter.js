@@ -221,15 +221,15 @@ router.put('/edit-product', async (req, res, next) => {
  *                  description: Product was not found
  */
 
-router.delete('/delete-product/:productName', async (req, res, next) => {
-    const { productName } = req.params;
+router.delete('/delete-product/:productId', async (req, res, next) => {
+    const { productId } = req.params;
 
-    const existentProduct = await Database.checkIfProductAlreadyExists(productName);
+    const existentProduct = await Database.checkIfProductAlreadyExists(productId);
     if(!existentProduct) {
         return res.status(400).json({ error: 'Product was not found' })
     }
 
-    const deleteProduct = await Database.deleteProduct(productName);
+    const deleteProduct = await Database.deleteProduct(productId);
     
     return res.status(200).json({ message: 'Product has been deleted' });
 });

@@ -100,6 +100,7 @@ describe('POST /products/add-product', () => {
             })
 
     });
+
     it('responses with 401 when product name already exists', (done) => {
         request(app)
             .post(path)
@@ -113,59 +114,63 @@ describe('POST /products/add-product', () => {
                 done();
             })
         });
-        it('responses with 400 when no product name is provided', (done) => {
-            request(app)
-            .post(path)
-            .send(noProductName)
-            .set('accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(400)
-            .expect({ "error": 'Product not added. Missing required information' })
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            })
-        });
-        it('responses with 400 when no product quantity is provided', (done) => {
-            request(app)
-            .post(path)
-            .send(noProductQuantity)
-            .set('accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(400)
-            .expect({ "error": 'Product not added. Missing required information' })
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            })
-        });
-        it('responses with 400 when no product quantity is provided', (done) => {
-            request(app)
-            .post(path)
-            .send(noProductDescription)
-            .set('accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(400)
-            .expect({ "error": 'Product not added. Missing required information' })
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            })
-        });
-        it('responses with 400 when no product quantity is provided', (done) => {
-            request(app)
-            .post(path)
-            .send(noProductPrice)
-            .set('accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(400)
-            .expect({ "error": 'Product not added. Missing required information' })
-            .end((err) => {
-                if (err) return done(err);
-                done();
-            })
-        });
+
+    it('responses with 400 when no product name is provided', (done) => {
+        request(app)
+        .post(path)
+        .send(noProductName)
+        .set('accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(400)
+        .expect({ "error": 'Product not added. Missing required information' })
+        .end((err) => {
+            if (err) return done(err);
+            done();
+        })
     });
+
+    it('responses with 400 when no product quantity is provided', (done) => {
+        request(app)
+        .post(path)
+        .send(noProductQuantity)
+        .set('accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(400)
+        .expect({ "error": 'Product not added. Missing required information' })
+        .end((err) => {
+            if (err) return done(err);
+            done();
+        })
+    });
+
+    it('responses with 400 when no product quantity is provided', (done) => {
+        request(app)
+        .post(path)
+        .send(noProductDescription)
+        .set('accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(400)
+        .expect({ "error": 'Product not added. Missing required information' })
+        .end((err) => {
+            if (err) return done(err);
+            done();
+        })
+    });
+    
+    it('responses with 400 when no product quantity is provided', (done) => {
+        request(app)
+        .post(path)
+        .send(noProductPrice)
+        .set('accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(400)
+        .expect({ "error": 'Product not added. Missing required information' })
+        .end((err) => {
+            if (err) return done(err);
+            done();
+        })
+    });
+});
     
 describe('GET /products', () => {
     it('responses with 200 with all products', (done) => {
@@ -184,6 +189,7 @@ describe('GET /products', () => {
 
 describe('GET /products/:productId', () => {
     const wrongProductId = 0;
+
     it('resposnes with 200 with selected product info', (done) => {
         request(app)
             .get(`/products/${databaseProductData.id}`)
@@ -196,6 +202,7 @@ describe('GET /products/:productId', () => {
                 done();
             })
     });
+
     it('responses with 400 when product was not found', (done) => {
         request(app)
             .get(`/products/${wrongProductId}`)
@@ -292,33 +299,32 @@ describe('GET /products/:productId', () => {
 //     });
 // });
 
-// describe('DELETE /products/delete-product/:name', () => {
-//     const productName = 'Salmon Test';
-//     const wrongProductName = 'No Salmon';
-//     const existentProductPath = `/products/delete-product/${productName}`;
-//     const nonExistentProductPath = `/products/delete-product/${wrongProductName}`;
-//     it('responses with 200 when products is deleted', (done) => {
-//         request(app)
-//             .delete(existentProductPath)
-//             .set('accept', 'application/json')
-//             .expect('Content-Type', /json/)
-//             .expect(200)
-//             .expect('"Product has been deleted"')
-//             .end((err) => {
-//                 if (err) return done(err);
-//                 done();
-//             })
-//     });
-//     it('responses with 400 when product name does not exists', (done) => {
-//         request(app)
-//             .delete(nonExistentProductPath)
-//             .set('accept0', 'application/json')
-//             .expect('Content-Type', /json/)
-//             .expect(400)
-//             .expect('"No product was found"')
-//             .end((err) => {
-//                 if (err) return done(err);
-//                 done();
-//             })
-//     });
-// });
+describe('DELETE /products/delete-product/:name', () => {
+    const wrongProductId = 0;
+
+    it('responses with 200 when products is deleted', (done) => {
+        request(app)
+            .delete(`/products/delete-product/${databaseProductData.id}`)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .expect({ "message": "Product has been deleted" })
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+
+    it('responses with 400 when product name does not exists', (done) => {
+        request(app)
+            .delete(`/products/delete-product/${wrongProductId}`)
+            .set('accept0', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect({ "error": 'Product was not found' })
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+});
