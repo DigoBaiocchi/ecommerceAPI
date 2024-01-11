@@ -182,36 +182,33 @@ describe('GET /products', () => {
     });
 });
 
-// describe('GET /products/:productId', () => {
-//     const productId = 'Tuna';
-//     const path = `/products/${productId}`;
-//     const wrongProductId = 0;
-//     const wrongPath = `/products/${wrongProductId}`;
-//     it('resposnes with 200 with selected product info', (done) => {
-//         request(app)
-//             .get(path)
-//             .set('accept', 'application/json')
-//             .expect('Content-Type', /json/)
-//             .expect(200)
-//             .expect({ "message": `Product data was loaded`, "data": categoryData })
-//             .end((err) => {
-//                 if (err) return done(err);
-//                 done();
-//             })
-//     });
-//     it('responses with 400 when product was not found', (done) => {
-//         request(app)
-//             .get(wrongPath)
-//             .set('accept', 'application/json')
-//             .expect('Content-Type', /json/)
-//             .expect(400)
-//             .expect({ "error": `Product was not found` })
-//             .end((err) => {
-//                 if (err) return done(err);
-//                 done();
-//             })
-//     });
-// });
+describe('GET /products/:productId', () => {
+    const wrongProductId = 0;
+    it('resposnes with 200 with selected product info', (done) => {
+        request(app)
+            .get(`/products/${databaseProductData.id}`)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .expect({ "message": `Product data was loaded`, "data": databaseProductData })
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+    it('responses with 400 when product was not found', (done) => {
+        request(app)
+            .get(`/products/${wrongProductId}`)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect({ "error": `Product was not found` })
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+});
 
 // describe('PUT /products/edit-product', () => {
 //     const path = '/products/edit-product';
