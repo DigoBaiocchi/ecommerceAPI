@@ -1,5 +1,6 @@
 const request = require('supertest');
 const app = require('../app');
+const { Database } = require('../db/databaseQueries');
 
 const data = {
     "userId": 6,
@@ -31,18 +32,54 @@ const userData = {
     "checkoutData": []
 };
 
+let newCategoryData;
+let productData;
+let databaseProductData = {
+    'name': 'Salmon Test',
+    'quantity': 3,
+    'description': 'Fresh from the sea',
+    'price': '$4.99'
+};
 
 describe('CART TESTS', () => {
     let cookie;
     
     before((done) => {
+        // login user
         request(app)
         .post('/auth/login/')
         .send(userData)
         .end((err, res) => {
             if (err) return done(err);
             cookie = res.headers['set-cookie']
-            done();
+            
+            // create mock category
+            request(app)
+                .post(`/categories/add-category`)
+                .send({'name': 'newCategory'})
+                .set('accept', 'application/json')
+                .end((err) => {
+                    if (err) return done(err);
+                    Database.getCategoryByName('newCategory')
+                        .then(categoryData => {
+                            newCategoryData = categoryData;
+                            productData = {
+                                'categoryId': newCategoryData.id,
+                                ...databaseProductData
+                            };
+                    
+                    // create mock product
+                    request(app)
+                        .post(`/products/add-product`)
+                        .send(productData)
+                        .set('accept', 'application/json')
+                        .end(async (err) => {
+                            if (err) return done(err);
+                            databaseProductData = await Database.getProductByName(productData.name);
+                            done();
+                        })
+                        })
+                })
         })
     });
 
