@@ -2,13 +2,6 @@ const request = require('supertest');
 const app = require('../app');
 const { Database } = require('../db/databaseQueries');
 
-const existintProduct = {
-    'id': 3,
-    'name': 'Tuna',
-    'quantity': 3,
-    'description': 'Fresh from the sea',
-    'price': '$4.99'
-}
 const noProductName = {
     'id': 1,
     'name': '',
@@ -16,6 +9,7 @@ const noProductName = {
     'description': 'Fresh from the sea',
     'price': '$4.99'
 };
+
 const noProductQuantity = {
     'id': 1,
     'name': 'Salmon',
@@ -23,6 +17,7 @@ const noProductQuantity = {
     'description': 'Fresh from the sea',
     'price': '$4.99'
 };
+
 const noProductDescription = {
     'id': 1,
     'name': 'Salmon',
@@ -30,6 +25,7 @@ const noProductDescription = {
     'description': '',
     'price': '$4.99'
 };
+
 const noProductPrice = {
     'id': 1,
     'name': 'Salmon',
@@ -37,6 +33,7 @@ const noProductPrice = {
     'description': 'Fresh from the sea',
     'price': ''
 };
+
 const wrongProduct = {
     'id': 2,
     'name': 'Salmon',
@@ -238,6 +235,7 @@ describe('PUT /products/edit-product', () => {
                 done();
             })
     });
+
     it('responses with 400 when product was not found', (done) => {
         request(app)
             .put(path)
@@ -251,6 +249,7 @@ describe('PUT /products/edit-product', () => {
                 done();
             })
     });
+
     it('responses with 401 when product name is not provided', (done) => {
         request(app)
             .put(path)
@@ -264,6 +263,7 @@ describe('PUT /products/edit-product', () => {
                 done();
             })
     });
+
     it('responses with 401 when no product quantity is provided', (done) => {
         request(app)
             .put(path)
@@ -277,6 +277,7 @@ describe('PUT /products/edit-product', () => {
                 done();
             })
     });
+    
     it('responses with 401 when no product description is provided', (done) => {
         request(app)
             .put(path)
@@ -290,6 +291,7 @@ describe('PUT /products/edit-product', () => {
                 done();
             })
     });
+
     it('responses with 401 when no product price is provided', (done) => {
         request(app)
             .put(path)
