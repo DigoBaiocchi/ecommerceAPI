@@ -140,7 +140,7 @@ router.post('/', async (req, res, next) => {
 
         if(productAlreadyInCart) {
             console.log(productAlreadyInCart)
-            const newAmount = productAlreadyInCart.total_units + totalUnits;
+            const newAmount = productAlreadyInCart.quantity + totalUnits;
             if(newAmount < 1) {
                 return res.status(400).json({ error: `Product total in the cart can't be zero. Do you want to delete this product from cart?` });
             }

@@ -143,7 +143,7 @@ describe('CART TESTS', () => {
         const updatedData = [{
             "product_id": data["productId"],
             "user_id": data["userId"],
-            "total_units": data["totalUnits"] + 1
+            "quantity": data["totalUnits"] + 1
         }];
     
         it('responses with 500 when user is not logged in', (done) => {
