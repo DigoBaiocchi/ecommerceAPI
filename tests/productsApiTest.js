@@ -217,87 +217,93 @@ describe('GET /products/:productId', () => {
     });
 });
 
-// describe('PUT /products/edit-product', () => {
-//     const path = '/products/edit-product';
-//     it('responses with 200 when product name is updated successfully', (done) => {
-//         request(app)
-//             .put(path)
-//             .send(existintProduct)
-//             .set('accept', 'application/json')
-//             .expect('Content-Type', /json/)
-//             .expect(200)
-//             .expect(`"Product with id ${existintProduct['id']} info updated"`)
-//             .end((err) => {
-//                 if (err) return done(err);
-//                 done();
-//             })
-//     });
-//     it('responses with 400 when product was not found', (done) => {
-//         request(app)
-//             .put(path)
-//             .send(wrongProduct)
-//             .set('accept', 'application/json')
-//             .expect('Content-Type', /json/)
-//             .expect(400)
-//             .expect(`"Product with id ${wrongProduct['id']} was not found"`)
-//             .end((err) => {
-//                 if (err) return done(err);
-//                 done();
-//             })
-//     });
-//     it('responses with 400 when product name is not provided', (done) => {
-//         request(app)
-//             .put(path)
-//             .send(noProductName)
-//             .set('accept', 'application/json')
-//             .expect('Content-Type', /json/)
-//             .expect(400)
-//             .expect(`"Product not updated. Missing required information"`)
-//             .end((err) => {
-//                 if (err) return done(err);
-//                 done();
-//             })
-//     });
-//     it('responses with 400 when no product quantity is provided', (done) => {
-//         request(app)
-//             .put(path)
-//             .send(noProductQuantity)
-//             .set('accept', 'application/json')
-//             .expect('Content-Type', /json/)
-//             .expect(400)
-//             .expect('"Product not updated. Missing required information"')
-//             .end((err) => {
-//                 if (err) return done(err);
-//                 done();
-//             })
-//     });
-//     it('responses with 400 when no product description is provided', (done) => {
-//         request(app)
-//             .put(path)
-//             .send(noProductDescription)
-//             .set('accept', 'application/json')
-//             .expect('Content-Type', /json/)
-//             .expect(400)
-//             .expect('"Product not updated. Missing required information"')
-//             .end((err) => {
-//                 if (err) return done(err);
-//                 done();
-//             })
-//     });
-//     it('responses with 400 when no product price is provided', (done) => {
-//         request(app)
-//             .put(path)
-//             .send(noProductPrice)
-//             .set('accept', 'application/json')
-//             .expect('Content-Type', /json/)
-//             .expect(400)
-//             .expect('"Product not updated. Missing required information"')
-//             .end((err) => {
-//                 if (err) return done(err);
-//                 done();
-//             })
-//     });
-// });
+describe('PUT /products/edit-product', () => {
+    const path = '/products/edit-product';
+    
+    it('responses with 200 when product name is updated successfully', (done) => {
+        const updatedProduct = {
+            ...databaseProductData,
+            name: 'Tuna'
+        };
+        console.log(updatedProduct)
+        request(app)
+            .put(path)
+            .send(updatedProduct)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .expect({ "message": `Product was successfully updated` })
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+    it('responses with 400 when product was not found', (done) => {
+        request(app)
+            .put(path)
+            .send(wrongProduct)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400)
+            .expect({ "error": `Product with id was not found` })
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+    it('responses with 401 when product name is not provided', (done) => {
+        request(app)
+            .put(path)
+            .send(noProductName)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(401)
+            .expect({ "error": 'Product not updated. Missing required information' })
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+    it('responses with 401 when no product quantity is provided', (done) => {
+        request(app)
+            .put(path)
+            .send(noProductQuantity)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(401)
+            .expect({ "error": 'Product not updated. Missing required information' })
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+    it('responses with 401 when no product description is provided', (done) => {
+        request(app)
+            .put(path)
+            .send(noProductDescription)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(401)
+            .expect({ "error": 'Product not updated. Missing required information' })
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+    it('responses with 401 when no product price is provided', (done) => {
+        request(app)
+            .put(path)
+            .send(noProductPrice)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(401)
+            .expect({ "error": 'Product not updated. Missing required information' })
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
+    });
+});
 
 describe('DELETE /products/delete-product/:name', () => {
     const wrongProductId = 0;
