@@ -40,7 +40,7 @@ const createCategoryProductTableQuery = `CREATE TABLE IF NOT EXISTS category_pro
 const createCartTableQuery = `CREATE TABLE IF NOT EXISTS cart (
 	user_id integer REFERENCES users (id) ON DELETE CASCADE,
 	product_id integer REFERENCES products(id) ON DELETE CASCADE,
-	total_units integer NOT NULL
+	quantity integer NOT NULL
 );`;
 
 // const createCheckoutTableQuery = `CREATE TABLE IF NOT EXISTS checkout (

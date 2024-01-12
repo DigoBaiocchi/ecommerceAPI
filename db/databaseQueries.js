@@ -169,7 +169,7 @@ const Database = {
         return await query(`DELETE FROM user_info WHERE user_id = $1`, [userId]);
     },
     async addProductToCart(userId, productId, productQuantity) {
-        return await query(`INSERT INTO cart (user_id, product_id, total_units) VALUES ($1, $2, $3)`, [userId, productId, productQuantity]);
+        return await query(`INSERT INTO cart (user_id, product_id, quantity) VALUES ($1, $2, $3)`, [userId, productId, productQuantity]);
     },
     async selectCartProducts(userId) {
         return await query(`SELECT * FROM cart WHERE user_id = $1`, [userId]).then(results => results.rows);
@@ -178,7 +178,7 @@ const Database = {
         return await query(`SELECT * FROM cart WHERE user_id = $1 AND product_id = $2`, [userId, productId]).then(results => results.rows[0]);
     },
     async updateProductQuanityInCart(userId, productId, productQuanity) {
-        return await query(`UPDATE cart SET total_units = $3 WHERE user_id = $1 AND product_id = $2`, [userId, productId, productQuanity])
+        return await query(`UPDATE cart SET quantity = $3 WHERE user_id = $1 AND product_id = $2`, [userId, productId, productQuanity])
     },
     async deleteProductFromCart(userId, productId) {
         return await query(`DELETE FROM cart WHERE user_id = $1 AND product_id = $2`, [userId, productId]);
@@ -196,7 +196,7 @@ const Database = {
     },
     async getProductInfoWithPriceFromCart(userId) {
         const selectProductFromCartQuery = `
-            SELECT cart.user_id, cart.product_id, cart.total_units, products.price 
+            SELECT cart.user_id, cart.product_id, cart.quantity, products.price 
             FROM cart
             JOIN products
                 ON cart.product_id = products.id AND cart.user_id = $1;
