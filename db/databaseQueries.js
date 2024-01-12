@@ -140,12 +140,12 @@ const Database = {
 
     },
     async addProduct(categoryId, name, quantity, description, price) {
-        const productId = await query("INSERT INTO products (name, total_available, description, price) VALUES ($1, $2, $3, $4) RETURNING id", [name, quantity, description, price]).then(results => results.rows[0].id);
+        const productId = await query("INSERT INTO products (name, quantity, description, price) VALUES ($1, $2, $3, $4) RETURNING id", [name, quantity, description, price]).then(results => results.rows[0].id);
         
         return await query("INSERT INTO category_product (category_id, product_id) VALUES ($1, $2)", [categoryId, productId]);
     },
     async updateProduct(id, name, quantity, description, price) {
-        return await query("UPDATE products SET name = $2, total_available = $3, description = $4, price = $5 WHERE id = $1", [id, name, quantity, description, price]);
+        return await query("UPDATE products SET name = $2, quantity = $3, description = $4, price = $5 WHERE id = $1", [id, name, quantity, description, price]);
     },
     async deleteProduct(id) {
         return await query("DELETE FROM products WHERE id = $1", [id]);

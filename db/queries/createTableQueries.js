@@ -27,7 +27,7 @@ const createCategoriesTableQuery = `CREATE TABLE IF NOT EXISTS categories (
 const createProductsTableQuery = `CREATE TABLE IF NOT EXISTS products (
 	id SERIAL PRIMARY KEY,
 	name varchar(100) NOT NULL UNIQUE,
-	total_available integer DEFAULT 0,
+	quantity integer DEFAULT 0,
 	description varchar(100),
 	price money NOT NULL
 );`;
