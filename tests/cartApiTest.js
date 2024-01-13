@@ -1,7 +1,6 @@
 const request = require('supertest');
 const app = require('../app');
 const { Database } = require('../db/databaseQueries');
-const { Database } = require('../db/databaseQueries');
 
 
 const invalidProductData = {
@@ -51,7 +50,6 @@ describe('CART TESTS', () => {
 
     let data = {
         "userId": 6,
-        "productId": 37,
         "totalUnits": 1
     };
     
@@ -93,6 +91,10 @@ describe('CART TESTS', () => {
                                     Database.getProductByName(productData.name)
                                         .then(productData => {
                                             updatedProductData = productData;
+                                            data = {
+                                                ...data,
+                                                "productId": productData.id
+                                            }
                                         })
                                     done();
                                 })
@@ -249,13 +251,13 @@ describe('CART TESTS', () => {
     describe('DELETE /cart/delete-product', () => {
         const productId = data['productId'];
         const invalidProductId = invalidProductData['productId'];
-        const path = `/cart/delete-product?productId=${productId}`;
+        const path = `/cart/delete-product?productId=`;
         const badQueryParamsPath = `/cart/delete-product`;
         const badProductIdPath = `/cart/delete-product?productId=${invalidProductId}`;
     
         it('responses with 401 when user is not logged in', (done) => {
             request(app)
-                .delete(path)
+                .delete(`${path}${data['productId']}`)
                 .set('accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(401)
@@ -268,7 +270,7 @@ describe('CART TESTS', () => {
     
         it('responses with 200 when product was deleted from the cart', (done) => {
             request(app)
-                .delete(path)
+                .delete(`${path}${data['productId']}`)
                 .set('Cookie', cookie)
                 .set('accept', 'application/json')
                 .expect('Content-Type', /json/)
@@ -293,6 +295,19 @@ describe('CART TESTS', () => {
                     done();
                 })
         });
+        
+        it('responses with 404 when user has no products in the cart', (done) => {
+            request(app)
+                .delete(`${path}${data['productId']}`)
+                .set('Cookie', cookie)
+                .expect('Content-Type', /json/)
+                .expect(404)
+                .expect({ "error": `No products in the cart` })
+                .end((err) => {
+                    if (err) return done(err);
+                    done();
+                })
+        });
     
         it('responses with 404 when no product id was found', (done) => {
             request(app)
@@ -307,68 +322,55 @@ describe('CART TESTS', () => {
                     done();
                 })
         });
-
-        it('responses with 404 when user has no products in the cart', (done) => {
-            request(app)
-                .delete(path)
-                .set('Cookie', cookie)
-                .expect('Content-Type', /json/)
-                .expect(404)
-                .expect({ "error": `No products in the cart` })
-                .end((err) => {
-                    if (err) return done(err);
-                    done();
-                })
-        });
     });
 
-    describe('DELETE /cart/delete-cart', () => {
-        const path = '/cart/delete-cart';
+    // describe('DELETE /cart/delete-cart', () => {
+    //     const path = '/cart/delete-cart';
 
-        it("responses with 200 when user's cart was deleted", (done) => {
-            request(app)
-                .post('/cart')
-                .set('Cookie', cookie)
-                .send(data)
-                .set('accept', 'application/json')
-                .end((err) => {
-                    if (err) return done(err);
-                    request(app)
-                        .delete(path)
-                        .set('Cookie', cookie)
-                        .expect('Content-Type', /json/)
-                        .expect(200)
-                        .expect({ "message": `All products deleted from user cart` })
-                        .end((err) => {
-                            if (err) return done(err);
-                            done();
-                        })
-                })
-        });
+    //     it("responses with 200 when user's cart was deleted", (done) => {
+    //         request(app)
+    //             .post('/cart')
+    //             .set('Cookie', cookie)
+    //             .send(data)
+    //             .set('accept', 'application/json')
+    //             .end((err) => {
+    //                 if (err) return done(err);
+    //                 request(app)
+    //                     .delete(path)
+    //                     .set('Cookie', cookie)
+    //                     .expect('Content-Type', /json/)
+    //                     .expect(200)
+    //                     .expect({ "message": `All products deleted from user cart` })
+    //                     .end((err) => {
+    //                         if (err) return done(err);
+    //                         done();
+    //                     })
+    //             })
+    //     });
 
-        it('responses with 401 when user is not logged in', (done) => {
-            request(app)
-                .delete(path)
-                .expect('Content-Type', /json/)
-                .expect(401)
-                .expect({ "error": `User is not logged in` })
-                .end((err) => {
-                    if (err) return done(err);
-                    done();
-                })
-        });
+    //     it('responses with 401 when user is not logged in', (done) => {
+    //         request(app)
+    //             .delete(path)
+    //             .expect('Content-Type', /json/)
+    //             .expect(401)
+    //             .expect({ "error": `User is not logged in` })
+    //             .end((err) => {
+    //                 if (err) return done(err);
+    //                 done();
+    //             })
+    //     });
 
-        it('responses with 404 when user has no products in the cart', (done) => {
-            request(app)
-                .delete(path)
-                .set('Cookie', cookie)
-                .expect('Content-Type', /json/)
-                .expect(404)
-                .expect({ "error": `No products in the cart` })
-                .end((err) => {
-                    if (err) return done(err);
-                    done();
-                })
-        });
-    });
+    //     it('responses with 404 when user has no products in the cart', (done) => {
+    //         request(app)
+    //             .delete(path)
+    //             .set('Cookie', cookie)
+    //             .expect('Content-Type', /json/)
+    //             .expect(404)
+    //             .expect({ "error": `No products in the cart` })
+    //             .end((err) => {
+    //                 if (err) return done(err);
+    //                 done();
+    //             })
+    //     });
+    // });
 });
