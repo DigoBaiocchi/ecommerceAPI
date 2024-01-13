@@ -9,35 +9,42 @@ const userData = {
     "checkoutData": []
 };
 
-let newCategoryData;
-let productData;
-let databaseProductData = {
-    'name': 'Salmon Test',
-    'quantity': 3,
-    'description': 'Fresh from the sea',
-    'price': '$4.99'
-};
 
 describe('CART TESTS', () => {
     let cookie;
     let newCategoryData;
     let productData;
+    let productData2;
+    let updatedProductData;
+    let updatedProductData2;
+    
     let databaseProductData = {
         'name': 'Salmon Test',
         'quantity': 3,
         'description': 'Fresh from the sea',
         'price': '$4.99'
     };
-    let updatedProductData;
+
+    let databaseProductData2 = {
+        'name': 'Tuna Test',
+        'quantity': 3,
+        'description': 'Fresh from the sea',
+        'price': '$4.99'
+    };
     
     let data = {
         "userId": 6,
         "totalUnits": 1
     };
     
+    let data2 = {
+        "userId": 6,
+        "totalUnits": 1
+    };
+    
     const invalidProductData = {
         "userId": 6,
-        "productId": 0,
+        "productId": 1,
         "totalUnits": 1
     };
     
@@ -76,6 +83,10 @@ describe('CART TESTS', () => {
                                 'categoryId': newCategoryData.id,
                                 ...databaseProductData
                             };
+                            productData2 = {
+                                'categoryId': newCategoryData.id,
+                                ...databaseProductData2
+                            }
 
                             // adding mock product
                             request(app)
@@ -103,8 +114,27 @@ describe('CART TESTS', () => {
                                                 ...invalidQtyData,
                                                 "productId": productData.id
                                             };
+                                        });
+                                    request(app)
+                                        .post(`/products/add-product`)
+                                        .send(productData2)
+                                        .set('accept', 'application/json')
+                                        .end((err) => {
+                                            if (err) return done(err);
+
+                                            // get second mock product data
+                                            Database.getProductByName(productData2.name)
+                                                .then(productData2 => {
+                                                    updatedProductData2 = productData2;
+
+                                                    // updating mock data2
+                                                    data2 = {
+                                                        ...data2,
+                                                        "productId": productData2.id
+                                                    };
+                                                    done(); 
+                                                });
                                         })
-                                    done();
                                 })
                         })
                 })
@@ -154,6 +184,22 @@ describe('CART TESTS', () => {
                 .expect('Content-Type', /json/)
                 .expect(201)
                 .expect({ "message": `Product ${data["productId"]} was added to cart table`})
+                .end((err) => {
+                    if (err) return done(err);
+                    done();
+                })
+        });
+    
+        it('responses with 201 when second product was added to the cart', (done) => {
+            console.log(data2);
+            request(app)
+                .post(path)
+                .set('Cookie', cookie)
+                .send(data2)
+                .set('accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(201)
+                .expect({ "message": `Product ${data2["productId"]} was added to cart table`})
                 .end((err) => {
                     if (err) return done(err);
                     done();
@@ -236,11 +282,18 @@ describe('CART TESTS', () => {
         });
         
         it('responses with 200 with cart for a user was loaded', (done) => {
-            const updatedData = [{
-                "product_id": data["productId"],
-                "user_id": data["userId"],
-                "quantity": data["totalUnits"] + 1
-            }];
+            const updatedData = [
+                {
+                    "user_id": data2["userId"],
+                    "product_id": data2["productId"],
+                    "quantity": data2["totalUnits"]
+                },
+                {
+                    "user_id": data["userId"],
+                    "product_id": data["productId"],
+                    "quantity": data["totalUnits"] + 1
+                } 
+            ];
 
             request(app)
                 .get(path)
@@ -257,7 +310,6 @@ describe('CART TESTS', () => {
     });
     
     describe('DELETE /cart/delete-product', () => {
-        const productId = data['productId'];
         const invalidProductId = invalidProductData['productId'];
         const path = `/cart/delete-product?productId=`;
         const badQueryParamsPath = `/cart/delete-product`;
@@ -318,6 +370,7 @@ describe('CART TESTS', () => {
         });
     
         it('responses with 404 when no product id was found', (done) => {
+            console.log(badProductIdPath);
             request(app)
                 .delete(badProductIdPath)
                 .set('Cookie', cookie)

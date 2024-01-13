@@ -257,16 +257,16 @@ router.delete('/delete-product', async (req, res, next) => {
     const userId = req.session.passport.user.userId;
     const productId = Number(req.query.productId);
     
-    // Check if the product is already in the cart
-    const productAlreadyInCart = await Database.selectProductInCart(userId, productId);
-    if (!productAlreadyInCart) {
-        return res.status(404).json({ error: 'No products in the cart' });
-    }
-    
     // Check if the product ID is valid
     const validProductId = await Database.checkIfProductAlreadyExists(productId);
     if (!validProductId) {
       return res.status(404).json({ error: 'Product id was not found' });
+    }
+    
+    // Check if the product is already in the cart
+    const productAlreadyInCart = await Database.selectProductInCart(userId, productId);
+    if (!productAlreadyInCart) {
+        return res.status(404).json({ error: 'No products in the cart' });
     }
   
     // Delete the product from the cart
