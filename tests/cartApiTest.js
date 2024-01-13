@@ -1,12 +1,8 @@
 const request = require('supertest');
 const app = require('../app');
 const { Database } = require('../db/databaseQueries');
+const { Database } = require('../db/databaseQueries');
 
-const data = {
-    "userId": 6,
-    "productId": 37,
-    "totalUnits": 1
-};
 
 const invalidProductData = {
     "userId": 6,
@@ -43,6 +39,21 @@ let databaseProductData = {
 
 describe('CART TESTS', () => {
     let cookie;
+    let newCategoryData;
+    let productData;
+    let databaseProductData = {
+        'name': 'Salmon Test',
+        'quantity': 3,
+        'description': 'Fresh from the sea',
+        'price': '$4.99'
+    };
+    let updatedProductData;
+
+    let data = {
+        "userId": 6,
+        "productId": 37,
+        "totalUnits": 1
+    };
     
     before((done) => {
         // login user
@@ -52,14 +63,16 @@ describe('CART TESTS', () => {
         .end((err, res) => {
             if (err) return done(err);
             cookie = res.headers['set-cookie']
-            
-            // create mock category
+
+            // adding mock category
             request(app)
-                .post(`/categories/add-category`)
+                .post('/categories/add-category')
                 .send({'name': 'newCategory'})
                 .set('accept', 'application/json')
                 .end((err) => {
                     if (err) return done(err);
+
+                    // get added mock category data
                     Database.getCategoryByName('newCategory')
                         .then(categoryData => {
                             newCategoryData = categoryData;
@@ -67,20 +80,42 @@ describe('CART TESTS', () => {
                                 'categoryId': newCategoryData.id,
                                 ...databaseProductData
                             };
-                    
-                    // create mock product
-                    request(app)
-                        .post(`/products/add-product`)
-                        .send(productData)
-                        .set('accept', 'application/json')
-                        .end(async (err) => {
-                            if (err) return done(err);
-                            databaseProductData = await Database.getProductByName(productData.name);
-                            done();
-                        })
+
+                            // adding mock product
+                            request(app)
+                                .post(`/products/add-product`)
+                                .send(productData)
+                                .set('accept', 'application/json')
+                                .end((err) => {
+                                    if (err) return done(err);
+                                    
+                                    // get added mock product data
+                                    Database.getProductByName(productData.name)
+                                        .then(productData => {
+                                            updatedProductData = productData;
+                                        })
+                                    done();
+                                })
                         })
                 })
         })
+    });
+
+    after((done) => {
+        // deleting mock category
+        request(app)
+            .delete(`/categories/delete-category/${newCategoryData.id}`)
+            .end((err) => {
+                if (err) return done(err);
+
+                // deleting mock product
+                request(app)
+                    .delete(`/products/delete-product/${updatedProductData.id}`)
+                    .end((err) => {
+                        if (err) return done(err);
+                        done();
+                    })
+            })
     });
 
     describe('POST /cart', () => {
