@@ -133,7 +133,7 @@ router.post('/', async (req, res, next) => {
         }
         
         const getProductData = await Database.getProductById(productId);
-        const totalProductQty = getProductData.total_available;
+        const totalProductQty = getProductData.quantity;
         if(totalUnits > totalProductQty) {
             return res.status(400).json({ error: `Product does not have that many units` });
         }

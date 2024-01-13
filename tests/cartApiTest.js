@@ -3,24 +3,6 @@ const app = require('../app');
 const { Database } = require('../db/databaseQueries');
 
 
-const invalidProductData = {
-    "userId": 6,
-    "productId": 1,
-    "totalUnits": 1
-};
-
-const reduceQtyData = {
-    "userId": 6,
-    "productId": 37,
-    "totalUnits": -2
-};
-
-const invalidQtyData = {
-    "userId": 6,
-    "productId": 37,
-    "totalUnits": 5
-};
-
 const userData = {
     "email": "gambito@gmail.com",
     "password": "12345",
@@ -47,10 +29,26 @@ describe('CART TESTS', () => {
         'price': '$4.99'
     };
     let updatedProductData;
-
+    
     let data = {
         "userId": 6,
         "totalUnits": 1
+    };
+    
+    const invalidProductData = {
+        "userId": 6,
+        "productId": 0,
+        "totalUnits": 1
+    };
+    
+    let reduceQtyData = {
+        "userId": 6,
+        "totalUnits": -2
+    };
+    
+    let invalidQtyData = {
+        "userId": 6,
+        "totalUnits": 5
     };
     
     before((done) => {
@@ -91,10 +89,20 @@ describe('CART TESTS', () => {
                                     Database.getProductByName(productData.name)
                                         .then(productData => {
                                             updatedProductData = productData;
+
+                                            // updating mock data
                                             data = {
                                                 ...data,
                                                 "productId": productData.id
-                                            }
+                                            };
+                                            reduceQtyData = {
+                                                ...reduceQtyData,
+                                                "productId": productData.id
+                                            };
+                                            invalidQtyData = {
+                                                ...invalidQtyData,
+                                                "productId": productData.id
+                                            };
                                         })
                                     done();
                                 })
