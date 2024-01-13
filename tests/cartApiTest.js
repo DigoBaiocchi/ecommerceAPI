@@ -214,26 +214,26 @@ describe('CART TESTS', () => {
     describe('GET /cart', () => {
         const path = '/cart';
     
-        const updatedData = [{
-            "product_id": data["productId"],
-            "user_id": data["userId"],
-            "quantity": data["totalUnits"] + 1
-        }];
-    
         it('responses with 500 when user is not logged in', (done) => {
             request(app)
-                .get(path)
-                .set('accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(500)
-                .expect({ "error": `User is not logged in` })
-                .end((err) => {
-                    if (err) return done(err);
-                    done();
-                })
+            .get(path)
+            .set('accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(500)
+            .expect({ "error": `User is not logged in` })
+            .end((err) => {
+                if (err) return done(err);
+                done();
+            })
         });
-    
+        
         it('responses with 200 with cart for a user was loaded', (done) => {
+            const updatedData = [{
+                "product_id": data["productId"],
+                "user_id": data["userId"],
+                "quantity": data["totalUnits"] + 1
+            }];
+
             request(app)
                 .get(path)
                 .set('Cookie', cookie)
