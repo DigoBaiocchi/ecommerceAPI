@@ -1,0 +1,12 @@
+name: Run Cart Tests
+on: push
+jobs:
+    run-cart-tests:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Get code
+              uses: actions/checkout@v3
+            - name: Install dependencies
+              uses: npm ci
+            - name: Test cart api
+              uses: npm test
