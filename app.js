@@ -7,9 +7,8 @@ const session = require('express-session');
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
 const { Database } = require('./db/databaseQueries');
-const dotenv = require('dotenv');
-dotenv.config({ path: '.env.development.local' })
-const port = process.env.PORT || 3000;
+const config = require('./utils/config');
+const port = config.PORT || 3000;
 
 const registerRouter = require('./routes/registerRouter');
 const authRouter = require('./routes/authRouter');

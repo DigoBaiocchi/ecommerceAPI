@@ -1,9 +1,8 @@
-const dotenv = require('dotenv');
-dotenv.config({ path: '.env.development.local' });
+const config = require('../utils/config');
 
 const { Pool } = require('pg');
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL
+    connectionString: config.DATABASE_URL
 });
 
 const query = async (text, params, callback) => {
