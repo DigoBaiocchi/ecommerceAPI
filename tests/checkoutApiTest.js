@@ -26,7 +26,7 @@ describe('GET /checkout', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
-            .expect({ message: `All products in the cart are loaded for user ${userId}`, data: cartData })
+            .expect({ message: `All products in the cart are loaded for user ${userId}`, data: data })
             .end((err) => {
                 if (err) return done(err);
                 done();
