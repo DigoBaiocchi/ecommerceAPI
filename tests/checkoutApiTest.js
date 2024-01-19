@@ -26,7 +26,7 @@ describe('GET /checkout', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
-            .expect({ message: `All products in the cart are loaded for user ${userId}`, data: data })
+            .expect({ message: `All products from user's cart are loaded`, data: data })
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -56,7 +56,7 @@ describe('POST /checkout', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(201)
-            .expect(`"Order was create with products from id ${data['userId']}'s cart"`)
+            .expect({ "message": `Order successfully created` })
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -69,20 +69,20 @@ describe('POST /checkout', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect(`"User id ${wrongUserIdData['userId']} was not found"`)
+            .expect({ "error": `User was not found` })
             .end((err) => {
                 if (err) return done(err);
                 done();
             })
     });
-    it('responses with 400 when user is not logged in', (done) => {
+    it('responses with 401 when user is not logged in', (done) => {
         request(app)
             .post(path)
             .send(wrongUserIdData)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect(`"User is not logged in"`)
+            .expect(401)
+            .expect({ "error": `User is not logged in` })
             .end((err) => {
                 if (err) return done(err);
                 done();

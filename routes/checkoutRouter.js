@@ -26,7 +26,7 @@ const { Database } = require('../db/databaseQueries');
  *              - application/json
  *          responses:
  *              200:
- *                  description: All products in the cart are loaded for user userId`
+ *                  description: All products from user's cart are loaded
  *                  schema:
  *                      $ref: '#definitions/Cart'
  *              400:
@@ -44,7 +44,7 @@ router.get('/', async (req, res, next) => {
     }
     
     const cartData = await Database.getProductInfoWithPriceFromCart(userId);
-    return res.status(200).json({ message: `All products in the cart are loaded for user ${userId}`, data: cartData });
+    return res.status(200).json({ message: `All products from user's cart are loaded`, data: cartData });
 });
 
 /**
@@ -65,7 +65,7 @@ router.get('/', async (req, res, next) => {
  *                          $ref: '#/components/schemas/Checkout_Data'
  *          responses:
  *              201:
- *                  description: Order was created with products from userId's checkout section
+ *                  description: Order successfully created
  *              400:
  *                  description: User was not found
  *              401:
@@ -85,13 +85,13 @@ router.post('/', async (req, res, next) => {
     const validUserId = await Database.selectUserById(userId);
 
     if (!validUserId) {
-        return res.status(400).json({ error: `User id ${userId} was not found` });
+        return res.status(400).json({ error: `User was not found` });
     }
 
     const { checkoutData } = req.body
 
     if(checkoutData.length === 0) {
-        return res.status(402).json({ error: `User ${userId} has no products in their cart` });
+        return res.status(402).json({ error: `User has no products in their cart` });
     }
 
     checkoutData.forEach(async cart => {
@@ -100,7 +100,7 @@ router.post('/', async (req, res, next) => {
 
     const clearUserCart = await Database.deleteAllProductsFromCart(userId);
 
-    return res.status(201).json({ message: `Order was create with products from id ${userId}'s cart` });
+    return res.status(201).json({ message: `Order successfully created` });
 });
 
 module.exports = router;
