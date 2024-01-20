@@ -131,7 +131,7 @@ describe('POST /user', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(201)
-            .expect(`"User info has been added for user ${userInfo["userId"]}"`)
+            .expect({ "message": `User info has been added` })
             .end((err) => {
                 if (err) return done(err);
                 done(err);
@@ -144,7 +144,7 @@ describe('POST /user', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect(`"User id not found"`)
+            .expect({ "error": `User id not found` })
             .end((err) => {
                 if (err) done(err);
                 done();
@@ -157,7 +157,7 @@ describe('POST /user', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect(`"Missing required information"`)
+            .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
@@ -170,7 +170,7 @@ describe('POST /user', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect(`"Missing required information"`)
+            .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
@@ -183,7 +183,7 @@ describe('POST /user', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect(`"Missing required information"`)
+            .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
@@ -196,7 +196,7 @@ describe('POST /user', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect(`"Missing required information"`)
+            .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
@@ -209,7 +209,7 @@ describe('POST /user', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect(`"Missing required information"`)
+            .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
@@ -222,7 +222,7 @@ describe('POST /user', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect(`"Missing required information"`)
+            .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
@@ -235,7 +235,7 @@ describe('POST /user', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect(`"Missing required information"`)
+            .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
@@ -248,7 +248,7 @@ describe('POST /user', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect(`"Missing required information"`)
+            .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
@@ -267,7 +267,7 @@ describe('GET /user/:id', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
-            .expect(`"User ${userId} info was loaded"`)
+            .expect({ "message": `User info was loaded`, data: userInfo })
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -279,7 +279,7 @@ describe('GET /user/:id', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect(`"User ${badUserId} was not found"`)
+            .expect({ "error": `User was not found` })
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -296,7 +296,7 @@ describe('PUT /user/update-info', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
-            .expect(`"Data has been updated sucessfully for user ${userInfo["userId"]}"`)
+            .expect({ "message": `Data has been sucessfully updated` })
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -309,111 +309,111 @@ describe('PUT /user/update-info', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect(`"No user ${wrongUserId["userId"]} was found"`)
+            .expect({ "error": `User was not found` })
             .end((err) => {
                 if (err) return done(err);
                 done();
             })
     });
-    it('responses with 400 when no first name is provided', (done) => {
+    it('responses with 401 when no first name is provided', (done) => {
         request(app)
             .put(path)
             .send(missingFirstName)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect(`"Missing required information"`)
+            .expect(401)
+            .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
             })
     });
-    it('responses with 400 when no last name is provided', (done) => {
+    it('responses with 401 when no last name is provided', (done) => {
         request(app)
             .put(path)
             .send(missingLastName)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect(`"Missing required information"`)
+            .expect(401)
+            .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
             })
     });
-    it('responses with 400 when no address1 is provided', (done) => {
+    it('responses with 401 when no address1 is provided', (done) => {
         request(app)
             .put(path)
             .send(missingAddress1)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect(`"Missing required information"`)
+            .expect(401)
+            .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
             })
     });
-    it('responses with 400 when no city is provided', (done) => {
+    it('responses with 401 when no city is provided', (done) => {
         request(app)
             .put(path)
             .send(missingCity)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect(`"Missing required information"`)
+            .expect(401)
+            .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
             })
     });
-    it('responses with 400 when no province is provided', (done) => {
+    it('responses with 401 when no province is provided', (done) => {
         request(app)
             .put(path)
             .send(missingProvince)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect(`"Missing required information"`)
+            .expect(401)
+            .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
             })
     });
-    it('responses with 400 when no postal code is provided', (done) => {
+    it('responses with 401 when no postal code is provided', (done) => {
         request(app)
             .put(path)
             .send(missingPostalCode)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect(`"Missing required information"`)
+            .expect(401)
+            .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
             })
     });
-    it('responses with 400 when no credit card is provided', (done) => {
+    it('responses with 401 when no credit card is provided', (done) => {
         request(app)
             .put(path)
             .send(missingCreditCard)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect(`"Missing required information"`)
+            .expect(401)
+            .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
             })
     });
-    it('responses with 400 when no exp date is provided', (done) => {
+    it('responses with 401 when no exp date is provided', (done) => {
         request(app)
             .put(path)
             .send(missingExpData)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect(`"Missing required information"`)
+            .expect(401)
+            .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
@@ -432,7 +432,7 @@ describe('DELETE /user/delete-user/:id', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
-            .expect(`"User id ${userId} deleted"`)
+            .expect({ "message": `User info was successfully deleted` })
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -444,7 +444,7 @@ describe('DELETE /user/delete-user/:id', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect(`"User id ${badUserId} was not found"`)
+            .expect({ "error": `User was not found` })
             .end((err) => {
                 if (err) return done(err);
                 done();
