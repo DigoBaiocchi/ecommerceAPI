@@ -9,13 +9,13 @@ const { Database } = require('../db/databaseQueries');
  *          User_Info_Object:
  *              type: object
  *              properties:
- *                  userId:
+ *                  user_id:
  *                      type: string
  *                      example: 5
- *                  firstName:
+ *                  first_name:
  *                      type: string
  *                      example: John
- *                  lastName:
+ *                  last_name:
  *                      type: string
  *                      example: Doe
  *                  address1:
@@ -30,13 +30,13 @@ const { Database } = require('../db/databaseQueries');
  *                  province:
  *                      type: string
  *                      example: ON
- *                  postalCode:
+ *                  postal_code:
  *                      type: string
  *                      example: Z9Z 9Z9
- *                  creditCard:
+ *                  credit_card_number:
  *                      type: string
  *                      example: 1234567891234567
- *                  expDate:
+ *                  credit_card_exp_date:
  *                      type: string
  *                      example: 01/26
  *          User_Info:
@@ -78,19 +78,19 @@ const { Database } = require('../db/databaseQueries');
 
 router.post('/', async (req, res, next) => {
     const { 
-        userId, 
-        firstName, 
-        lastName, 
+        user_id, 
+        first_name, 
+        last_name, 
         address1, 
         address2, 
         city,
         province,
-        postalCode,
-        creditCard,
-        expDate
+        postal_code,
+        credit_card_number,
+        credit_card_exp_date
     } = req.body;
     
-    if (!firstName || !lastName || !address1 || !city || !province || !postalCode || !creditCard || !expDate) {
+    if (!first_name || !last_name || !address1 || !city || !province || !postal_code || !credit_card_number || !credit_card_exp_date) {
         return res.status(400).json({ error: 'Missing required information' });
     }
 
@@ -99,7 +99,7 @@ router.post('/', async (req, res, next) => {
         return res.status(400).json({ error: `User id not found` });
     }
     
-    const addUserInfo = await Database.addUserInfo(userId, firstName, lastName, address1, address2, city, province, postalCode, creditCard, expDate);
+    const addUserInfo = await Database.addUserInfo(user_id, first_name, last_name, address1, address2, city, province, postal_code, credit_card_number, credit_card_exp_date);
     
     return res.status(201).json({ message: `User info has been added` });
 });
@@ -169,32 +169,32 @@ router.get('/:id', async (req, res, next) => {
 
 router.put('/update-info', async (req, res, next) => {
     const { 
-        userId, 
-        firstName, 
-        lastName, 
+        user_id, 
+        first_name, 
+        last_name, 
         address1, 
         address2, 
         city,
         province,
-        postalCode,
-        creditCard,
-        expDate
+        postal_code,
+        credit_card_number,
+        credit_card_exp_date
     } = req.body;
     
-    if (!firstName || !lastName || !address1 || !city || !province || !postalCode || !creditCard || !expDate) {
+    if (!first_name || !last_name || !address1 || !city || !province || !postal_code || !credit_card_number || !credit_card_exp_date) {
         return res.status(401).json({ error: 'Missing required information' });
     }
     
-    const validUserId = await Database.selectUserById(userId);
+    const validUserId = await Database.selectUserById(user_id);
     if(!validUserId) {
         return res.status(400).json({ error: `User was not found` });
     }
     
-    const checkIfUserInfoAlreadyExists = await Database.selectUserInfo(userId);
+    const checkIfUserInfoAlreadyExists = await Database.selectUserInfo(user_id);
     if(!checkIfUserInfoAlreadyExists) {
         return res.status(402).json({ error: `No user info for user` });
     }
-    const updateUserInfo = await Database.updateUserInfo(userId, firstName, lastName, address1, address2, city, province, postalCode, creditCard, expDate);
+    const updateUserInfo = await Database.updateUserInfo(user_id, first_name, last_name, address1, address2, city, province, postal_code, credit_card_number, credit_card_exp_date);
 
     return res.status(200).json({ message: `Data has been sucessfully updated` });
 });
