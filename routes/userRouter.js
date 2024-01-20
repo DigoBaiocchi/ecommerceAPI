@@ -94,7 +94,7 @@ router.post('/', async (req, res, next) => {
         return res.status(400).json({ error: 'Missing required information' });
     }
 
-    const validUserId = userId === 6;
+    const validUserId = await Database.selectUserById(user_id);
     if (!validUserId) {
         return res.status(400).json({ error: `User id not found` });
     }
@@ -127,15 +127,17 @@ router.post('/', async (req, res, next) => {
  *                  description: User was not found
  */
 
-router.get('/:id', async (req, res, next) => {
-    const id = Number(req.params.id);
-    const validUserId = Number(id) === 6;
+router.get('/:userId', async (req, res, next) => {
+    const { userId } = req.params;
+    const validUserId = await Database.selectUserById(userId);
     
     if (!validUserId) {
         return res.status(400).json({ error: `User was not found` });
     }
 
-    const selectUserInfo = await Database.selectUserInfo(id);
+    const selectUserInfo = await Database.selectUserInfo(userId);
+
+    console.log(selectUserInfo);
 
     return res.status(200).json({ message: `User info was loaded`, data: selectUserInfo });
 });
@@ -191,6 +193,7 @@ router.put('/update-info', async (req, res, next) => {
     }
     
     const checkIfUserInfoAlreadyExists = await Database.selectUserInfo(user_id);
+    console.log(checkIfUserInfoAlreadyExists)
     if(!checkIfUserInfoAlreadyExists) {
         return res.status(402).json({ error: `No user info for user` });
     }
@@ -219,14 +222,14 @@ router.put('/update-info', async (req, res, next) => {
  */
 
 router.delete('/delete-user/:userId', async (req, res, next) => {
-    const id = Number(req.params.userId);
+    const { userId } = req.params;
 
-    const validUserId = Number(id) === 6;
+    const validUserId = await Database.selectUserById(userId);
     if(!validUserId) {
         return res.status(400).json({ error: `User was not found` });
     }
 
-    const deleteUserInfo = await Database.deleteUserInfo(id);
+    const deleteUserInfo = await Database.deleteUserInfo(userId);
 
     return res.status(200).json({ message: `User info was successfully deleted` });
 });

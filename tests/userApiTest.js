@@ -2,124 +2,124 @@ const request = require('supertest');
 const app = require('../app');
 
 const userInfo = {
-    "userId": 6,
-    "firstName": "Gambito",
-    "lastName": "Puppers",
+    "user_id": 6,
+    "first_name": "Gambito",
+    "last_name": "Puppers",
     "address1": "500 puppie Ave",
     "address2": "",
     "city": "Toronto",
     "province": "ON",
-    "postalCode": "POP 1E1",
-    "creditCard": "1234567891234567",
-    "expDate": "01/26"
+    "postal_code": "POP 1E1",
+    "credit_card_number": "1234567891234567",
+    "credit_card_exp_date": "01/26"
 }
 const wrongUserId = {
-    "userId": 1,
-    "firstName": "Gambito",
-    "lastName": "Puppers",
+    "user_id": 1,
+    "first_name": "Gambito",
+    "last_name": "Puppers",
     "address1": "500 puppie Ave",
     "address2": "",
     "city": "Toronto",
     "province": "ON",
-    "postalCode": "POP 1E1",
-    "creditCard": "1234567891234567",
-    "expDate": "01/26"
+    "postal_code": "POP 1E1",
+    "credit_card_number": "1234567891234567",
+    "credit_card_exp_date": "01/26"
 }
 const missingFirstName = {
-    "userId": 6,
-    "firstName": "",
-    "lastName": "Puppers",
+    "user_id": 6,
+    "first_name": "",
+    "last_name": "Puppers",
     "address1": "500 puppie Ave",
     "address2": "",
     "city": "Toronto",
     "province": "ON",
-    "postalCode": "POP 1E1",
-    "creditCard": "1234567891234567",
-    "expDate": "01/26"
+    "postal_code": "POP 1E1",
+    "credit_card_number": "1234567891234567",
+    "credit_card_exp_date": "01/26"
 }
 const missingLastName = {
-    "userId": 6,
-    "firstName": "Gambito",
-    "lastName": "",
+    "user_id": 6,
+    "first_name": "Gambito",
+    "last_name": "",
     "address1": "500 puppie Ave",
     "address2": "",
     "city": "Toronto",
     "province": "ON",
-    "postalCode": "POP 1E1",
-    "creditCard": "1234567891234567",
-    "expDate": "01/26"
+    "postal_code": "POP 1E1",
+    "credit_card_number": "1234567891234567",
+    "credit_card_exp_date": "01/26"
 }
 const missingAddress1 = {
-    "userId": 6,
-    "firstName": "Gambito",
-    "lastName": "Puppers",
+    "user_id": 6,
+    "first_name": "Gambito",
+    "last_name": "Puppers",
     "address1": "",
     "address2": "",
     "city": "Toronto",
     "province": "ON",
-    "postalCode": "POP 1E1",
-    "creditCard": "1234567891234567",
-    "expDate": "01/26"
+    "postal_code": "POP 1E1",
+    "credit_card_number": "1234567891234567",
+    "credit_card_exp_date": "01/26"
 }
 const missingCity = {
-    "userId": 6,
-    "firstName": "Gambito",
-    "lastName": "Puppers",
+    "user_id": 6,
+    "first_name": "Gambito",
+    "last_name": "Puppers",
     "address1": "500 puppie Ave",
     "address2": "",
     "city": "",
     "province": "ON",
-    "postalCode": "POP 1E1",
-    "creditCard": "1234567891234567",
-    "expDate": "01/26"
+    "postal_code": "POP 1E1",
+    "credit_card_number": "1234567891234567",
+    "credit_card_exp_date": "01/26"
 }
 const missingProvince = {
-    "userId": 6,
-    "firstName": "Gambito",
-    "lastName": "Puppers",
+    "user_id": 6,
+    "first_name": "Gambito",
+    "last_name": "Puppers",
     "address1": "500 puppie Ave",
     "address2": "",
     "city": "Toronto",
     "province": "",
-    "postalCode": "POP 1E1",
-    "creditCard": "1234567891234567",
-    "expDate": "01/26"
+    "postal_code": "POP 1E1",
+    "credit_card_number": "1234567891234567",
+    "credit_card_exp_date": "01/26"
 }
 const missingPostalCode = {
-    "userId": 6,
-    "firstName": "Gambito",
-    "lastName": "Puppers",
+    "user_id": 6,
+    "first_name": "Gambito",
+    "last_name": "Puppers",
     "address1": "500 puppie Ave",
     "address2": "",
     "city": "Toronto",
     "province": "ON",
-    "postalCode": "",
-    "creditCard": "1234567891234567",
-    "expDate": "01/26"
+    "postal_code": "",
+    "credit_card_number": "1234567891234567",
+    "credit_card_exp_date": "01/26"
 }
 const missingCreditCard = {
-    "userId": 6,
-    "firstName": "Gambito",
-    "lastName": "Puppers",
+    "user_id": 6,
+    "first_name": "Gambito",
+    "last_name": "Puppers",
     "address1": "500 puppie Ave",
     "address2": "",
     "city": "Toronto",
     "province": "ON",
-    "postalCode": "POP 1E1",
-    "creditCard": "",
-    "expDate": "01/26"
+    "postal_code": "POP 1E1",
+    "credit_card_number": "",
+    "credit_card_exp_date": "01/26"
 }
 const missingExpData = {
-    "userId": 6,
-    "firstName": "Gambito",
-    "lastName": "Puppers",
+    "user_id": 6,
+    "first_name": "Gambito",
+    "last_name": "Puppers",
     "address1": "500 puppie Ave",
     "address2": "",
     "city": "Toronto",
     "province": "ON",
-    "postalCode": "POP 1E1",
-    "creditCard": "1234567891234567",
-    "expDate": ""
+    "postal_code": "POP 1E1",
+    "credit_card_number": "1234567891234567",
+    "credit_card_exp_date": ""
 }
 
 describe('POST /user', () => {
@@ -267,7 +267,7 @@ describe('GET /user/:id', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
-            .expect({ "message": `User info was loaded`, data: userInfo })
+            .expect({ "message": `User info was loaded`, "data": userInfo })
             .end((err) => {
                 if (err) return done(err);
                 done();
