@@ -362,14 +362,13 @@ describe('POST /user', () => {
     });
 });
 
-describe('GET /user/:id', () => {
+describe('GET /user/', () => {
     const userId = 6;
-    const path = `/user/${userId}`;
-    const badUserId = 1;
-    const badPath = `/user/${badUserId}`;
+    const path = `/user/`;
     it('responses with 200 when user info is loaded', (done) => {
         request(app)
             .get(path)
+            .set('Cookie', cookie)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
@@ -379,13 +378,13 @@ describe('GET /user/:id', () => {
                 done();
             })
     });
-    it('responses with 400 when user id is not valid', (done) => {
+    it('responses with 401 when user is not logged in', (done) => {
         request(app)
-            .get(badPath)
+            .get(path)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect({ "error": `User was not found` })
+            .expect(401)
+            .expect({ "error": `User is not logged in` })
             .end((err) => {
                 if (err) return done(err);
                 done();

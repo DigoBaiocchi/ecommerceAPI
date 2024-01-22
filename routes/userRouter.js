@@ -106,7 +106,7 @@ router.post('/', async (req, res, next) => {
 
 /**
  * @swagger
- * /user/:id:
+ * /user/:
  *      get:
  *          tags:
  *              - User
@@ -123,21 +123,18 @@ router.post('/', async (req, res, next) => {
  *                      application/xml:
  *                          schema:
  *                              $ref: '#/components/schemas/User_Info'
- *              400:
- *                  description: User was not found
+ *              401:
+ *                  description: User is not logged in
  */
 
-router.get('/:userId', async (req, res, next) => {
-    const { userId } = req.params;
-    const validUserId = await Database.selectUserById(userId);
-    
-    if (!validUserId) {
-        return res.status(400).json({ error: `User was not found` });
+router.get('/', async (req, res, next) => {
+    if(!req.session.passport) {
+        return res.status(401).json({ error: `User is not logged in` });
     }
 
-    const selectUserInfo = await Database.selectUserInfo(userId);
+    const userId = req.session.passport.user.userId;    
 
-    console.log(selectUserInfo);
+    const selectUserInfo = await Database.selectUserInfo(userId);
 
     return res.status(200).json({ message: `User info was loaded`, data: selectUserInfo });
 });
