@@ -397,6 +397,7 @@ describe('PUT /user/update-info', () => {
     it('responses with 200 when user info is updated', (done) => {
         request(app)
             .put(path)
+            .set('Cookie', cookie)
             .send(userInfo)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
@@ -407,117 +408,125 @@ describe('PUT /user/update-info', () => {
                 done();
             })
     });
-    it('responses with 400 when user id was found', (done) => {
+    it('responses with 401 when user is not logged in', (done) => {
         request(app)
             .put(path)
             .send(wrongUserId)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect({ "error": `User was not found` })
+            .expect(401)
+            .expect({ "error": `User is not logged in` })
             .end((err) => {
                 if (err) return done(err);
                 done();
             })
     });
-    it('responses with 401 when no first name is provided', (done) => {
+    it('responses with 400 when no first name is provided', (done) => {
         request(app)
             .put(path)
+            .set('Cookie', cookie)
             .send(missingFirstName)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(401)
+            .expect(400)
             .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
             })
     });
-    it('responses with 401 when no last name is provided', (done) => {
+    it('responses with 400 when no last name is provided', (done) => {
         request(app)
             .put(path)
+            .set('Cookie', cookie)
             .send(missingLastName)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(401)
+            .expect(400)
             .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
             })
     });
-    it('responses with 401 when no address1 is provided', (done) => {
+    it('responses with 400 when no address1 is provided', (done) => {
         request(app)
             .put(path)
+            .set('Cookie', cookie)
             .send(missingAddress1)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(401)
+            .expect(400)
             .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
             })
     });
-    it('responses with 401 when no city is provided', (done) => {
+    it('responses with 400 when no city is provided', (done) => {
         request(app)
             .put(path)
+            .set('Cookie', cookie)
             .send(missingCity)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(401)
+            .expect(400)
             .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
             })
     });
-    it('responses with 401 when no province is provided', (done) => {
+    it('responses with 400 when no province is provided', (done) => {
         request(app)
             .put(path)
+            .set('Cookie', cookie)
             .send(missingProvince)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(401)
+            .expect(400)
             .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
             })
     });
-    it('responses with 401 when no postal code is provided', (done) => {
+    it('responses with 400 when no postal code is provided', (done) => {
         request(app)
             .put(path)
+            .set('Cookie', cookie)
             .send(missingPostalCode)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(401)
+            .expect(400)
             .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
             })
     });
-    it('responses with 401 when no credit card is provided', (done) => {
+    it('responses with 400 when no credit card is provided', (done) => {
         request(app)
             .put(path)
+            .set('Cookie', cookie)
             .send(missingCreditCard)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(401)
+            .expect(400)
             .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);
                 done();
             })
     });
-    it('responses with 401 when no exp date is provided', (done) => {
+    it('responses with 400 when no exp date is provided', (done) => {
         request(app)
             .put(path)
+            .set('Cookie', cookie)
             .send(missingExpData)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(401)
+            .expect(400)
             .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if(err) return done(err);

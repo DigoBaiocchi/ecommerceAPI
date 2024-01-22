@@ -159,11 +159,9 @@ router.get('/', async (req, res, next) => {
  *              200:
  *                  description: Data has been sucessfully updated
  *              400:
- *                  description: User was not found
- *              401:
  *                  description: Missing required information
- *              402:
- *                  description: No user info for user
+ *              401:
+ *                  description: User is not logged in
  */
 
 router.put('/update-info', async (req, res, next) => {
@@ -180,20 +178,16 @@ router.put('/update-info', async (req, res, next) => {
         credit_card_exp_date
     } = req.body;
     
+    if(!req.session.passport) {
+        return res.status(401).json({ error: `User is not logged in` });
+    }
+    
     if (!first_name || !last_name || !address1 || !city || !province || !postal_code || !credit_card_number || !credit_card_exp_date) {
-        return res.status(401).json({ error: 'Missing required information' });
+        return res.status(400).json({ error: 'Missing required information' });
     }
-    
-    const validUserId = await Database.selectUserById(user_id);
-    if(!validUserId) {
-        return res.status(400).json({ error: `User was not found` });
-    }
-    
-    const checkIfUserInfoAlreadyExists = await Database.selectUserInfo(user_id);
-    console.log(checkIfUserInfoAlreadyExists)
-    if(!checkIfUserInfoAlreadyExists) {
-        return res.status(402).json({ error: `No user info for user` });
-    }
+
+    const userId = req.session.passport.user.userId;
+
     const updateUserInfo = await Database.updateUserInfo(user_id, first_name, last_name, address1, address2, city, province, postal_code, credit_card_number, credit_card_exp_date);
 
     return res.status(200).json({ message: `Data has been sucessfully updated` });
