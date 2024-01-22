@@ -18,19 +18,8 @@ const userInfo = {
     "postal_code": "POP 1E1",
     "credit_card_number": "1234567891234567",
     "credit_card_exp_date": "01/26"
-}
-const wrongUserId = {
-    "user_id": 1,
-    "first_name": "Gambito",
-    "last_name": "Puppers",
-    "address1": "500 puppie Ave",
-    "address2": "",
-    "city": "Toronto",
-    "province": "ON",
-    "postal_code": "POP 1E1",
-    "credit_card_number": "1234567891234567",
-    "credit_card_exp_date": "01/26"
-}
+};
+
 const missingFirstName = {
     "user_id": 6,
     "first_name": "",
@@ -42,7 +31,8 @@ const missingFirstName = {
     "postal_code": "POP 1E1",
     "credit_card_number": "1234567891234567",
     "credit_card_exp_date": "01/26"
-}
+};
+
 const missingLastName = {
     "user_id": 6,
     "first_name": "Gambito",
@@ -54,7 +44,8 @@ const missingLastName = {
     "postal_code": "POP 1E1",
     "credit_card_number": "1234567891234567",
     "credit_card_exp_date": "01/26"
-}
+};
+
 const missingAddress1 = {
     "user_id": 6,
     "first_name": "Gambito",
@@ -66,7 +57,8 @@ const missingAddress1 = {
     "postal_code": "POP 1E1",
     "credit_card_number": "1234567891234567",
     "credit_card_exp_date": "01/26"
-}
+};
+
 const missingCity = {
     "user_id": 6,
     "first_name": "Gambito",
@@ -78,7 +70,8 @@ const missingCity = {
     "postal_code": "POP 1E1",
     "credit_card_number": "1234567891234567",
     "credit_card_exp_date": "01/26"
-}
+};
+
 const missingProvince = {
     "user_id": 6,
     "first_name": "Gambito",
@@ -90,7 +83,8 @@ const missingProvince = {
     "postal_code": "POP 1E1",
     "credit_card_number": "1234567891234567",
     "credit_card_exp_date": "01/26"
-}
+};
+
 const missingPostalCode = {
     "user_id": 6,
     "first_name": "Gambito",
@@ -102,7 +96,8 @@ const missingPostalCode = {
     "postal_code": "",
     "credit_card_number": "1234567891234567",
     "credit_card_exp_date": "01/26"
-}
+};
+
 const missingCreditCard = {
     "user_id": 6,
     "first_name": "Gambito",
@@ -114,7 +109,8 @@ const missingCreditCard = {
     "postal_code": "POP 1E1",
     "credit_card_number": "",
     "credit_card_exp_date": "01/26"
-}
+};
+
 const missingExpData = {
     "user_id": 6,
     "first_name": "Gambito",
@@ -126,7 +122,7 @@ const missingExpData = {
     "postal_code": "POP 1E1",
     "credit_card_number": "1234567891234567",
     "credit_card_exp_date": ""
-}
+};
 
 let cookie;
 let newCategoryData;
@@ -220,7 +216,8 @@ before((done) => {
 });
 
 describe('POST /user', () => {
-    const path = "/user"
+    const path = "/user";
+
     it('responses with 201 when user information is submitted successfully', (done) => {
         request(app)
             .post(path)
@@ -235,10 +232,11 @@ describe('POST /user', () => {
                 done(err);
             })
     });
+
     it('responses with 401 when user is not logged in', (done) => {
         request(app)
             .post(path)
-            .send(wrongUserId)
+            .send(userInfo)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(401)
@@ -248,6 +246,7 @@ describe('POST /user', () => {
                 done();
             })
     });
+
     it('responses with 400 when no first name is provided', (done) => {
         request(app)
             .post(path)
@@ -262,6 +261,7 @@ describe('POST /user', () => {
                 done();
             })
     });
+
     it('responses with 400 when no last name is provided', (done) => {
         request(app)
             .post(path)
@@ -276,6 +276,7 @@ describe('POST /user', () => {
                 done();
             })
     });
+
     it('responses with 400 when no address1 is provided', (done) => {
         request(app)
             .post(path)
@@ -290,6 +291,7 @@ describe('POST /user', () => {
                 done();
             })
     });
+
     it('responses with 400 when no city is provided', (done) => {
         request(app)
             .post(path)
@@ -304,6 +306,7 @@ describe('POST /user', () => {
                 done();
             })
     });
+
     it('responses with 400 when no province is provided', (done) => {
         request(app)
             .post(path)
@@ -318,6 +321,7 @@ describe('POST /user', () => {
                 done();
             })
     });
+
     it('responses with 400 when no postal code is provided', (done) => {
         request(app)
             .post(path)
@@ -332,6 +336,7 @@ describe('POST /user', () => {
                 done();
             })
     });
+
     it('responses with 400 when no credit card is provided', (done) => {
         request(app)
             .post(path)
@@ -346,6 +351,7 @@ describe('POST /user', () => {
                 done();
             })
     });
+
     it('responses with 400 when no exp date is provided', (done) => {
         request(app)
             .post(path)
@@ -363,8 +369,8 @@ describe('POST /user', () => {
 });
 
 describe('GET /user/', () => {
-    const userId = 6;
     const path = `/user/`;
+
     it('responses with 200 when user info is loaded', (done) => {
         request(app)
             .get(path)
@@ -378,6 +384,7 @@ describe('GET /user/', () => {
                 done();
             })
     });
+
     it('responses with 401 when user is not logged in', (done) => {
         request(app)
             .get(path)
@@ -393,7 +400,8 @@ describe('GET /user/', () => {
 });
 
 describe('PUT /user/update-info', () => {
-    const path = `/user/update-info`
+    const path = `/user/update-info`;
+
     it('responses with 200 when user info is updated', (done) => {
         request(app)
             .put(path)
@@ -408,10 +416,11 @@ describe('PUT /user/update-info', () => {
                 done();
             })
     });
+
     it('responses with 401 when user is not logged in', (done) => {
         request(app)
             .put(path)
-            .send(wrongUserId)
+            .send(userInfo)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(401)
@@ -421,6 +430,7 @@ describe('PUT /user/update-info', () => {
                 done();
             })
     });
+
     it('responses with 400 when no first name is provided', (done) => {
         request(app)
             .put(path)
@@ -435,6 +445,7 @@ describe('PUT /user/update-info', () => {
                 done();
             })
     });
+
     it('responses with 400 when no last name is provided', (done) => {
         request(app)
             .put(path)
@@ -449,6 +460,7 @@ describe('PUT /user/update-info', () => {
                 done();
             })
     });
+
     it('responses with 400 when no address1 is provided', (done) => {
         request(app)
             .put(path)
@@ -463,6 +475,7 @@ describe('PUT /user/update-info', () => {
                 done();
             })
     });
+
     it('responses with 400 when no city is provided', (done) => {
         request(app)
             .put(path)
@@ -477,6 +490,7 @@ describe('PUT /user/update-info', () => {
                 done();
             })
     });
+
     it('responses with 400 when no province is provided', (done) => {
         request(app)
             .put(path)
@@ -491,6 +505,7 @@ describe('PUT /user/update-info', () => {
                 done();
             })
     });
+
     it('responses with 400 when no postal code is provided', (done) => {
         request(app)
             .put(path)
@@ -505,6 +520,7 @@ describe('PUT /user/update-info', () => {
                 done();
             })
     });
+
     it('responses with 400 when no credit card is provided', (done) => {
         request(app)
             .put(path)
@@ -519,6 +535,7 @@ describe('PUT /user/update-info', () => {
                 done();
             })
     });
+
     it('responses with 400 when no exp date is provided', (done) => {
         request(app)
             .put(path)
@@ -536,8 +553,8 @@ describe('PUT /user/update-info', () => {
 });
 
 describe('DELETE /user/delete-user/', () => {
-    const userId = 6;
     const path = `/user/delete-user/`;
+
     it('responses with 200 when a user was deleted', (done) => {
         request(app)
             .delete(path)
@@ -551,6 +568,7 @@ describe('DELETE /user/delete-user/', () => {
                 done();
             })
     });
+
     it('responses with 401 when user is not logged in', (done) => {
         request(app)
             .delete(path)

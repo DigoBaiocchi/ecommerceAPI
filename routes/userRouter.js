@@ -9,9 +9,6 @@ const { Database } = require('../db/databaseQueries');
  *          User_Info_Object:
  *              type: object
  *              properties:
- *                  user_id:
- *                      type: string
- *                      example: 5
  *                  first_name:
  *                      type: string
  *                      example: John
@@ -195,16 +192,11 @@ router.put('/update-info', async (req, res, next) => {
 
 /**
  * @swagger
- * /user/delete-user/:userId:
+ * /user/delete-user/:
  *      delete:
  *          tags:
  *              - User
  *          description: Delete user info
- *          parameters:
- *              - name: userId
- *                in: path
- *                description: Get user id to be deleted
- *                required: true
  *          responses:
  *              200:
  *                  description: User info was successfully deleted
