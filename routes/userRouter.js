@@ -208,17 +208,16 @@ router.put('/update-info', async (req, res, next) => {
  *          responses:
  *              200:
  *                  description: User info was successfully deleted
- *              400:
- *                  description: User was not found
+ *              401:
+ *                  description: User is not logged in
  */
 
-router.delete('/delete-user/:userId', async (req, res, next) => {
-    const { userId } = req.params;
-
-    const validUserId = await Database.selectUserById(userId);
-    if(!validUserId) {
-        return res.status(400).json({ error: `User was not found` });
+router.delete('/delete-user/', async (req, res, next) => {
+    if(!req.session.passport) {
+        return res.status(401).json({ error: `User is not logged in` });
     }
+
+    const userId = req.session.passport.user.userId;    
 
     const deleteUserInfo = await Database.deleteUserInfo(userId);
 

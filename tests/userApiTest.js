@@ -535,14 +535,13 @@ describe('PUT /user/update-info', () => {
     });
 });
 
-describe('DELETE /user/delete-user/:id', () => {
+describe('DELETE /user/delete-user/', () => {
     const userId = 6;
-    const path = `/user/delete-user/${userId}`;
-    const badUserId = 1;
-    const badPath = `/user/delete-user/${badUserId}`;
+    const path = `/user/delete-user/`;
     it('responses with 200 when a user was deleted', (done) => {
         request(app)
             .delete(path)
+            .set('Cookie', cookie)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
@@ -552,13 +551,13 @@ describe('DELETE /user/delete-user/:id', () => {
                 done();
             })
     });
-    it('resposnes with 400 when user was not found', (done) => {
+    it('responses with 401 when user is not logged in', (done) => {
         request(app)
-            .delete(badPath)
+            .delete(path)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect({ "error": `User was not found` })
+            .expect(401)
+            .expect({ "error": `User is not logged in` })
             .end((err) => {
                 if (err) return done(err);
                 done();
