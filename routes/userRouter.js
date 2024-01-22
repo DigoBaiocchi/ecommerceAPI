@@ -73,12 +73,11 @@ const { Database } = require('../db/databaseQueries');
  *              400:
  *                  description: User id not found
  *              401:
- *                  description: Missing required information
+ *                  description: User is not logged in
  */
 
 router.post('/', async (req, res, next) => {
     const { 
-        user_id, 
         first_name, 
         last_name, 
         address1, 
@@ -89,17 +88,18 @@ router.post('/', async (req, res, next) => {
         credit_card_number,
         credit_card_exp_date
     } = req.body;
+
+    if(!req.session.passport) {
+        return res.status(401).json({ error: `User is not logged in` });
+    }
     
     if (!first_name || !last_name || !address1 || !city || !province || !postal_code || !credit_card_number || !credit_card_exp_date) {
         return res.status(400).json({ error: 'Missing required information' });
     }
 
-    const validUserId = await Database.selectUserById(user_id);
-    if (!validUserId) {
-        return res.status(400).json({ error: `User id not found` });
-    }
+    const userId = req.session.passport.user.userId;
     
-    const addUserInfo = await Database.addUserInfo(user_id, first_name, last_name, address1, address2, city, province, postal_code, credit_card_number, credit_card_exp_date);
+    const addUserInfo = await Database.addUserInfo(userId, first_name, last_name, address1, address2, city, province, postal_code, credit_card_number, credit_card_exp_date);
     
     return res.status(201).json({ message: `User info has been added` });
 });
