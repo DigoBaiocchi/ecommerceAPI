@@ -21,106 +21,42 @@ const userInfo = {
 };
 
 const missingFirstName = {
-    "user_id": 6,
+    ...userInfo,
     "first_name": "",
-    "last_name": "Puppers",
-    "address1": "500 puppie Ave",
-    "address2": "",
-    "city": "Toronto",
-    "province": "ON",
-    "postal_code": "POP 1E1",
-    "credit_card_number": "1234567891234567",
-    "credit_card_exp_date": "01/26"
 };
 
 const missingLastName = {
-    "user_id": 6,
-    "first_name": "Gambito",
+    ...userInfo,
     "last_name": "",
-    "address1": "500 puppie Ave",
-    "address2": "",
-    "city": "Toronto",
-    "province": "ON",
-    "postal_code": "POP 1E1",
-    "credit_card_number": "1234567891234567",
-    "credit_card_exp_date": "01/26"
 };
 
 const missingAddress1 = {
-    "user_id": 6,
-    "first_name": "Gambito",
-    "last_name": "Puppers",
+    ...userInfo,
     "address1": "",
-    "address2": "",
-    "city": "Toronto",
-    "province": "ON",
-    "postal_code": "POP 1E1",
-    "credit_card_number": "1234567891234567",
-    "credit_card_exp_date": "01/26"
 };
 
 const missingCity = {
-    "user_id": 6,
-    "first_name": "Gambito",
-    "last_name": "Puppers",
-    "address1": "500 puppie Ave",
-    "address2": "",
+    ...userInfo,
     "city": "",
-    "province": "ON",
-    "postal_code": "POP 1E1",
-    "credit_card_number": "1234567891234567",
-    "credit_card_exp_date": "01/26"
 };
 
 const missingProvince = {
-    "user_id": 6,
-    "first_name": "Gambito",
-    "last_name": "Puppers",
-    "address1": "500 puppie Ave",
-    "address2": "",
-    "city": "Toronto",
+    ...userInfo,
     "province": "",
-    "postal_code": "POP 1E1",
-    "credit_card_number": "1234567891234567",
-    "credit_card_exp_date": "01/26"
 };
 
 const missingPostalCode = {
-    "user_id": 6,
-    "first_name": "Gambito",
-    "last_name": "Puppers",
-    "address1": "500 puppie Ave",
-    "address2": "",
-    "city": "Toronto",
-    "province": "ON",
+    ...userInfo,
     "postal_code": "",
-    "credit_card_number": "1234567891234567",
-    "credit_card_exp_date": "01/26"
 };
 
 const missingCreditCard = {
-    "user_id": 6,
-    "first_name": "Gambito",
-    "last_name": "Puppers",
-    "address1": "500 puppie Ave",
-    "address2": "",
-    "city": "Toronto",
-    "province": "ON",
-    "postal_code": "POP 1E1",
+    ...userInfo,
     "credit_card_number": "",
-    "credit_card_exp_date": "01/26"
 };
 
 const missingExpData = {
-    "user_id": 6,
-    "first_name": "Gambito",
-    "last_name": "Puppers",
-    "address1": "500 puppie Ave",
-    "address2": "",
-    "city": "Toronto",
-    "province": "ON",
-    "postal_code": "POP 1E1",
-    "credit_card_number": "1234567891234567",
+    ...userInfo,
     "credit_card_exp_date": ""
 };
 
