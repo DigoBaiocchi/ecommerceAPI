@@ -1,14 +1,7 @@
 const request = require('supertest');
 const app = require('../app');
 const { Database } = require('../db/databaseQueries');
-
-
-const userData = {
-    "email": "gambito@gmail.com",
-    "password": "12345",
-    "checkoutData": []
-};
-
+const { newUserData, newCategoryData, newProductData } = require('./mockData/mockData');
 
 describe('CART TESTS', () => {
     let cookie;
@@ -17,19 +10,10 @@ describe('CART TESTS', () => {
     let productData2;
     let updatedProductData;
     let updatedProductData2;
-    
-    let databaseProductData = {
-        'name': 'Salmon Test',
-        'quantity': 3,
-        'description': 'Fresh from the sea',
-        'price': '$4.99'
-    };
 
-    let databaseProductData2 = {
+    let newProductData2 = {
+        ...newProductData,
         'name': 'Tuna Test',
-        'quantity': 3,
-        'description': 'Fresh from the sea',
-        'price': '$4.99'
     };
     
     let data = {
@@ -38,23 +22,21 @@ describe('CART TESTS', () => {
     };
     
     let data2 = {
-        "userId": 6,
-        "totalUnits": 1
+        ...data
     };
     
     const invalidProductData = {
-        "userId": 6,
+        ...data,
         "productId": 0,
-        "totalUnits": 1
     };
     
     let reduceQtyData = {
-        "userId": 6,
+        ...data,
         "totalUnits": -2
     };
     
     let invalidQtyData = {
-        "userId": 6,
+        ...data,
         "totalUnits": 5
     };
     
@@ -62,7 +44,7 @@ describe('CART TESTS', () => {
         // login user
         request(app)
         .post('/auth/login/')
-        .send(userData)
+        .send(newUserData)
         .end((err, res) => {
             if (err) return done(err);
             cookie = res.headers['set-cookie']
@@ -81,11 +63,11 @@ describe('CART TESTS', () => {
                             newCategoryData = categoryData;
                             productData = {
                                 'categoryId': newCategoryData.id,
-                                ...databaseProductData
+                                ...newProductData
                             };
                             productData2 = {
                                 'categoryId': newCategoryData.id,
-                                ...databaseProductData2
+                                ...newProductData2
                             }
 
                             // adding mock product
