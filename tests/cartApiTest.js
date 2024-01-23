@@ -5,7 +5,7 @@ const { newUserData, newCategoryData, newProductData } = require('./mockData/moc
 
 describe('CART TESTS', () => {
     let cookie;
-    let newCategoryData;
+    let categoryData;
     let productData;
     let productData2;
     let updatedProductData;
@@ -50,23 +50,24 @@ describe('CART TESTS', () => {
             cookie = res.headers['set-cookie']
 
             // adding mock category
+            console.log(newCategoryData)
             request(app)
                 .post('/categories/add-category')
-                .send({'name': 'newCategory'})
+                .send(newCategoryData)
                 .set('accept', 'application/json')
                 .end((err) => {
                     if (err) return done(err);
 
                     // get added mock category data
                     Database.getCategoryByName('newCategory')
-                        .then(categoryData => {
-                            newCategoryData = categoryData;
+                        .then(category => {
+                            categoryData = category;
                             productData = {
-                                'categoryId': newCategoryData.id,
+                                'categoryId': categoryData.id,
                                 ...newProductData
                             };
                             productData2 = {
-                                'categoryId': newCategoryData.id,
+                                'categoryId': categoryData.id,
                                 ...newProductData2
                             }
 
@@ -126,8 +127,9 @@ describe('CART TESTS', () => {
 
     after((done) => {
         // deleting mock category
+        console.log(categoryData)
         request(app)
-            .delete(`/categories/delete-category/${newCategoryData.id}`)
+            .delete(`/categories/delete-category/${categoryData.id}`)
             .end((err) => {
                 if (err) return done(err);
 
