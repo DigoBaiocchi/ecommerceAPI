@@ -67,8 +67,7 @@ describe('GET /categories', () => {
 });
 
 describe('GET /categories/:id', () => {
-    const categoryId = 1;
-    const wrongCategoryId = 1;
+    const wrongCategoryId = 0;
     it('responses with 200 with correct category', (done) => {
         request(app)
             .get(`/categories/${newCategoryData.id}`)
