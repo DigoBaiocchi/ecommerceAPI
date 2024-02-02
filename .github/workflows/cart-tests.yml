@@ -4,14 +4,16 @@ jobs:
     run-cart-tests:
         runs-on: ubuntu-latest
         env:
-          DATABASE_USER: 'otherPostgres'
+          DATABASE_USER: ${{ secrets.DB_USER }}
+          DATABASE_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DATABASE_NAME: ${{ secrets.DB_DATABASE_NAME }}
         services:
           postgres:
             image: postgres:13
             env:
-              POSTGRES_USER: 'postgres'
-              POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
-              POSTGRES_DB: ${{ secrets.DB_DATABASE_NAME }}
+              POSTGRES_USER: ${{ env.DATABASE_USER }}
+              POSTGRES_PASSWORD: ${{ env.DATABASE_PASSWORD }}
+              POSTGRES_DB: ${{ env.DATABASE_NAME }}
             ports:
               - 5432:5432
             options: >-
@@ -28,11 +30,11 @@ jobs:
             - name: check env values
               run: | 
                 echo "${{ env.DATABASE_USER }} ${{ secrets.DB_PASSWORD }} ${{ secrets.DB_DATABASE_NAME }}"
-            # - name: Run cart tests with PostgresSQL
-            #   env:
-            #     POSTGRES_USER: ${{ env.POSTGRES_USER }}
-            #     POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
-            #     POSTGRES_DB: ${{ env.POSTGRES_DB }}
-            #     POSTGRES_HOST: localhost
-            #     POSTGRES_PORT: 5432
-            #   run: npx mocha tests/cartApiTest.js
+            - name: Run cart tests with PostgresSQL
+              env:
+                POSTGRES_USER: ${{ env.POSTGRES_USER }}
+                POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+                POSTGRES_DB: ${{ env.POSTGRES_DB }}
+                POSTGRES_HOST: localhost
+                POSTGRES_PORT: 5432
+              run: npx mocha tests/cartApiTest.js
