@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../app');
+const { app, server } = require('../app');
 const { Database } = require('../db/databaseQueries');
 const { newUserData, newCategoryData, newProductData } = require('./mockData/mockData');
 
@@ -148,6 +148,13 @@ describe('CART TESTS', () => {
                             })
                     })
             })
+    });
+    
+    after((done) => {
+        server.close(err => {
+            if (err) return done(err);
+            done();
+        });
     });
 
     describe('POST /cart', () => {
