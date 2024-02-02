@@ -88,9 +88,11 @@ app.get('/error', (req, res, next) => {
     return res.sendFile('error.html', { root: __dirname });
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     Database.createTables();
     console.log(`Ecommerce app is running on port ${port}`);
 });
 
 module.exports = app;
+
+module.exports = server;
