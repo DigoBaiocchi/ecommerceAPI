@@ -25,7 +25,7 @@ jobs:
               run: npm ci
             - name: check env values
               run: | 
-                echo ${{ env.POSTGRES_USER }} ${{ env.POSTGRES_PASSWORD }} ${{ env.POSTGRES_DB }}
+                echo "${{ env.POSTGRES_USER }} ${{ env.POSTGRES_PASSWORD }} ${{ env.POSTGRES_DB }}"
             # - name: Run cart tests with PostgresSQL
             #   env:
             #     POSTGRES_USER: ${{ env.POSTGRES_USER }}
