@@ -28,7 +28,9 @@ jobs:
               uses: actions/checkout@v3
             - name: Install dependencies
               run: npm ci
-            - name: Run cart tests with PostgresSQL
+            - name: Run categories tests with PostgresSQL
               env:
                 DATABASE_URL: postgresql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_DATABASE_NAME }}
               run: npx mocha tests/categoriesApiTest.js
+            - name: Run cart tests with PostgresSQL
+              run: npx mocha tests/cartApiTest.js
