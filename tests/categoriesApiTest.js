@@ -1,14 +1,8 @@
 const request = require('supertest');
-const app = require('../app');
-const server = require('../app');
+const { app, server } = require('../app');
 const { Database } = require('../db/databaseQueries');
 
 let newCategoryData;
-// let server;
-
-// before(done => {
-//     server = app.listen(4000, done);
-// });
 
 describe('POST /categories/add-category', () => {
     const newCategory = "Poultry";

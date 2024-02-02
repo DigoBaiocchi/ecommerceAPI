@@ -93,6 +93,9 @@ const server = app.listen(port, () => {
     console.log(`Ecommerce app is running on port ${port}`);
 });
 
-module.exports = app;
+module.exports = {
+    app,
+    server
+};
 
-module.exports = server;
+// module.exports = server;
