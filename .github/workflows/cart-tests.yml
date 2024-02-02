@@ -31,4 +31,4 @@ jobs:
             - name: Run cart tests with PostgresSQL
               env:
                 DATABASE_URL: postgresql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_DATABASE_NAME }}
-              run: npx mocha tests/cartApiTest.js
+              run: npx mocha tests/categoriesApiTest.js
