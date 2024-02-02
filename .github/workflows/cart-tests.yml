@@ -7,6 +7,7 @@ jobs:
           DATABASE_USER: ${{ secrets.DB_USER }}
           DATABASE_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DATABASE_NAME: ${{ secrets.DB_DATABASE_NAME }}
+          DATABASE_URL: postgresql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_DATABASE_NAME }}
         services:
           postgres:
             image: postgres:13
@@ -27,14 +28,7 @@ jobs:
               uses: actions/checkout@v3
             - name: Install dependencies
               run: npm ci
-            - name: check env values
-              run: | 
-                echo "${{ env.DATABASE_USER }} ${{ secrets.DB_PASSWORD }} ${{ secrets.DB_DATABASE_NAME }}"
             - name: Run cart tests with PostgresSQL
               env:
-                POSTGRES_USER: postgres
-                POSTGRES_PASSWORD: postgres
-                POSTGRES_DB: ${{ env.DATABASE_NAME }}
-                POSTGRES_HOST: localhost
-                POSTGRES_PORT: 5432
+                DATABASE_URL: postgresql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_DATABASE_NAME }}
               run: npx mocha tests/cartApiTest.js
