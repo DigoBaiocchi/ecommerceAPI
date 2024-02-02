@@ -32,8 +32,8 @@ jobs:
                 echo "${{ env.DATABASE_USER }} ${{ secrets.DB_PASSWORD }} ${{ secrets.DB_DATABASE_NAME }}"
             - name: Run cart tests with PostgresSQL
               env:
-                POSTGRES_USER: ${{ env.DATABASE_USER }}
-                POSTGRES_PASSWORD: ${{ env.DATABASE_PASSWORD }}
+                POSTGRES_USER: postgres
+                POSTGRES_PASSWORD: postgres
                 POSTGRES_DB: ${{ env.DATABASE_NAME }}
                 POSTGRES_HOST: localhost
                 POSTGRES_PORT: 5432
