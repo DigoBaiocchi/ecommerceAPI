@@ -63,7 +63,7 @@ const { Database } = require('../db/databaseQueries');
  */
 
 router.get('/', async (req, res, next) => {
-    const categories = await Database.getAllCategories();
+    const categories = await Database.getAllItems("categories");
     console.log(categories);
     if (categories.length !== 0) {
         return res.status(200).json({ message: 'All categories are loaded', data: categories });
@@ -102,7 +102,7 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:categoryId', async (req, res, next) => {
     const { categoryId } = req.params;
-    const category = await Database.getCategoryById(categoryId);
+    const category = await Database.getItemById("categories", categoryId);
     if (!category) {
         return res.status(400).json({ error: `Category was not found` });
     }
@@ -141,7 +141,7 @@ router.post('/add-category', async (req, res, next) => {
         return res.status(400).json({ error: 'Category name not provided' });
     }
 
-    const categories = await Database.getAllCategories();
+    const categories = await Database.getAllItems("categories");
     const existentCategory = categories.some(category => category.name === name);
     if (existentCategory) {
         return res.status(401).json({ error: 'Category already exists' });
@@ -182,7 +182,7 @@ router.patch('/edit-category', async (req, res, next) => {
         return res.status(400).json({ error: `Name not provided for category` });
     }
     
-    const categories = await Database.getAllCategories();
+    const categories = await Database.getAllItems("categories");
     const existentCategory = categories.some(category => category.id === id);
     if(!existentCategory) {
         return res.status(401).json({ error: `Category does not exist` });
@@ -213,7 +213,7 @@ router.patch('/edit-category', async (req, res, next) => {
 
 router.delete('/delete-category/:categoryId', async (req, res, next) => {
     const { categoryId } = req.params;
-    const categories = await Database.getAllCategories();
+    const categories = await Database.getAllItems("categories");
 
     const existentCategory = await categories.some(category => category.id === Number(categoryId));
     if (!existentCategory) {

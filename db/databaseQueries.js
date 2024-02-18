@@ -67,7 +67,7 @@ const Database = {
     async selectUserByEmail(email) {
         return await query('SELECT * FROM users WHERE email = $1', [email]).then(results => results.rows[0]);
     },
-    async selectAllUsers() {
+    async  Users() {
         return await query('SELECT * FROM users').then(results => results.rows);
     },
     async selectUserById(id) {
@@ -89,18 +89,18 @@ const Database = {
     async deleteUser(email) {
         return await query("DELETE FROM users WHERE email = $1", [email]);
     },
-    async getAllCategories() {
-        return await query("SELECT * FROM categories").then(results => results.rows);
+    async getAllItems(tableName) {
+        return await query(`SELECT * FROM ${tableName}`).then(results => results.rows);
     },
-    async getCategoryByName(name) {
-        return await query("SELECT * FROM categories WHERE name = $1", [name]).then(result => result.rows[0]);
+    async getItemByName(tableName, name) {
+        return await query(`SELECT * FROM ${tableName} WHERE name = $1`, [name]).then(result => result.rows[0]);
     },
     async getCategoryId(name) {
         const categoryData = await query("SELECT * FROM categories WHERE name = $1", [name]).then(result => result.rows[0]);
         return categoryData;
     },
-    async getCategoryById(id) {
-        return await query('SELECT * FROM categories WHERE id = $1', [id]).then(result => result.rows[0]);
+    async getItemById(tableName, id) {
+        return await query(`SELECT * FROM ${tableName} WHERE id = $1`, [id]).then(result => result.rows[0]);
     },
     async addCategory(name) {
         return await query("INSERT INTO categories (name) VALUES ($1)", [name]);

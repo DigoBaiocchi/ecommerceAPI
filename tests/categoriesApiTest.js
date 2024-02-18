@@ -17,7 +17,7 @@ describe('POST /categories/add-category', () => {
         .expect({ "message": `Category successfully created` })
         .end(async (err) => {
             if (err) return done(err);
-            newCategoryData = await Database.getCategoryByName(newCategory);
+            newCategoryData = await Database.getItemByName("categories", newCategory);
             done();
         })
     });
