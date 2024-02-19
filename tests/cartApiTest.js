@@ -59,7 +59,7 @@ describe('CART TESTS', () => {
                     if (err) return done(err);
 
                     // get added mock category data
-                    Database.getCategoryByName('newCategory')
+                    Database.getItemByName("categories", "newCategory")
                         .then(category => {
                             categoryData = category;
                             productData = {
@@ -80,7 +80,7 @@ describe('CART TESTS', () => {
                                     if (err) return done(err);
                                     
                                     // get added mock product data
-                                    Database.getProductByName(productData.name)
+                                    Database.getItemByName("products", productData.name)
                                         .then(productData => {
                                             updatedProductData = productData;
 
@@ -106,7 +106,7 @@ describe('CART TESTS', () => {
                                             if (err) return done(err);
 
                                             // get second mock product data
-                                            Database.getProductByName(productData2.name)
+                                            Database.getItemByName("products", productData2.name)
                                                 .then(productData2 => {
                                                     updatedProductData2 = productData2;
 
