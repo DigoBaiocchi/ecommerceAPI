@@ -118,44 +118,48 @@ const { Database } = require('../db/databaseQueries');
  *                              $ref: '#/components/schemas/Error_ProductIdNotFound'
  */
 
-router.post('/', async (req, res, next) => {
-    // check if user is not logged in
+const userNotLoggedInError = (req, res, next) => {
+    // Check if user is not logged in
     if(!req.session.passport) {
         return res.status(401).json({ error: `User is not logged in` });
     } else {
-        const { productId, totalUnits } = req.body;
-        const userId = req.session.passport.user.userId;
-        const productAlreadyInCart = await Database.selectProductInCart(userId, productId);
-        
-        const validProductId = await Database.checkIfProductAlreadyExists(productId);
-        if(!validProductId) {
-            return res.status(404).json({ error: `Product id was not found` });
+        next();
+    }
+};
+
+router.post('/', userNotLoggedInError, async (req, res, next) => {
+    const { productId, totalUnits } = req.body;
+    const userId = req.session.passport.user.userId;
+    const productAlreadyInCart = await Database.selectProductInCart(userId, productId);
+    
+    const validProductId = await Database.checkIfProductAlreadyExists(productId);
+    if(!validProductId) {
+        return res.status(404).json({ error: `Product id was not found` });
+    }
+    
+    const getProductData = await Database.getItemById("products", productId);
+    const totalProductQty = getProductData.quantity;
+    if(totalUnits > totalProductQty) {
+        return res.status(400).json({ error: `Product does not have that many units` });
+    }
+
+    if(productAlreadyInCart) {
+        console.log(productAlreadyInCart)
+        const newAmount = productAlreadyInCart.quantity + totalUnits;
+        if(newAmount < 1) {
+            return res.status(400).json({ error: `Product total in the cart can't be zero. Do you want to delete this product from cart?` });
         }
-        
-        const getProductData = await Database.getProductById(productId);
-        const totalProductQty = getProductData.quantity;
-        if(totalUnits > totalProductQty) {
+        if (newAmount > totalProductQty) {
             return res.status(400).json({ error: `Product does not have that many units` });
         }
-
-        if(productAlreadyInCart) {
-            console.log(productAlreadyInCart)
-            const newAmount = productAlreadyInCart.quantity + totalUnits;
-            if(newAmount < 1) {
-                return res.status(400).json({ error: `Product total in the cart can't be zero. Do you want to delete this product from cart?` });
-            }
-            if (newAmount > totalProductQty) {
-                return res.status(400).json({ error: `Product does not have that many units` });
-            }
-            const updateCart = await Database.updateProductQuanityInCart(userId, productId, newAmount);
-            return res.status(200).json({ message: `Product ${productId} quantity has been udpated in the cart` });
-        } else {
-            if(totalUnits < 1) {
-                return res.status(400).json({ error: `Product total in the cart can't be zero. Do you want to delete this product from cart?` });
-            }
-            const addToCartTable = await Database.addProductToCart(userId, productId, totalUnits);
-            return res.status(201).json({ message: `Product ${productId} was added to cart table` });
+        const updateCart = await Database.updateProductQuanityInCart(userId, productId, newAmount);
+        return res.status(200).json({ message: `Product ${productId} quantity has been udpated in the cart` });
+    } else {
+        if(totalUnits < 1) {
+            return res.status(400).json({ error: `Product total in the cart can't be zero. Do you want to delete this product from cart?` });
         }
+        const addToCartTable = await Database.addProductToCart(userId, productId, totalUnits);
+        return res.status(201).json({ message: `Product ${productId} was added to cart table` });
     }
 });
 
@@ -178,16 +182,11 @@ router.post('/', async (req, res, next) => {
  *                      application/xml:
  *                          schema:
  *                              $ref: '#/components/schemas/Get_Products_Data_From_Cart'
- *              500:
+ *              401:
  *                  description: User is not logged in
  */
 
-router.get('/', async (req, res, next) => {
-    // check if user is not logged in
-    if(!req.session.passport) {
-        return res.status(500).json({ error: `User is not logged in` });
-    } 
-
+router.get('/', userNotLoggedInError, async (req, res, next) => {
     const userId = req.session.passport.user.userId;
     
     const userCartData = await Database.selectCartProducts(userId);
@@ -243,12 +242,7 @@ router.get('/', async (req, res, next) => {
  *                                  - $ref: '#/components/schemas/Error_NoProductsInCart'
  */
 
-router.delete('/delete-product', async (req, res, next) => {
-    // Check if user is not logged in
-    if (!req.session.passport) {
-      return res.status(401).json({ error: 'User is not logged in' });
-    }
-  
+router.delete('/delete-product', userNotLoggedInError, async (req, res, next) => {
     // Check if productId query param is not provided  
     if (!req.query.productId) {
       return res.status(400).json({ error: 'ProductId parameter was not provided' });
@@ -305,20 +299,15 @@ router.delete('/delete-product', async (req, res, next) => {
  *                              $ref: '#/components/schemas/Error_NoProductsInCart'
  */
 
-router.delete('/delete-cart', async (req, res, next) => {
-    // check if user is not logged in
-    if(!req.session.passport) {
-        return res.status(401).json({ error: `User is not logged in` });
-    } else {
-        const userId = req.session.passport.user.userId;
-        
-        const productsInUserCart = await Database.selectCartProducts(userId);
-        if(productsInUserCart.length === 0) {
-            return res.status(404).json({ error: `No products in the cart` });
-        }
-        const deleteProductFromCart = await Database.deleteAllProductsFromCart(userId);
-        return res.status(200).json({ message: `All products deleted from user cart` });
+router.delete('/delete-cart', userNotLoggedInError, async (req, res, next) => {
+    const userId = req.session.passport.user.userId;
+    
+    const productsInUserCart = await Database.selectCartProducts(userId);
+    if(productsInUserCart.length === 0) {
+        return res.status(404).json({ error: `No products in the cart` });
     }
+    const deleteProductFromCart = await Database.deleteAllProductsFromCart(userId);
+    return res.status(200).json({ message: `All products deleted from user cart` });
 });
 
 module.exports = router;
