@@ -4,6 +4,7 @@ const { Database } = require('../db/databaseQueries');
 
 require('./cartApiTest');
 require('./categoriesApiTest');
+require('./productsApiTest');
 
 after((done) => {
     server.close(err => {
