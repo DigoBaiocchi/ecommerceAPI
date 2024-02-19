@@ -127,15 +127,22 @@ const userNotLoggedInError = (req, res, next) => {
     }
 };
 
-router.post('/', userNotLoggedInError, async (req, res, next) => {
+const productIdWasNotFoundError = async (req, res, next) => {
+    // const { productId, totalUnits } = req.body;
+    const productId = req.body.productId || Number(req.query.productId);
+    const validProductId = await Database.checkIfProductAlreadyExists(productId);
+
+    if (!validProductId) {
+        return res.status(404).json({ error: `Product id was not found` });
+    } 
+    
+    next();
+};
+
+router.post('/', userNotLoggedInError, productIdWasNotFoundError, async (req, res, next) => {
     const { productId, totalUnits } = req.body;
     const userId = req.session.passport.user.userId;
     const productAlreadyInCart = await Database.selectProductInCart(userId, productId);
-    
-    const validProductId = await Database.checkIfProductAlreadyExists(productId);
-    if(!validProductId) {
-        return res.status(404).json({ error: `Product id was not found` });
-    }
     
     const getProductData = await Database.getItemById("products", productId);
     const totalProductQty = getProductData.quantity;
@@ -242,20 +249,9 @@ router.get('/', userNotLoggedInError, async (req, res, next) => {
  *                                  - $ref: '#/components/schemas/Error_NoProductsInCart'
  */
 
-router.delete('/delete-product', userNotLoggedInError, async (req, res, next) => {
-    // Check if productId query param is not provided  
-    if (!req.query.productId) {
-      return res.status(400).json({ error: 'ProductId parameter was not provided' });
-    }
-  
+router.delete('/delete-product', userNotLoggedInError, productIdWasNotFoundError, async (req, res, next) => {
     const userId = req.session.passport.user.userId;
     const productId = Number(req.query.productId);
-    
-    // Check if the product ID is valid
-    const validProductId = await Database.checkIfProductAlreadyExists(productId);
-    if (!validProductId) {
-      return res.status(404).json({ error: 'Product id was not found' });
-    }
     
     // Check if the product is already in the cart
     const productAlreadyInCart = await Database.selectProductInCart(userId, productId);
