@@ -267,12 +267,12 @@ describe('CART TESTS', () => {
     describe('GET /cart', () => {
         const path = '/cart';
     
-        it('responses with 500 when user is not logged in', (done) => {
+        it('responses with 401 when user is not logged in', (done) => {
             request(app)
             .get(path)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(500)
+            .expect(401)
             .expect({ "error": `User is not logged in` })
             .end((err) => {
                 if (err) return done(err);
