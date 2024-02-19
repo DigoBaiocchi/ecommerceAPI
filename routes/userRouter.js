@@ -73,7 +73,15 @@ const { Database } = require('../db/databaseQueries');
  *                  description: User is not logged in
  */
 
-router.post('/', async (req, res, next) => {
+const userNotLoggedInError = (req, res, next) => {
+    if(!req.session.passport) {
+        return res.status(401).json({ error: `User is not logged in` });
+    } else {
+        next();
+    }
+};
+
+router.post('/', userNotLoggedInError, async (req, res, next) => {
     const { 
         first_name, 
         last_name, 
@@ -85,10 +93,6 @@ router.post('/', async (req, res, next) => {
         credit_card_number,
         credit_card_exp_date
     } = req.body;
-
-    if(!req.session.passport) {
-        return res.status(401).json({ error: `User is not logged in` });
-    }
     
     if (!first_name || !last_name || !address1 || !city || !province || !postal_code || !credit_card_number || !credit_card_exp_date) {
         return res.status(400).json({ error: 'Missing required information' });
@@ -124,11 +128,7 @@ router.post('/', async (req, res, next) => {
  *                  description: User is not logged in
  */
 
-router.get('/', async (req, res, next) => {
-    if(!req.session.passport) {
-        return res.status(401).json({ error: `User is not logged in` });
-    }
-
+router.get('/', userNotLoggedInError, async (req, res, next) => {
     const userId = req.session.passport.user.userId;    
 
     const selectUserInfo = await Database.selectUserInfo(userId);
@@ -161,7 +161,7 @@ router.get('/', async (req, res, next) => {
  *                  description: User is not logged in
  */
 
-router.put('/update-info', async (req, res, next) => {
+router.put('/update-info', userNotLoggedInError, async (req, res, next) => {
     const { 
         user_id, 
         first_name, 
@@ -175,15 +175,9 @@ router.put('/update-info', async (req, res, next) => {
         credit_card_exp_date
     } = req.body;
     
-    if(!req.session.passport) {
-        return res.status(401).json({ error: `User is not logged in` });
-    }
-    
     if (!first_name || !last_name || !address1 || !city || !province || !postal_code || !credit_card_number || !credit_card_exp_date) {
         return res.status(400).json({ error: 'Missing required information' });
     }
-
-    const userId = req.session.passport.user.userId;
 
     const updateUserInfo = await Database.updateUserInfo(user_id, first_name, last_name, address1, address2, city, province, postal_code, credit_card_number, credit_card_exp_date);
 
@@ -204,11 +198,7 @@ router.put('/update-info', async (req, res, next) => {
  *                  description: User is not logged in
  */
 
-router.delete('/delete-user/', async (req, res, next) => {
-    if(!req.session.passport) {
-        return res.status(401).json({ error: `User is not logged in` });
-    }
-
+router.delete('/delete-user/', userNotLoggedInError, async (req, res, next) => {
     const userId = req.session.passport.user.userId;    
 
     const deleteUserInfo = await Database.deleteUserInfo(userId);
