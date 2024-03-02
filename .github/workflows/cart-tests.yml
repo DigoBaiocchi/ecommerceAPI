@@ -35,4 +35,4 @@ jobs:
             - name: Run categories tests with PostgresSQL
               env:
                 DATABASE_URL: ${{ env.DATABASE_URL }}
-              run: npx mocha tests/categoriesApiTest.js
+              run: npx mocha tests/apiTest.js
