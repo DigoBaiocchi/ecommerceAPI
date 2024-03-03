@@ -150,12 +150,12 @@ describe('CART TESTS', () => {
             })
     });
     
-    after((done) => {
-        server.close(err => {
-            if (err) return done(err);
-            done();
-        });
-    });
+    // after((done) => {
+    //     server.close(err => {
+    //         if (err) return done(err);
+    //         done();
+    //     });
+    // });
 
     describe('POST /cart', () => {
         const path = '/cart';

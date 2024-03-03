@@ -169,10 +169,10 @@ describe("Categories api tests", () => {
         });
     });
     
-    after(done => {
-        server.close(err => {
-            if (err) return done(err);
-            done();
-        });
-    });
+    // after(done => {
+    //     server.close(err => {
+    //         if (err) return done(err);
+    //         done();
+    //     });
+    // });
 });
