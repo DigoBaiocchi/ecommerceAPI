@@ -2,6 +2,17 @@ const express = require('express');
 const router = express.Router();
 const { Database } = require('../db/databaseQueries');
 
+const checkCategoryIsValid = async (req, res, next) => {
+    const { categoryId } = req.params;
+    const category = await Database.getItemById("categories", categoryId);
+    if (!category) {
+        return res.status(400).json({ error: `Category was not found` });
+    } else {
+        req.categoryData = category;
+        next();
+    }
+};
+
 /**
  * @swagger
  * components:
@@ -92,14 +103,8 @@ router.get('/', async (req, res, next) => {
  *                  description: Category was not found
  */
 
-router.get('/:categoryId', async (req, res, next) => {
-    const { categoryId } = req.params;
-    const category = await Database.getItemById("categories", categoryId);
-    if (!category) {
-        return res.status(400).json({ error: `Category was not found` });
-    }
-
-    return res.status(200).json({ message: `Category data was loaded`, data: category });
+router.get('/:categoryId', checkCategoryIsValid, async (req, res, next) => {
+    return res.status(200).json({ message: `Category data was loaded`, data: req.categoryData });
 });
 
 /**
@@ -167,27 +172,19 @@ router.post('/add-category', async (req, res, next) => {
  *          responses:
  *              200:
  *                  description: Category id has been updated to name
- *              400:
- *                  description: Name not provided for category
  *              401:
- *                  description: Category id does not exist
+ *                  description: Name not provided for category
+ *              400:
+ *                  description: Category was not found
  */
 
-router.patch('/edit-category/:categoryId', async (req, res, next) => {
-    const { categoryId } = req.params;
+router.patch('/edit-category/:categoryId', checkCategoryIsValid, async (req, res, next) => {
     const { name } = req.body;
     if (!name) {
-        return res.status(400).json({ error: `Name not provided for category` });
+        return res.status(401).json({ error: `Name not provided for category` });
     }
     
-    const categories = await Database.getAllItems("categories");
-    
-    const existentCategory = await categories.some(category => category.id === Number(categoryId));
-    if(!existentCategory) {
-        return res.status(401).json({ error: `Category does not exist` });
-    }
-    
-    const updateCategory = await Database.updateCategory(categoryId, name);
+    const updateCategory = await Database.updateCategory(req.categoryData.id, name);
     return res.status(200).json({ message: `Category name has been updated` });
 });
 
@@ -207,19 +204,11 @@ router.patch('/edit-category/:categoryId', async (req, res, next) => {
  *              200:
  *                  description: Category has been deleted
  *              400:
- *                  description: Category does not exist
+ *                  description: Category was not found
  */
 
-router.delete('/delete-category/:categoryId', async (req, res, next) => {
-    const { categoryId } = req.params;
-    const categories = await Database.getAllItems("categories");
-
-    const existentCategory = await categories.some(category => category.id === Number(categoryId));
-    if (!existentCategory) {
-        return res.status(400).json({ error: "Category does not exist" });
-    }
-
-    const deleteCategory = await Database.deleteCategory(categoryId);
+router.delete('/delete-category/:categoryId', checkCategoryIsValid, async (req, res, next) => {
+    const deleteCategory = await Database.deleteCategory(req.categoryData.id);
     return res.status(200).json({ message: "Category has been deleted" });
 });
 

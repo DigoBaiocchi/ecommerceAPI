@@ -111,13 +111,13 @@ describe("Categories api tests", () => {
             })
         });
         
-        it('responses with 400 when no category name is provided', (done) => {
+        it('responses with 401 when no category name is provided', (done) => {
             request(app)
             .patch(`/categories/edit-category/${newCategoryData.id}`)
             .send({"name": ''})
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
+            .expect(401)
             .expect({ "error": `Name not provided for category` })
             .end((err) => {
                 if(err) return done(err);
@@ -125,14 +125,14 @@ describe("Categories api tests", () => {
             })
         });
         
-        it('responses with 401 when category does not exist', (done) => {
+        it('responses with 400 when category does not exist', (done) => {
             request(app)
             .patch(`/categories/edit-category/${1000}`)
             .send({"name": newName})
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(401)
-            .expect({ "error": `Category does not exist` })
+            .expect(400)
+            .expect({ "error": `Category was not found` })
             .end((err) => {
                 if(err) return done(err);
                 done();
@@ -161,7 +161,7 @@ describe("Categories api tests", () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
-            .expect({ "error": "Category does not exist" })
+            .expect({ "error": "Category was not found" })
             .end((err) => {
                 if(err) return done(err);
                 done();
