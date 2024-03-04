@@ -64,9 +64,9 @@ describe("Categories api tests", () => {
             .end((err) => {
                     if (err) return done(err);
                     done();
-                })
-            });
+            })
         });
+    });
         
     describe('GET /categories/:id', () => {
         const wrongCategoryId = 0;

@@ -55,18 +55,13 @@ const { Database } = require('../db/databaseQueries');
  *                      application/xml:
  *                        schema:
  *                          $ref: '#/components/schemas/All_Categories'
- *              '400':
- *                  description: No categories found
  */
 
 router.get('/', async (req, res, next) => {
     const categories = await Database.getAllItems("categories");
-    console.log(categories);
-    if (categories.length !== 0) {
-        return res.status(200).json({ message: 'All categories are loaded', data: categories });
-    }
-
-    return res.status(400).json({ error: 'No categories in the database' });
+    
+    return res.status(200).json({ message: 'All categories are loaded', data: categories });
+    
 });
 
 /**
