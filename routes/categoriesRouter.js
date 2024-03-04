@@ -9,9 +9,6 @@ const { Database } = require('../db/databaseQueries');
  *          Category_Object:
  *              type: object
  *              properties:
- *                  id:
- *                      type: integer
- *                      example: 10
  *                  name:
  *                      type: string
  *                      example: Electronics
@@ -153,11 +150,16 @@ router.post('/add-category', async (req, res, next) => {
 
 /**
  * @swagger
- * /categories/edit-category:
+ * /categories/edit-category/:categoryId:
  *      put:
  *          tags:
  *              - Category
  *          description: Edit category
+ *          parameters:
+ *              - name: categoryId
+ *                in: path
+ *                description: id of category to be deleted
+ *                required: true
  *          requestBody:
  *              description: Updated category object
  *              content:
@@ -176,19 +178,21 @@ router.post('/add-category', async (req, res, next) => {
  *                  description: Category id does not exist
  */
 
-router.patch('/edit-category', async (req, res, next) => {
-    const { id, name } = req.body;
+router.patch('/edit-category/:categoryId', async (req, res, next) => {
+    const { categoryId } = req.params;
+    const { name } = req.body;
     if (!name) {
         return res.status(400).json({ error: `Name not provided for category` });
     }
     
     const categories = await Database.getAllItems("categories");
-    const existentCategory = categories.some(category => category.id === id);
+    
+    const existentCategory = await categories.some(category => category.id === Number(categoryId));
     if(!existentCategory) {
         return res.status(401).json({ error: `Category does not exist` });
     }
     
-    const updateCategory = await Database.updateCategory(id, name);
+    const updateCategory = await Database.updateCategory(categoryId, name);
     return res.status(200).json({ message: `Category name has been updated` });
 });
 

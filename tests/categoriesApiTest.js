@@ -95,13 +95,12 @@ describe("Categories api tests", () => {
         });
     });
     
-    describe('PATCH /categories/edit-category', () => {
-        const categoryId = 1;
+    describe('PATCH /categories/edit-category/:id', () => {
         const newName = 'Fish';
         it('responses with 200 when category name is updated', (done) => {
             request(app)
-            .patch('/categories/edit-category')
-            .send({"id": newCategoryData.id, "name": newName})
+            .patch(`/categories/edit-category/${newCategoryData.id}`)
+            .send({"name": newName})
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
@@ -114,8 +113,8 @@ describe("Categories api tests", () => {
         
         it('responses with 400 when no category name is provided', (done) => {
             request(app)
-            .patch('/categories/edit-category')
-            .send({"id": categoryId, "name": ''})
+            .patch(`/categories/edit-category/${newCategoryData.id}`)
+            .send({"name": ''})
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
@@ -128,8 +127,8 @@ describe("Categories api tests", () => {
         
         it('responses with 401 when category does not exist', (done) => {
             request(app)
-            .patch('/categories/edit-category')
-            .send({"id": 1000, "name": newName})
+            .patch(`/categories/edit-category/${1000}`)
+            .send({"name": newName})
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(401)
@@ -143,6 +142,7 @@ describe("Categories api tests", () => {
     
     describe('DELETE /categories/delete-category/:id', () => {
         const wrongCategory = 0;
+        console.log(newCategoryData)
         it('responses with 200 when category is successfully deleted', (done) => {
             request(app)
             .delete(`/categories/delete-category/${newCategoryData.id}`)
@@ -169,10 +169,10 @@ describe("Categories api tests", () => {
         });
     });
     
-    // after(done => {
-    //     server.close(err => {
-    //         if (err) return done(err);
-    //         done();
-    //     });
-    // });
+    after(done => {
+        server.close(err => {
+            if (err) return done(err);
+            done();
+        });
+    });
 });
