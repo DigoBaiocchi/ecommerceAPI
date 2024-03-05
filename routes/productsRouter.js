@@ -106,12 +106,12 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:productId', async (req, res, next) => {
     const { productId } = req.params;
-
+    
     const productData = await Database.getProductById(productId);
     if (!productData) {
         return res.status(400).json({ error: `Product was not found` });
     }
-
+    
     return res.status(200).json({ message: `Product data was loaded`, data: productData });
 });
 
@@ -138,7 +138,7 @@ router.get('/:productId', async (req, res, next) => {
  *                  description: Product not added. Missing required information+
  *              401:
  *                  description: Product already exists
- */
+*/
 
 router.post('/add-product', async (req, res, next) => {
     const { categoryId, name, quantity, description, price } = req.body;
@@ -146,12 +146,12 @@ router.post('/add-product', async (req, res, next) => {
     if (!name || !quantity || !description || !price) {
         return res.status(400).json({ error: 'Product not added. Missing required information' });
     }
-
+    
     const existentProduct = await Database.checkIfProductAlreadyExists(name);
     if (existentProduct) {
         return res.status(401).json({ error: `Product already exists` })
     }
-
+    
     const addProduct = await Database.addProduct(categoryId, name, quantity, description, price);
 
     return res.status(200).json({ message: `Product was successfully added` });
@@ -164,6 +164,11 @@ router.post('/add-product', async (req, res, next) => {
  *          tags:
  *              - Products
  *          description: Update product in the database
+ *          parameters:
+ *              - name: productName
+ *                in: path
+ *                description: name of product to be deleted
+ *                required: true
  *          requestBody:
  *              description: Update product object
  *              content:
@@ -180,21 +185,22 @@ router.post('/add-product', async (req, res, next) => {
  *                  description: Product id was not found
  *              401:
  *                  description: Product not updated. Missing required information
- */
+*/
 
-router.put('/edit-product', async (req, res, next) => {
-    const { id, name, quantity, description, price } = req.body;
+router.put('/edit-product/:productId', async (req, res, next) => {
+    const { productId } = req.params;
+    const { name, quantity, description, price } = req.body;
     
     if(!name || !quantity || !description || !price) {
         return res.status(401).json({ error: 'Product not updated. Missing required information' });
     }
     
-    const existentProduct = await Database.checkIfProductAlreadyExists(id);
+    const existentProduct = await Database.checkIfProductAlreadyExists(productId);
     if(!existentProduct) {
         return res.status(400).json({ error: `Product with id was not found` });
     }
 
-    const updateProductData = await Database.updateProduct(id, name, quantity, description, price);
+    const updateProductData = await Database.updateProduct(productId, name, quantity, description, price);
     
     return res.status(200).json({ message: `Product was successfully updated` });
 });

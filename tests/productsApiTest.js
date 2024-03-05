@@ -216,7 +216,7 @@ describe("PRODUCTS API TESTS", () => {
         });
     });
     
-    describe('PUT /products/edit-product', () => {
+    describe('PUT /products/edit-product/:productId', () => {
         const path = '/products/edit-product';
         
         it('responses with 200 when product name is updated successfully', (done) => {
@@ -226,7 +226,7 @@ describe("PRODUCTS API TESTS", () => {
             };
             console.log(updatedProduct)
             request(app)
-                .put(path)
+                .put(`/products/edit-product/${databaseProductData.id}`)
                 .send(updatedProduct)
                 .set('accept', 'application/json')
                 .expect('Content-Type', /json/)
@@ -240,7 +240,7 @@ describe("PRODUCTS API TESTS", () => {
     
         it('responses with 400 when product was not found', (done) => {
             request(app)
-                .put(path)
+                .put(`/products/edit-product/${0}`)
                 .send(wrongProduct)
                 .set('accept', 'application/json')
                 .expect('Content-Type', /json/)
@@ -254,7 +254,7 @@ describe("PRODUCTS API TESTS", () => {
     
         it('responses with 401 when product name is not provided', (done) => {
             request(app)
-                .put(path)
+                .put(`/products/edit-product/${databaseProductData.id}`)
                 .send(noProductName)
                 .set('accept', 'application/json')
                 .expect('Content-Type', /json/)
@@ -268,7 +268,7 @@ describe("PRODUCTS API TESTS", () => {
     
         it('responses with 401 when no product quantity is provided', (done) => {
             request(app)
-                .put(path)
+                .put(`/products/edit-product/${databaseProductData.id}`)
                 .send(noProductQuantity)
                 .set('accept', 'application/json')
                 .expect('Content-Type', /json/)
@@ -282,7 +282,7 @@ describe("PRODUCTS API TESTS", () => {
         
         it('responses with 401 when no product description is provided', (done) => {
             request(app)
-                .put(path)
+                .put(`/products/edit-product/${databaseProductData.id}`)
                 .send(noProductDescription)
                 .set('accept', 'application/json')
                 .expect('Content-Type', /json/)
@@ -296,7 +296,7 @@ describe("PRODUCTS API TESTS", () => {
     
         it('responses with 401 when no product price is provided', (done) => {
             request(app)
-                .put(path)
+                .put(`/products/edit-product/${databaseProductData.id}`)
                 .send(noProductPrice)
                 .set('accept', 'application/json')
                 .expect('Content-Type', /json/)
@@ -339,10 +339,10 @@ describe("PRODUCTS API TESTS", () => {
         });
     });
     
-    // after((done) => {
-    //     server.close(err => {
-    //         if (err) return done(err);
-    //         done();
-    //     });
-    // });
+    after((done) => {
+        server.close(err => {
+            if (err) return done(err);
+            done();
+        });
+    });
 });
