@@ -104,15 +104,19 @@ router.get('/', async (req, res, next) => {
  *                  description: Product was not found
  */
 
-router.get('/:productId', async (req, res, next) => {
+const checkProductIsValid = async (req, res, next) => {
     const { productId } = req.params;
-    
-    const productData = await Database.getProductById(productId);
-    if (!productData) {
+    const product = await Database.getItemById("products", productId);
+    if (!product) {
         return res.status(400).json({ error: `Product was not found` });
+    } else {
+        req.productData = product;
+        next();
     }
-    
-    return res.status(200).json({ message: `Product data was loaded`, data: productData });
+};
+
+router.get('/:productId', checkProductIsValid, async (req, res, next) => {
+    return res.status(200).json({ message: `Product data was loaded`, data: req.productData });
 });
 
 /**
@@ -182,25 +186,19 @@ router.post('/add-product', async (req, res, next) => {
  *              200:
  *                  description: Product was successfully updated
  *              400:
- *                  description: Product id was not found
+ *                  description: Product was not found
  *              401:
  *                  description: Product not updated. Missing required information
 */
 
-router.put('/edit-product/:productId', async (req, res, next) => {
-    const { productId } = req.params;
+router.put('/edit-product/:productId', checkProductIsValid, async (req, res, next) => {
     const { name, quantity, description, price } = req.body;
     
     if(!name || !quantity || !description || !price) {
         return res.status(401).json({ error: 'Product not updated. Missing required information' });
     }
-    
-    const existentProduct = await Database.checkIfProductAlreadyExists(productId);
-    if(!existentProduct) {
-        return res.status(400).json({ error: `Product with id was not found` });
-    }
 
-    const updateProductData = await Database.updateProduct(productId, name, quantity, description, price);
+    const updateProductData = await Database.updateProduct(req.productData.id, name, quantity, description, price);
     
     return res.status(200).json({ message: `Product was successfully updated` });
 });
@@ -224,15 +222,8 @@ router.put('/edit-product/:productId', async (req, res, next) => {
  *                  description: Product was not found
  */
 
-router.delete('/delete-product/:productId', async (req, res, next) => {
-    const { productId } = req.params;
-
-    const existentProduct = await Database.checkIfProductAlreadyExists(productId);
-    if(!existentProduct) {
-        return res.status(400).json({ error: 'Product was not found' })
-    }
-
-    const deleteProduct = await Database.deleteProduct(productId);
+router.delete('/delete-product/:productId', checkProductIsValid, async (req, res, next) => {
+    const deleteProduct = await Database.deleteProduct(req.productData.id);
     
     return res.status(200).json({ message: 'Product has been deleted' });
 });

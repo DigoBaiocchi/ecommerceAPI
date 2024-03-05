@@ -245,7 +245,7 @@ describe("PRODUCTS API TESTS", () => {
                 .set('accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400)
-                .expect({ "error": `Product with id was not found` })
+                .expect({ "error": `Product was not found` })
                 .end((err) => {
                     if (err) return done(err);
                     done();
