@@ -115,7 +115,7 @@ router.get('/:userId', async (req, res, next) => {
     const validUser = await Database.selectUserById(userId);;
     
     if(!validUser) {
-        return res.status(400).json({msg: `User id ${userId} does not exists`});
+        return res.status(400).json({ error: `User id was not found` });
     }
     
     const userOrders = await Database.getAllUserOrders(userId);
