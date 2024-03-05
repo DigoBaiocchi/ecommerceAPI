@@ -77,11 +77,8 @@ const { Database } = require('../db/databaseQueries');
 router.get('/', async (req, res, next) => {
     const getAllProducts = await Database.getAllProducts();
 
-    if (getAllProducts.length !== 0) {
-        return res.status(200).json({ message: "All products are loaded", data: getAllProducts });
-    }
-
-    return res.status(400).json({ error: "No products in the database" });
+    return res.status(200).json({ message: "All products are loaded", data: getAllProducts });
+    
 });
 
 /**
