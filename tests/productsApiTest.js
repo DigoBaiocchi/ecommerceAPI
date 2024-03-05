@@ -100,13 +100,13 @@ describe("PRODUCTS API TESTS", () => {
     
         });
     
-        it('responses with 401 when product name already exists', (done) => {
+        it('responses with 400 when product name already exists', (done) => {
             request(app)
                 .post(path)
                 .send(productData)
                 .set('accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(401)
+                .expect(400)
                 .expect({ "error": `Product already exists` })
                 .end((err) => {
                     if (err) return done(err);
@@ -114,56 +114,56 @@ describe("PRODUCTS API TESTS", () => {
                 })
             });
     
-        it('responses with 400 when no product name is provided', (done) => {
+        it('responses with 401 when no product name is provided', (done) => {
             request(app)
             .post(path)
             .send(noProductName)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect({ "error": 'Product not added. Missing required information' })
+            .expect(401)
+            .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if (err) return done(err);
                 done();
             })
         });
     
-        it('responses with 400 when no product quantity is provided', (done) => {
+        it('responses with 401 when no product quantity is provided', (done) => {
             request(app)
             .post(path)
             .send(noProductQuantity)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect({ "error": 'Product not added. Missing required information' })
+            .expect(401)
+            .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if (err) return done(err);
                 done();
             })
         });
     
-        it('responses with 400 when no product quantity is provided', (done) => {
+        it('responses with 401 when no product quantity is provided', (done) => {
             request(app)
             .post(path)
             .send(noProductDescription)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect({ "error": 'Product not added. Missing required information' })
+            .expect(401)
+            .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if (err) return done(err);
                 done();
             })
         });
         
-        it('responses with 400 when no product quantity is provided', (done) => {
+        it('responses with 401 when no product quantity is provided', (done) => {
             request(app)
             .post(path)
             .send(noProductPrice)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400)
-            .expect({ "error": 'Product not added. Missing required information' })
+            .expect(401)
+            .expect({ "error": 'Missing required information' })
             .end((err) => {
                 if (err) return done(err);
                 done();
@@ -259,7 +259,7 @@ describe("PRODUCTS API TESTS", () => {
                 .set('accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(401)
-                .expect({ "error": 'Product not updated. Missing required information' })
+                .expect({ "error": 'Missing required information' })
                 .end((err) => {
                     if (err) return done(err);
                     done();
@@ -273,7 +273,7 @@ describe("PRODUCTS API TESTS", () => {
                 .set('accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(401)
-                .expect({ "error": 'Product not updated. Missing required information' })
+                .expect({ "error": 'Missing required information' })
                 .end((err) => {
                     if (err) return done(err);
                     done();
@@ -287,7 +287,7 @@ describe("PRODUCTS API TESTS", () => {
                 .set('accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(401)
-                .expect({ "error": 'Product not updated. Missing required information' })
+                .expect({ "error": 'Missing required information' })
                 .end((err) => {
                     if (err) return done(err);
                     done();
@@ -301,7 +301,7 @@ describe("PRODUCTS API TESTS", () => {
                 .set('accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(401)
-                .expect({ "error": 'Product not updated. Missing required information' })
+                .expect({ "error": 'Missing required information' })
                 .end((err) => {
                     if (err) return done(err);
                     done();

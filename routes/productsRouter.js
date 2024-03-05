@@ -2,6 +2,26 @@ const express = require('express');
 const router = express.Router();
 const { Database } = require('../db/databaseQueries');
 
+const checkProductIsValid = async (req, res, next) => {
+    const { productId } = req.params;
+    const product = await Database.getItemById("products", productId);
+    if (!product) {
+        return res.status(400).json({ error: `Product was not found` });
+    } else {
+        req.productData = product;
+        next();
+    }
+};
+
+const checkingRequiredInformation = (req, res, next) => {
+    const { name, quantity, description, price } = req.body;
+    if (!name || !quantity || !description || !price) {
+        return res.status(401).json({ error: 'Missing required information' });
+    } else {
+        next();
+    }
+};
+
 /**
  * @swagger
  * components:
@@ -49,7 +69,7 @@ const { Database } = require('../db/databaseQueries');
  *                      $ref: '#/components/schemas/Product_Object'
  *              xml:
  *                  name: product
- */
+*/
 
 /**
  * @swagger
@@ -72,11 +92,11 @@ const { Database } = require('../db/databaseQueries');
  *                              $ref: '#/components/schemas/All_Products'
  *              400:
  *                  description: No products in the database
- */
+*/
 
 router.get('/', async (req, res, next) => {
     const getAllProducts = await Database.getAllProducts();
-
+    
     return res.status(200).json({ message: "All products are loaded", data: getAllProducts });
     
 });
@@ -102,18 +122,7 @@ router.get('/', async (req, res, next) => {
  *                              $ref: '#/components/schemas/Product'
  *              400:
  *                  description: Product was not found
- */
-
-const checkProductIsValid = async (req, res, next) => {
-    const { productId } = req.params;
-    const product = await Database.getItemById("products", productId);
-    if (!product) {
-        return res.status(400).json({ error: `Product was not found` });
-    } else {
-        req.productData = product;
-        next();
-    }
-};
+*/
 
 router.get('/:productId', checkProductIsValid, async (req, res, next) => {
     return res.status(200).json({ message: `Product data was loaded`, data: req.productData });
@@ -139,24 +148,25 @@ router.get('/:productId', checkProductIsValid, async (req, res, next) => {
  *              200:
  *                  description: Product was successfully added
  *              400:
- *                  description: Product not added. Missing required information+
+ *                  description: Missing required information
  *              401:
  *                  description: Product already exists
 */
 
-router.post('/add-product', async (req, res, next) => {
-    const { categoryId, name, quantity, description, price } = req.body;
-    
-    if (!name || !quantity || !description || !price) {
-        return res.status(400).json({ error: 'Product not added. Missing required information' });
+router.post('/add-product', checkingRequiredInformation, async (req, res, next) => {
+    // check if product name was already exists in database
+    const validProductName = await Database.getItemByName("products", req.body.name);
+    if (validProductName) {
+        return res.status(400).json({ error: `Product already exists` })
     }
     
-    const existentProduct = await Database.checkIfProductAlreadyExists(name);
-    if (existentProduct) {
-        return res.status(401).json({ error: `Product already exists` })
-    }
-    
-    const addProduct = await Database.addProduct(categoryId, name, quantity, description, price);
+    const addProduct = await Database.addProduct(
+        req.body.categoryId, 
+        req.body.name, 
+        req.body.quantity, 
+        req.body.description, 
+        req.body.price
+    );
 
     return res.status(200).json({ message: `Product was successfully added` });
 });
@@ -188,17 +198,17 @@ router.post('/add-product', async (req, res, next) => {
  *              400:
  *                  description: Product was not found
  *              401:
- *                  description: Product not updated. Missing required information
+ *                  description: Missing required information
 */
 
-router.put('/edit-product/:productId', checkProductIsValid, async (req, res, next) => {
-    const { name, quantity, description, price } = req.body;
-    
-    if(!name || !quantity || !description || !price) {
-        return res.status(401).json({ error: 'Product not updated. Missing required information' });
-    }
-
-    const updateProductData = await Database.updateProduct(req.productData.id, name, quantity, description, price);
+router.put('/edit-product/:productId', checkProductIsValid, checkingRequiredInformation, async (req, res, next) => {
+    const updateProductData = await Database.updateProduct(
+        req.productData.id, 
+        req.body.name, 
+        req.body.quantity, 
+        req.body.description, 
+        req.body.price
+    );
     
     return res.status(200).json({ message: `Product was successfully updated` });
 });
