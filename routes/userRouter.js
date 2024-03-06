@@ -2,6 +2,56 @@ const express = require('express');
 const router = express.Router();
 const { Database } = require('../db/databaseQueries');
 
+// Router middlewares
+const userNotLoggedInError = (req, res, next) => {
+    if(!req.session.passport) {
+        return res.status(401).json({ error: `User is not logged in` });
+    } else {
+        req.userId = req.session.passport.user.userId;
+        next();
+    }
+};
+
+const checkIfMissingRequiredInfo = (req, res, next) => {
+    const { 
+        first_name, 
+        last_name, 
+        address1, 
+        address2, 
+        city,
+        province,
+        postal_code,
+        credit_card_number,
+        credit_card_exp_date
+    } = req.body;
+    
+    if (
+        !first_name || 
+        !last_name || 
+        !address1 || 
+        !city || 
+        !province || 
+        !postal_code || 
+        !credit_card_number || 
+        !credit_card_exp_date
+    ) {
+        return res.status(400).json({ error: 'Missing required information' });
+    } else {
+        req.userInfo = { 
+            first_name, 
+            last_name, 
+            address1, 
+            address2, 
+            city,
+            province,
+            postal_code,
+            credit_card_number,
+            credit_card_exp_date
+        };
+        next();
+    }
+};
+
 /**
  * @swagger
  * components:
@@ -73,34 +123,20 @@ const { Database } = require('../db/databaseQueries');
  *                  description: User is not logged in
  */
 
-const userNotLoggedInError = (req, res, next) => {
-    if(!req.session.passport) {
-        return res.status(401).json({ error: `User is not logged in` });
-    } else {
-        next();
-    }
-};
 
-router.post('/', userNotLoggedInError, async (req, res, next) => {
-    const { 
-        first_name, 
-        last_name, 
-        address1, 
-        address2, 
-        city,
-        province,
-        postal_code,
-        credit_card_number,
-        credit_card_exp_date
-    } = req.body;
-    
-    if (!first_name || !last_name || !address1 || !city || !province || !postal_code || !credit_card_number || !credit_card_exp_date) {
-        return res.status(400).json({ error: 'Missing required information' });
-    }
-
-    const userId = req.session.passport.user.userId;
-    
-    const addUserInfo = await Database.addUserInfo(userId, first_name, last_name, address1, address2, city, province, postal_code, credit_card_number, credit_card_exp_date);
+router.post('/', userNotLoggedInError, checkIfMissingRequiredInfo, async (req, res, next) => {
+    const addUserInfo = await Database.addUserInfo(
+        req.userId, 
+        req.userInfo.first_name, 
+        req.userInfo.last_name, 
+        req.userInfo.address1, 
+        req.userInfo.address2, 
+        req.userInfo.city, 
+        req.userInfo.province, 
+        req.userInfo.postal_code, 
+        req.userInfo.credit_card_number, 
+        req.userInfo.credit_card_exp_date
+    );
     
     return res.status(201).json({ message: `User info has been added` });
 });
@@ -129,9 +165,7 @@ router.post('/', userNotLoggedInError, async (req, res, next) => {
  */
 
 router.get('/', userNotLoggedInError, async (req, res, next) => {
-    const userId = req.session.passport.user.userId;    
-
-    const selectUserInfo = await Database.selectUserInfo(userId);
+    const selectUserInfo = await Database.selectUserInfo(req.userId);
 
     return res.status(200).json({ message: `User info was loaded`, data: selectUserInfo });
 });
@@ -161,25 +195,19 @@ router.get('/', userNotLoggedInError, async (req, res, next) => {
  *                  description: User is not logged in
  */
 
-router.put('/update-info', userNotLoggedInError, async (req, res, next) => {
-    const { 
-        user_id, 
-        first_name, 
-        last_name, 
-        address1, 
-        address2, 
-        city,
-        province,
-        postal_code,
-        credit_card_number,
-        credit_card_exp_date
-    } = req.body;
-    
-    if (!first_name || !last_name || !address1 || !city || !province || !postal_code || !credit_card_number || !credit_card_exp_date) {
-        return res.status(400).json({ error: 'Missing required information' });
-    }
-
-    const updateUserInfo = await Database.updateUserInfo(user_id, first_name, last_name, address1, address2, city, province, postal_code, credit_card_number, credit_card_exp_date);
+router.put('/update-info', userNotLoggedInError, checkIfMissingRequiredInfo, async (req, res, next) => {
+    const updateUserInfo = await Database.updateUserInfo(
+        req.userId, 
+        req.userInfo.first_name, 
+        req.userInfo.last_name, 
+        req.userInfo.address1, 
+        req.userInfo.address2, 
+        req.userInfo.city, 
+        req.userInfo.province, 
+        req.userInfo.postal_code, 
+        req.userInfo.credit_card_number, 
+        req.userInfo.credit_card_exp_date
+    );
 
     return res.status(200).json({ message: `Data has been sucessfully updated` });
 });
@@ -199,9 +227,7 @@ router.put('/update-info', userNotLoggedInError, async (req, res, next) => {
  */
 
 router.delete('/delete-user/', userNotLoggedInError, async (req, res, next) => {
-    const userId = req.session.passport.user.userId;    
-
-    const deleteUserInfo = await Database.deleteUserInfo(userId);
+    const deleteUserInfo = await Database.deleteUserInfo(req.userId);
 
     return res.status(200).json({ message: `User info was successfully deleted` });
 });
