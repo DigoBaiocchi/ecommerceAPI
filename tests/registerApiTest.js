@@ -1,6 +1,6 @@
 // Setting up Supertest
 const request = require('supertest');
-const app = require('../app');
+const { app } = require('../app');
 const { Database } = require('../db/databaseQueries');
 
 let newUserData;

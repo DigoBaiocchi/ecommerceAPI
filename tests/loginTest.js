@@ -1,7 +1,7 @@
 // Setting up Supertest
 const request = require('supertest');
 const chai = require('chai');
-const app = require('../app');
+const { app } = require('../app');
 
 const expect = chai.expect;
 
