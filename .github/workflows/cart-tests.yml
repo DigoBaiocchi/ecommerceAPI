@@ -1,5 +1,10 @@
 name: Run Cart Tests
-on: [push, workflow_dispatch]
+on: 
+  push:
+    paths:
+      - 'cartRouter.js'
+      - 'cartApiTest.js'
+  workflow_dispatch:
 jobs:
     run-cart-tests:
         runs-on: ubuntu-latest
@@ -32,7 +37,7 @@ jobs:
                 node-version: 20
             - name: Install dependencies
               run: npm ci
-            - name: Run categories tests with PostgresSQL
+            - name: Run cart tests with PostgresSQL
               env:
                 DATABASE_URL: ${{ env.DATABASE_URL }}
-              run: npx mocha tests/apiTest.js
+              run: npx mocha tests/cartApiTest.js
