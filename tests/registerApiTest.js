@@ -24,6 +24,7 @@ describe('POST /register', () => {
             .end(async (err) => {
                 if (err) return done(err);
                 newUserData = await Database.selectUserByEmail(correctData.email);
+                console.log(newUserData)
                 done();
             });
     });
