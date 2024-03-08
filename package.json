@@ -5,6 +5,10 @@
   "main": "index.js",
   "scripts": {
     "devStart": "nodemon app.js",
+    "cart-tests": "nodemon --exec \"npx mocha tests/cartApiTest.js\"",
+    "categories-tests": "nodemon --exec \"npx mocha tests/categoriesApiTest.js\"",
+    "products-tests": "nodemon --exec \"npx mocha tests/productsApiTest.js\"",
+    "register-tests": "nodemon --exec \"npx mocha tests/registerApiTest.js\"",
     "test": "nodemon --exec \"npx mocha tests/apiTest.js\""
   },
   "repository": {
