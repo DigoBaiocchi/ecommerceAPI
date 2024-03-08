@@ -67,7 +67,7 @@ const Database = {
     async selectUserByEmail(email) {
         return await query('SELECT * FROM users WHERE email = $1', [email]).then(results => results.rows[0]);
     },
-    async  Users() {
+    async  selectAllUsers() {
         return await query('SELECT * FROM users').then(results => results.rows);
     },
     async selectUserById(id) {
