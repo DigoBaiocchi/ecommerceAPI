@@ -314,7 +314,7 @@ describe('GET /user/', () => {
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
-            .expect({ "message": `User info was loaded`, "data": [userInfo] })
+            .expect({ "message": `User info was loaded`, "data": userInfo })
             .end((err) => {
                 if (err) return done(err);
                 done();
