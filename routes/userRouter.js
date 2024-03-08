@@ -165,7 +165,7 @@ router.post('/', userNotLoggedInError, checkIfMissingRequiredInfo, async (req, r
  */
 
 router.get('/', userNotLoggedInError, async (req, res, next) => {
-    const selectUserInfo = await Database.selectUserInfo(req.userId);
+    const selectUserInfo = await Database.getAllItems("user_info", req.userId);
 
     return res.status(200).json({ message: `User info was loaded`, data: selectUserInfo });
 });
