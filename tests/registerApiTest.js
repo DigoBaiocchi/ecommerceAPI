@@ -1,9 +1,16 @@
 // Setting up Supertest
 const request = require('supertest');
-const { app } = require('../app');
+const { app, server } = require('../app');
 const { Database } = require('../db/databaseQueries');
 
 let newUserData;
+
+after((done) => {
+    server.close(err => {
+        if (err) return done(err);
+        done();
+    });
+});
 
 describe('POST /register', () => {
     const correctData = {"username": 'DigoBaiocchi', "email": 'rodrigo@gmail.com', "password": "123456"};
@@ -24,7 +31,6 @@ describe('POST /register', () => {
             .end(async (err) => {
                 if (err) return done(err);
                 newUserData = await Database.selectUserByEmail(correctData.email);
-                console.log(newUserData)
                 done();
             });
     });
