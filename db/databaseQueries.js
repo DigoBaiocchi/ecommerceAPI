@@ -100,7 +100,12 @@ const Database = {
         return categoryData;
     },
     async getItemById(tableName, id) {
-        return await query(`SELECT * FROM ${tableName} WHERE id = $1`, [id]).then(result => result.rows[0]);
+        switch (tableName) {
+            case 'user_info':
+                return await query(`SELECT * FROM user_info WHERE user_id = $1`, [id]).then(result => result.rows[0]);
+            default: 
+                return await query(`SELECT * FROM ${tableName} WHERE id = $1`, [id]).then(result => result.rows[0]);
+        }
     },
     async addCategory(name) {
         return await query("INSERT INTO categories (name) VALUES ($1)", [name]);
