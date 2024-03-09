@@ -48,7 +48,7 @@ describe('CART TESTS', () => {
         .end((err, res) => {
             if (err) return done(err);
             cookie = res.headers['set-cookie']
-
+            console.log(res.headers['set-cookie'])
             // adding mock category
             console.log(newCategoryData)
             request(app)
