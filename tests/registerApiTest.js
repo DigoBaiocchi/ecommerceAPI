@@ -2,6 +2,7 @@
 const request = require('supertest');
 const { app, server } = require('../app');
 const { Database } = require('../db/databaseQueries');
+const { newUserMockData } = require('./mockData/mockData');
 
 let newUserData;
 
@@ -21,7 +22,7 @@ describe('POST /register', () => {
     it('responds with 201 created', (done) => {
         request(app)
             .post('/register')
-            .send(correctData)
+            .send(newUserMockData.newUserData)
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(201)
@@ -30,7 +31,7 @@ describe('POST /register', () => {
             })
             .end(async (err) => {
                 if (err) return done(err);
-                newUserData = await Database.selectUserByEmail(correctData.email);
+                newUserData = await Database.selectUserByEmail(newUserMockData.newUserData.email);
                 done();
             });
     });
@@ -38,7 +39,7 @@ describe('POST /register', () => {
     it('responses with 400 not created when username or email not provided', (done) => {
         request(app)
             .post('/register')
-            .send(incorrectData)
+            .send(newUserMockData.incorrectData)
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400)
@@ -70,7 +71,7 @@ describe('POST /register', () => {
     it('responses with 402 not created when email already exists', (done) => {
         request(app)
             .post('/register')
-            .send(existentEmail)
+            .send(newUserMockData.existentEmail)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(402)
@@ -86,7 +87,7 @@ describe('POST /register', () => {
     it('responses with 403 when password is not provided', (done) => {
         request(app)
             .post('/register')
-            .send(noPasswordProvided)
+            .send(newUserMockData.noPasswordProvided)
             .set('accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(403)
