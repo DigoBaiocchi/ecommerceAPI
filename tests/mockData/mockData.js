@@ -1,5 +1,5 @@
 const newUserMockData = {
-    newUserData: {
+    newUser: {
         "username": 'DigoBaiocchi', 
         "email": 'rodrigo@gmail.com', 
         "password": "123456"

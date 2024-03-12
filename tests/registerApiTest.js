@@ -14,15 +14,10 @@ after((done) => {
 });
 
 describe('POST /register', () => {
-    const correctData = {"username": 'DigoBaiocchi', "email": 'rodrigo@gmail.com', "password": "123456"};
-    const incorrectData = {"email": "rodrigo@gmail.com", "password": "123456"};
-    const noPasswordProvided = {"username": "OtherUser", "email": "newuser@gmail.com", "password": ""};
-    const existentEmail = {"id": "1", "username": 'Rodrigos', "email": 'rodrigo@gmail.com', "password": "123456"};
-
     it('responds with 201 created', (done) => {
         request(app)
             .post('/register')
-            .send(newUserMockData.newUserData)
+            .send(newUserMockData.newUser)
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(201)
@@ -31,7 +26,7 @@ describe('POST /register', () => {
             })
             .end(async (err) => {
                 if (err) return done(err);
-                newUserData = await Database.selectUserByEmail(newUserMockData.newUserData.email);
+                newUserData = await Database.selectUserByEmail(newUserMockData.newUser.email);
                 done();
             });
     });
@@ -102,12 +97,11 @@ describe('POST /register', () => {
 });
 
 describe('GET /register/:email', () => {
-    const email = 'rodrigo@gmail.com';
     const wrongEmail = 'somewrongemail@gmail.com'
 
     it('responses with 200 when finding email provided in the database', (done) => {
         request(app)
-            .get(`/register/${email}`)
+            .get(`/register/${newUserMockData.newUser.email}`)
             .set('accept', 'application/json')
             .expect('Content-type', /json/)
             .expect(200)
@@ -193,7 +187,6 @@ describe('PUT /register/:email', () => {
 });
 
 describe('DELETE /register/:email', () => {
-    
     const invalidEmail = '""';
 
     it('responses with 200 when user was deleted', (done) => {
