@@ -1,4 +1,5 @@
 import { FcSearch } from "react-icons/fc";
+import { Outlet } from "react-router-dom";
 
 function Header() {
     return (
@@ -12,6 +13,7 @@ function Header() {
                     <button><FcSearch /></button>
                 </ul>
             </nav>
+            <Outlet />
         </>
     )
 }
