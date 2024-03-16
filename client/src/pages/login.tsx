@@ -1,6 +1,8 @@
 import { SetStateAction, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { login } from "../api/api";
+
 function Login() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
@@ -15,17 +17,10 @@ function Login() {
 
     const onSubmit = async (event: { preventDefault: () => void; }) => {
         event.preventDefault();
-        const tryLogin = await fetch('http://localhost:3001/auth/login', {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify({email, password, checkoutData: []})
-        });
-        
-        const response = await tryLogin.json();
-        if (response.message === 'User is logged in') {
+        const tryLogin = await login(email, password, []);
+
+        if (tryLogin.responseStatus === 200) {
+            console.log(tryLogin.response);
             navigate('/');
         }
     };
