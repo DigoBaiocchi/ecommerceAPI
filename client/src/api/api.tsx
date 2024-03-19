@@ -1,3 +1,16 @@
+type LoginResponse = {
+    responseStatus:number,
+    response: {
+        data: {
+            id: number,
+            username: string,
+            email: string,
+            password: string,
+            administrator: boolean
+        }
+    }
+};
+
 const login = async (email:String, password:String, checkoutData:Array<object>) => {
     const tryLogin = await fetch('http://localhost:3001/auth/login', {
                 headers: {
@@ -8,13 +21,15 @@ const login = async (email:String, password:String, checkoutData:Array<object>) 
                 body: JSON.stringify({email, password, checkoutData})
             });
             
-            const responseStatus:Number = tryLogin.status;
-            const response:Object = await tryLogin.json();
+            const responseStatus = tryLogin.status;
+            const response = await tryLogin.json();
 
-    return {
-        responseStatus,
-        response
-    };
+            const result:LoginResponse = {
+                responseStatus,
+                response
+            };
+
+    return result;
 };
 
 export { login };
