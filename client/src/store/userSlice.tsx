@@ -1,14 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { login } from "../api/api";
 
-type user = {
+type User = {
     email:String,
     username:String,
     password:String,
     cart:Array<object>
 };
 
-const initialState:user = {
+type RootState = {
+    user: User;
+}
+
+const initialState:User = {
     email: '',
     username: '',
     password: '',
@@ -16,14 +20,14 @@ const initialState:user = {
 };
 
 export const userSlice = createSlice({
-    name: 'userData',
+    name: 'user',
     initialState,
     reducers: {
         setUserEmail: (state, action) => {
             state.email = action.payload
         },
         setUserUsername: (state, action) => {
-            state.username = action.payload.username
+            state.username = action.payload
         },
         setUserPassword: (state, action) => {
             state.password = action.payload
@@ -46,10 +50,17 @@ export default userSlice.reducer;
 // ThunkMiddleware
 export const loginUser = () => async (dispatch: any, getState: any) => {
     try {
-        const userData = await login(getState.email, getState.password, getState.cart);
+        const state = getState();
+        const { email, password, cart } = state.user;
+        const userData = await login(email, password, cart);
     
-        dispatch(setUserUsername(userData.response));
+        dispatch(setUserUsername(userData.response.data.username));
     } catch (err) {
         console.log(err);
     }
-}
+};
+
+export const selectUserEmail = (state:RootState) => state.user.email;
+export const selectUserPassword = (state: RootState) => state.user.password;
+export const selectUserUsername = (state: RootState) => state.user.username;
+export const selectUserCart = (state: RootState) => state.user.cart;
