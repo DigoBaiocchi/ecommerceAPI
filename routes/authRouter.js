@@ -86,7 +86,7 @@ router.post(
         });
     } 
     
-    return res.status(200).json({ message: `User is logged in` });
+    return res.status(200).json({ data: req.user, message: `User is logged in` });
 });
 
 /**
