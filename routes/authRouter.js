@@ -64,7 +64,7 @@ router.post(
     passport.authenticate('local', 
     {
         // successReturnToOrRedirect: '/register',
-        failureRedirect: '/auth/login'
+        // failureRedirect: '/auth/login'
     })
     , async (req, res, next) => {
     console.log('Logged In');
@@ -73,7 +73,7 @@ router.post(
     let productIsAlreadyInCart; 
     let updateProductInCartTable;
 
-    const { checkoutData } = req.body
+    const { checkoutData } = req.body;
     
     if (checkoutData.length > 0) {
         checkoutData.forEach(async (el) => {

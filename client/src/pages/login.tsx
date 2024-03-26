@@ -1,26 +1,20 @@
-import { SetStateAction, useEffect, useState } from "react";
+import { SetStateAction, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { login } from "../api/api";
 
 import { 
-    selectUserUsername,
     selectUserEmail,
     selectUserPassword,
-    selectUserCart,
     setUserEmail,
-    setUserUsername,
     setUserPassword,
-    setUserCart,
 } from "../store/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 function Login() {
     const navigate = useNavigate();
-    const userUsername = useSelector(selectUserUsername);
     const userEmail = useSelector(selectUserEmail);
     const userPassword = useSelector(selectUserPassword);
-    const userCart = useSelector(selectUserCart);
     const dispatch = useDispatch();
 
     const onChangeEmail = (e: { target: { value: SetStateAction<string>; }; }) => {

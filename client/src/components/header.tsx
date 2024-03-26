@@ -9,6 +9,7 @@ function Header() {
                     <li>Home</li>
                     <li>Products</li>
                     <li>Cart</li>
+                    <li><a href="/login">Login</a></li>
                     <input></input>
                     <button><FcSearch /></button>
                 </ul>
