@@ -39,7 +39,7 @@ const login = async (email:String, password:String, checkoutData:Array<object>) 
     return result;
 };
 
-const categories = async () => {
+const categoriesApi = async () => {
     try {
         const getCategories = await fetch('http://localhost:3001/categories');
     
@@ -59,5 +59,5 @@ const categories = async () => {
 
 export { 
     login,
-    categories,
+    categoriesApi,
  };
