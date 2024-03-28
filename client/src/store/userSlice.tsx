@@ -1,17 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { login } from "../api/api";
 
+import type { AppDispatch, RootState } from "../store/store";
+
+
 type User = {
     email:String,
     username:String,
     password:String,
     cart:Array<object>
 };
-
-type RootState = {
-    user: User;
-}
-
 const initialState:User = {
     email: '',
     username: '',
@@ -48,7 +46,7 @@ export const {
 export default userSlice.reducer;
 
 // ThunkMiddleware
-export const loginUser = () => async (dispatch: any, getState: any) => {
+export const loginUser = () => async (dispatch: AppDispatch, getState: any) => {
     try {
         const state = getState();
         const { email, password, cart } = state.user;

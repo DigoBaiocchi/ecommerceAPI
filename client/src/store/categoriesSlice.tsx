@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { categoriesApi } from "../api/api";
 
+import type { AppDispatch, RootState } from "../store/store";
+
 type Category = {
     id: number,
     name: string
@@ -8,10 +10,6 @@ type Category = {
 
 type Categories = {
     categories: Array<Category>
-};
-
-type RootState = {
-    category: Categories
 };
 
 const initialState:Categories = {
@@ -34,7 +32,7 @@ export const {
 
 export default categoriesSlice.reducer;
 
-export const getCategories = () => async (dispatch: any) => {
+export const getCategories = () => async (dispatch: AppDispatch) => {
     try {
         const fetchCategories = await categoriesApi();
         console.log(fetchCategories?.response.data)
