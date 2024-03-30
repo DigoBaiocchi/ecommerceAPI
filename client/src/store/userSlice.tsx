@@ -45,16 +45,20 @@ export const {
 
 export default userSlice.reducer;
 
-// ThunkMiddleware
-export const loginUser = () => async (dispatch: AppDispatch, getState: any) => {
+// ThunkMiddleware API
+export const loginUser = (email:String, password:String) => async (dispatch: AppDispatch, getState: any) => {
     try {
         const state = getState();
-        const { email, password, cart } = state.user;
+        const { cart } = state.user;
         const userData = await login(email, password, cart);
     
-        dispatch(setUserUsername(userData.response.data.username));
+        if (userData.responseStatus) {
+            dispatch(setUserUsername(userData.response.data.username));
+            dispatch(setUserEmail(email));
+            dispatch(setUserPassword(password));
+        }
     } catch (err) {
-        console.log(err);
+        throw new Error('Not able to log user in.');
     }
 };
 

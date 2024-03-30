@@ -1,62 +1,43 @@
-import { SetStateAction, useEffect } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { loginUser } from "../store/userSlice";
-import { getCategories } from "../store/categoriesSlice";
 import type { AppDispatch } from "../store/store";
 
 import { 
     selectUserEmail,
-    selectUserPassword,
-    setUserEmail,
-    setUserPassword,
 } from "../store/userSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { selectCategories } from "../store/categoriesSlice";
 
 function Login() {
     const navigate = useNavigate();
     const userEmail:String = useSelector(selectUserEmail);
-    const userPassword:String = useSelector(selectUserPassword);
-    const categories:Array<Object> = useSelector(selectCategories);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const dispatch:AppDispatch = useDispatch();
     
     const onChangeEmail = (e: { target: { value: SetStateAction<string>; }; }) => {
-        dispatch(setUserEmail(e.target.value));
+        setEmail(e.target.value);
     };
     const onChangePassword = (e: { target: { value: SetStateAction<string>; }; }) => {
-        dispatch(setUserPassword(e.target.value));
+        setPassword(e.target.value);
     };
-
-    const fetchCategories = () => {
-        dispatch(getCategories());
-    };
-
+    
     const logUserIn = () => {
-        dispatch(loginUser());
+        dispatch(loginUser(email, password));
     };
     
     const onSubmit = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
-        // const tryLogin = await login(userEmail, userPassword, []);
-        try {
-            const userLogin = () => logUserIn();
-            
-            // if (userLogin) {
-                console.log(userLogin());
-                navigate('/');
-            // }
-        } catch (err) {
-            throw new Error('User not logged in');
-        }
+        logUserIn();
     };
     
     useEffect(() => {
-        fetchCategories();
-        console.log(userEmail);
-        console.log(userPassword);
-        console.log(categories);
-    }, [userEmail, userPassword]);
+        if (userEmail) {
+            console.log(userEmail);
+            navigate('/');
+        };
+    }, [userEmail, navigate]);
 
     return (
         <>

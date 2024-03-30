@@ -20,21 +20,21 @@ type CategoriesResponse = {
 
 const login = async (email:String, password:String, checkoutData:Array<object>) => {
     const tryLogin = await fetch('http://localhost:3001/auth/login', {
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                method: 'POST',
-                body: JSON.stringify({email, password, checkoutData})
-            });
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        method: 'POST',
+        body: JSON.stringify({email, password, checkoutData})
+    });
             
-            const responseStatus = tryLogin.status;
-            const response = await tryLogin.json();
+    const responseStatus = tryLogin.status;
+    const response = await tryLogin.json();
 
-            const result:LoginResponse = {
-                responseStatus,
-                response
-            };
+    const result:LoginResponse = {
+        responseStatus,
+        response
+    };
 
     return result;
 };
