@@ -1,7 +1,6 @@
 import { SetStateAction, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { login, categoriesApi } from "../api/api";
 import { loginUser } from "../store/userSlice";
 import { getCategories } from "../store/categoriesSlice";
 import type { AppDispatch } from "../store/store";
@@ -17,9 +16,9 @@ import { selectCategories } from "../store/categoriesSlice";
 
 function Login() {
     const navigate = useNavigate();
-    const userEmail = useSelector(selectUserEmail);
-    const userPassword = useSelector(selectUserPassword);
-    const categories = useSelector(selectCategories);
+    const userEmail:String = useSelector(selectUserEmail);
+    const userPassword:String = useSelector(selectUserPassword);
+    const categories:Array<Object> = useSelector(selectCategories);
     const dispatch:AppDispatch = useDispatch();
     
     const onChangeEmail = (e: { target: { value: SetStateAction<string>; }; }) => {
@@ -32,15 +31,23 @@ function Login() {
     const fetchCategories = () => {
         dispatch(getCategories());
     };
+
+    const logUserIn = () => {
+        dispatch(loginUser());
+    };
     
-    const onSubmit = async (event: { preventDefault: () => void; }) => {
+    const onSubmit = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
-        const tryLogin = await login(userEmail, userPassword, []);
-        console.log(getCategories);
-        
-        if (tryLogin.responseStatus === 200) {
-            console.log(tryLogin);
-            navigate('/');
+        // const tryLogin = await login(userEmail, userPassword, []);
+        try {
+            const userLogin = () => logUserIn();
+            
+            // if (userLogin) {
+                console.log(userLogin());
+                navigate('/');
+            // }
+        } catch (err) {
+            throw new Error('User not logged in');
         }
     };
     
