@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { login } from "../api/api";
+import { login } from "../api/loginApi";
 
 import type { AppDispatch, RootState } from "../store/store";
 

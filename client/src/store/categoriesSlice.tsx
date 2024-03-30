@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { categoriesApi } from "../api/api";
+import { categoriesApi } from "../api/categoriesApi";
 
 import type { AppDispatch, RootState } from "../store/store";
 
@@ -35,7 +35,7 @@ export default categoriesSlice.reducer;
 export const getCategories = () => async (dispatch: AppDispatch) => {
     try {
         const fetchCategories = await categoriesApi();
-        console.log(fetchCategories?.response.data)
+        
         dispatch(setCategories(fetchCategories?.response.data));
     } catch (err) {
         throw new Error('Not able to fetch categories.');
