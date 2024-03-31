@@ -1,0 +1,18 @@
+nav {
+    display: flex;
+    
+}
+
+.search {
+    display: flex; 
+    align-items: center;
+}
+
+nav ul {
+    list-style-type: none;
+    display: flex;
+}
+
+nav ul li {
+    padding: 15px;
+}
