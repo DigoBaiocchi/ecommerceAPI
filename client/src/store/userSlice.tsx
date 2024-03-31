@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { login } from "../api/loginApi";
+import { login, logout } from "../api/loginApi";
 
 import type { AppDispatch, RootState } from "../store/store";
 
@@ -59,6 +59,18 @@ export const loginUser = (email:String, password:String) => async (dispatch: App
         }
     } catch (err) {
         throw new Error('Not able to log user in.');
+    }
+};
+
+export const logoutUser = () => async (dispatch: AppDispatch) => {
+    try {
+        await logout();
+
+        dispatch(setUserUsername(''));
+        dispatch(setUserEmail(''));
+        dispatch(setUserPassword(''));
+    } catch (err) {
+        throw new Error('Unable to log user out.');
     }
 };
 

@@ -49,15 +49,20 @@ app.use(
 );
 
 const cors = require('cors');
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+}));
 
 app.use(
     session({
         secret: "secret-key",
-        cookie: { maxAge: 1000 * 60 * 60 * 24 },
+        cookie: { 
+            maxAge: 1000 * 60 * 60 * 24,
+            secure: false
+        },
         resave: false,
         saveUninitialized: false,
-        secure: true
     })
 );
 

@@ -1,3 +1,5 @@
+const BASE_URL = 'http://localhost:3001';
+
 type LoginResponse = {
     responseStatus:number,
     response: {
@@ -12,12 +14,13 @@ type LoginResponse = {
 };
 
 const login = async (email:String, password:String, checkoutData:Array<object>) => {
-    const tryLogin = await fetch('http://localhost:3001/auth/login', {
+    const tryLogin = await fetch(`${BASE_URL}/auth/login`, {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
         method: 'POST',
+        credentials: 'include',
         body: JSON.stringify({email, password, checkoutData})
     });
             
@@ -32,7 +35,16 @@ const login = async (email:String, password:String, checkoutData:Array<object>) 
     return result;
 };
 
+const logout = async () => {
+    try {
+        await fetch(`${BASE_URL}/auth/logout`, { credentials: 'include' });
+    } catch (err) {
+        throw new Error('Unable to log user out.');
+    }
+};
+
 
 export { 
     login,
+    logout,
  };
