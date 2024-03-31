@@ -103,7 +103,11 @@ router.post(
 router.get('/logout', (req, res, next) => {
     req.logout((err) => {
         if (err) return next(err);
-        res.status(200).redirect('/');
+        req.session.destroy(() => {
+            console.log('User was logged out')
+            res.clearCookie('connect.sid');
+            res.status(200).json({ message: `User was logged out` });
+        });
     });
 });
 
