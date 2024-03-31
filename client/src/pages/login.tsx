@@ -1,17 +1,16 @@
 import { SetStateAction, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { loginUser } from "../store/userSlice";
+import { loginUser, selectUserUsername } from "../store/userSlice";
 import type { AppDispatch } from "../store/store";
 
-import { 
-    selectUserEmail,
-} from "../store/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import Header from "../components/header";
+import { getCart } from "../store/cartSlice";
 
 function Login() {
     const navigate = useNavigate();
-    const userEmail:String = useSelector(selectUserEmail);
+    const userUsername:String = useSelector(selectUserUsername);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const dispatch:AppDispatch = useDispatch();
@@ -33,14 +32,16 @@ function Login() {
     };
     
     useEffect(() => {
-        if (userEmail) {
-            console.log(userEmail);
+        if (userUsername) {
+            console.log(userUsername);
             navigate('/');
+            dispatch(getCart());
         };
-    }, [userEmail, navigate]);
+    }, [userUsername, navigate]);
 
     return (
         <>
+            <Header />
             <form onSubmit={onSubmit}>
                 <label htmlFor="email">Email:</label>
                 <input type="text" id="email" placeholder="Email" onChange={onChangeEmail} />
