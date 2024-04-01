@@ -43,8 +43,8 @@ export const getCart = () => async (dispatch: AppDispatch) => {
     try {
         const fetchCart = await cartApi();
         
-        dispatch(setCart(fetchCart?.response.data.cart));
-        dispatch(setCartMessage(fetchCart?.response.data.message))
+        dispatch(setCart(fetchCart?.response.cart));
+        dispatch(setCartMessage(fetchCart?.response.message))
     } catch (err) {
         throw new Error('Not able to fetch categories.');
     }

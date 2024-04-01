@@ -1,10 +1,8 @@
 type CartResponse = {
     responseStatus: number,
     response: {
-        data: {
-            cart: Array<Object>,
-            message: String
-        }
+        cart: Array<Object>,
+        message: String
     }
 };
 
