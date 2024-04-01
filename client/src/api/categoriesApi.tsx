@@ -1,6 +1,7 @@
 type CategoriesResponse = {
     responseStatus: number,
     response: {
+        message:String,
         data:Array<Object>
     }
 };
