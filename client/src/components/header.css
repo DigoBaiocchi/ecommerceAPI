@@ -3,16 +3,31 @@ nav {
     justify-content: center;
 }
 
-.search {
-    display: flex; 
-    align-items: center;
-}
-
 nav ul {
     list-style-type: none;
     display: flex;
+    width: 40%;
 }
 
 nav ul li {
     padding: 15px;
+}
+
+.search {
+    display: flex; 
+    align-items: center;
+    justify-content: right;
+    width: 60%;
+}
+
+.search h3 {
+    padding: 5px;
+}
+
+.search input {
+    margin: 5px
+}
+
+.search button {
+    padding: 5px;
 }

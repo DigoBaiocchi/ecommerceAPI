@@ -33,7 +33,7 @@ function Header() {
                 </ul>
                 <div className="search">
                     <h3>{userUsername ? `Welcome, ${userUsername}` : ''}</h3>
-                    <input></input>
+                    <input placeholder="Search Product..."></input>
                     <button><FcSearch /></button>
                 </div>
             </nav>
