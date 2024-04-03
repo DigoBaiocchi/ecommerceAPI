@@ -1,6 +1,8 @@
 import './App.css'
-import Header from '../src/components/header';
-import Login from './pages/login';
+import Header from './components/header';
+import Login from './pages/Login/login';
+import Categories from './pages/categories/categories';
+
 import { 
   RouterProvider,
   createBrowserRouter, 
@@ -16,6 +18,7 @@ const router = createBrowserRouter(createRoutesFromElements(
       {/* <Route path='/login' element={<Login />} /> */}
     </Route>
     <Route path='/login' element={<Login />} />
+    <Route path='/categories' element={<Categories />} />
   </>
 ));
 

@@ -1,12 +1,12 @@
 import { SetStateAction, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { loginUser, selectUserUsername } from "../store/userSlice";
-import type { AppDispatch } from "../store/store";
+import { loginUser, selectUserUsername } from "../../store/userSlice";
+import type { AppDispatch } from "../../store/store";
 
 import { useDispatch, useSelector } from "react-redux";
-import Header from "../components/header";
-import { getCart } from "../store/cartSlice";
+import Header from "../../components/header";
+import { getCart } from "../../store/cartSlice";
 
 function Login() {
     const navigate = useNavigate();

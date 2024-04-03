@@ -5,6 +5,7 @@ import './header.css';
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser, selectUserUsername } from "../store/userSlice";
 import { AppDispatch } from "../store/store";
+import { getCategories } from "../store/categoriesSlice";
 
 function Header() {
     const dispatch:AppDispatch = useDispatch();
@@ -14,12 +15,19 @@ function Header() {
         dispatch(logoutUser());
     };
 
+    const handleCategoriesClick = () => {
+        dispatch(getCategories());
+    }
+
     return (
         <>
             <nav>
                 <ul>
                     <li>
                         <Link to={'/'}>Home</Link>
+                    </li>
+                    <li>
+                        <Link to={'/categories'} onClick={handleCategoriesClick}>Categories</Link>
                     </li>
                     <li>Products</li>
                     <li>Cart</li>
