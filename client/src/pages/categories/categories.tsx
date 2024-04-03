@@ -17,6 +17,10 @@ function Categories() {
         event.preventDefault();
         dispatch(addCategory(categoryName));
     };
+
+    const onClick = (categoryId: number): React.MouseEventHandler<HTMLButtonElement> => () => {
+        console.log(categoryId);
+    };
     
     useEffect(() => {
         dispatch(getCategories());
@@ -31,13 +35,24 @@ function Categories() {
                 <button type="submit">Add Category</button>
             </form>
             <div>
-                {
-                    categories.map(category => (
-                        <ul>
-                            <li key={category.id}>{category.name}</li>
-                        </ul>
-                    ))
-                }
+                <thead>
+                    <tr>
+                        <th scope="column">Id</th>
+                        <th scope="column">Category Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        categories.map(category => (
+                            <tr key={category.id}>
+                                <td>{category.id}</td>
+                                <td><input type="text" value={category.name} disabled={true} />{}</td>
+                                <button onClick={onClick(category.id)}>Delete</button>
+                                <button onClick={onClick(category.id)}>Update Name</button>
+                            </tr>
+                        ))
+                    }
+                </tbody>
             </div>
         </>
     );
