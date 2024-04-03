@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import Header from "../../components/header";
 import { AppDispatch } from "../../store/store";
-import { addCategory, getCategories, selectCategories } from "../../store/categoriesSlice";
+import { addCategory, deleteCategory, getCategories, selectCategories } from "../../store/categoriesSlice";
 import { SetStateAction, useEffect, useState } from "react";
 
 function Categories() {
@@ -18,7 +18,11 @@ function Categories() {
         dispatch(addCategory(categoryName));
     };
 
-    const onClick = (categoryId: number): React.MouseEventHandler<HTMLButtonElement> => () => {
+    const onClickDelete = (categoryId: number): React.MouseEventHandler<HTMLButtonElement> => () => {
+        dispatch(deleteCategory(categoryId));
+    };
+
+    const onClickUpdate = (categoryId: number): React.MouseEventHandler<HTMLButtonElement> => () => {
         console.log(categoryId);
     };
     
@@ -47,8 +51,8 @@ function Categories() {
                             <tr key={category.id}>
                                 <td>{category.id}</td>
                                 <td><input type="text" value={category.name} disabled={true} />{}</td>
-                                <button onClick={onClick(category.id)}>Delete</button>
-                                <button onClick={onClick(category.id)}>Update Name</button>
+                                <button onClick={onClickDelete(category.id)}>Delete</button>
+                                <button onClick={onClickUpdate(category.id)}>Update Name</button>
                             </tr>
                         ))
                     }

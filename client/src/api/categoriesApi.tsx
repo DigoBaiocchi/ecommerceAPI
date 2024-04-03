@@ -42,7 +42,19 @@ const addCategoryApi = async (name:string) => {
     }
 };
 
+const deleteCategoryApi = async (id:number) => {
+    try {
+        await fetch(`${BASE_URL}/delete-category/${id}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+    } catch (err) {
+        throw new Error(`Unable to delete category id: ${id}`);
+    }
+}
+
 export { 
     categoriesApi,
-    addCategoryApi
+    addCategoryApi,
+    deleteCategoryApi
  };

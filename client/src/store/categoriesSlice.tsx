@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addCategoryApi, categoriesApi } from "../api/categoriesApi";
+import { addCategoryApi, categoriesApi, deleteCategoryApi } from "../api/categoriesApi";
 
 import type { AppDispatch, RootState } from "../store/store";
 
@@ -45,5 +45,9 @@ export const getCategories = () => async (dispatch: AppDispatch) => {
 export const addCategory = (name:string) => async () => {
     await addCategoryApi(name);
 };
+
+export const deleteCategory = (id:number) => async () => {
+    await deleteCategoryApi(id);
+}
 
 export const selectCategories = (state:RootState) => state.category.categories;
