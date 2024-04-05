@@ -5,7 +5,7 @@ import { loginUser, selectUserUsername } from "../../store/userSlice";
 import type { AppDispatch } from "../../store/store";
 
 import { useDispatch, useSelector } from "react-redux";
-import Header from "../../components/header";
+import Header from "../../components/header/header";
 import { getCart } from "../../store/cartSlice";
 
 function Login() {

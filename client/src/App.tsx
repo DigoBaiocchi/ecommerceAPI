@@ -1,5 +1,5 @@
 import './App.css'
-import Header from './components/header';
+import Header from './components/header/header';
 import Login from './pages/Login/login';
 import Categories from './pages/categories/categories';
 
