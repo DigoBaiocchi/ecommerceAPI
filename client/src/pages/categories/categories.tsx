@@ -33,7 +33,9 @@ function Categories() {
     const onClickUpdate = (categoryId: number): React.MouseEventHandler<HTMLButtonElement> => () => {
         setInputDisabled(!inputDisabled);
         if (editButtonName === 'Submit Change') {
-            dispatch(updateCategory(categoryId, editedCategory[categoryId]));
+            dispatch(updateCategory(categoryId, editedCategory[categoryId])).then((response) => {
+                console.log(response)
+            });
             setEditButtonName('Update Name');
         } else {
             setEditButtonName('Submit Change');
@@ -83,7 +85,7 @@ function Categories() {
                                 <td>
                                     <input 
                                         type="text" 
-                                        value={editedCategory[category.id] ? 
+                                        value={editedCategory[category.id] !== undefined ? 
                                             editedCategory[category.id] : 
                                             category.name} 
                                         disabled={inputDisabled} 

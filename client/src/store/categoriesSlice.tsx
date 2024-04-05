@@ -56,7 +56,9 @@ export const deleteCategory = (id:number) => async () => {
 }
 
 export const updateCategory = (id:number, name:string) => async () => {
-    await updateCategoryApi(id, name);
+    const response = await updateCategoryApi(id, name);
+    
+    return response;
 };
 
 export const selectCategories = (state:RootState) => state.category.categories;

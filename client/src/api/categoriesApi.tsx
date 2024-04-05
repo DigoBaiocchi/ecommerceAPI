@@ -55,7 +55,7 @@ const deleteCategoryApi = async (id:number) => {
 
 const updateCategoryApi = async (id:number, name:string) => {
     try {
-        await fetch (`${BASE_URL}/edit-category/${id}`, {
+        const response = await fetch (`${BASE_URL}/edit-category/${id}`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -64,6 +64,8 @@ const updateCategoryApi = async (id:number, name:string) => {
             credentials: 'include',
             body: JSON.stringify({name})
         });
+
+        return response;
     } catch (err) {
         throw new Error(`Unable to update category id: ${id}`);
     }
