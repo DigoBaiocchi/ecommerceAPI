@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import Header from "../../components/header/header";
 import { AppDispatch } from "../../store/store";
-import { addCategory, deleteCategory, getCategories, selectCategories } from "../../store/categoriesSlice";
+import { addCategory, deleteCategory, getCategories, selectCategories, updateCategory } from "../../store/categoriesSlice";
 import { SetStateAction, useEffect, useState } from "react";
 
 function Categories() {
@@ -32,7 +32,12 @@ function Categories() {
     
     const onClickUpdate = (categoryId: number): React.MouseEventHandler<HTMLButtonElement> => () => {
         setInputDisabled(!inputDisabled);
-        setEditButtonName(editButtonName === 'Submit Changes' ? 'Update Name' : 'Submit Changes');
+        if (editButtonName === 'Submit Change') {
+            dispatch(updateCategory(categoryId, editedCategory[categoryId]));
+            setEditButtonName('Update Name');
+        } else {
+            setEditButtonName('Submit Change');
+        }
         console.log(editedCategory);
     };
 
