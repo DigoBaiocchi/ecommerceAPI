@@ -4,13 +4,20 @@ import { AppDispatch } from "../../store/store";
 import { addCategory, deleteCategory, getCategories, selectCategories, updateCategory } from "../../store/categoriesSlice";
 import { SetStateAction, useEffect, useState } from "react";
 
+type EditedCategory = {
+    name:string,
+    hideMessage:boolean,
+    updateButtonMessage:string,
+    inputDisabled:boolean
+};
+
 function Categories() {
     const dispatch:AppDispatch = useDispatch();
     const categories = useSelector(selectCategories);
     const [categoryName, setCategoryName] = useState('');
     const [triggerRefetch, setTriggerRefetch] = useState(false);
     const [inputDisabled, setInputDisabled] = useState(true);
-    const [editedCategory, setEditedCategory] = useState<{ [key: number]: string }>({});
+    const [editedCategory, setEditedCategory] = useState<{ [key: number]: EditedCategory }>({});
     const [editButtonName, setEditButtonName] = useState('Update Name');
 
     const onChangeCategoryname = (e: { target: { value: SetStateAction<string>; }; }) => {
@@ -33,12 +40,24 @@ function Categories() {
     const onClickUpdate = (categoryId: number): React.MouseEventHandler<HTMLButtonElement> => () => {
         setInputDisabled(!inputDisabled);
         if (editButtonName === 'Submit Change') {
-            dispatch(updateCategory(categoryId, editedCategory[categoryId])).then((response) => {
+            dispatch(updateCategory(categoryId, editedCategory[categoryId].name)).then((response) => {
                 console.log(response)
             });
-            setEditButtonName('Update Name');
+            setEditedCategory((prev) => ({
+                ...prev,
+                [categoryId]: {
+                    ...prev[categoryId],
+                    updateButtonMessage: 'Update Name'
+                }
+            }));
         } else {
-            setEditButtonName('Submit Change');
+            setEditedCategory((prev) => ({
+                ...prev,
+                [categoryId]: {
+                    ...prev[categoryId],
+                    updateButtonMessage: 'Submit Change'
+                }
+            }));
         }
         console.log(editedCategory);
     };
@@ -47,7 +66,12 @@ function Categories() {
         const { value } = e.target;
         setEditedCategory((prev) => ({
             ...prev,
-            [categoryId]: value
+            [categoryId]: {
+                name: value, 
+                hideMessage: value === '' ? false : true,
+                updateButtonMessage: 'Submit Change',
+                inputDisabled: false
+            }
         }));
     }
     
@@ -75,6 +99,7 @@ function Categories() {
                         <th scope="column">Category Name</th>
                         <th scope="column"></th>
                         <th scope="column"></th>
+                        <th scope="column"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -86,7 +111,7 @@ function Categories() {
                                     <input 
                                         type="text" 
                                         value={editedCategory[category.id] !== undefined ? 
-                                            editedCategory[category.id] : 
+                                            editedCategory[category.id].name : 
                                             category.name} 
                                         disabled={inputDisabled} 
                                         onChange={handleChangeName(category.id)}
@@ -96,8 +121,15 @@ function Categories() {
                                 <button 
                                     onClick={onClickUpdate(category.id)} 
                                     value={editButtonName}>
-                                        {editButtonName}
+                                        {editedCategory[category.id] !== undefined ? 
+                                            editedCategory[category.id].updateButtonMessage : 
+                                            'Update Name'}
                                 </button>
+                                <span 
+                                    hidden={editedCategory[category.id] !== undefined ? 
+                                        editedCategory[category.id].hideMessage :
+                                        true}
+                                    >Category Name can't be blank!</span>
                             </tr>
                         ))
                     }
