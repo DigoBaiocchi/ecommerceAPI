@@ -4,6 +4,7 @@ import { AppDispatch } from "../../store/store";
 import { addCategory, getCategories, selectCategories } from "../../store/categoriesSlice";
 import { SetStateAction, useEffect, useState } from "react";
 import CategoryTableBody from "../../components/categoryTableBody/categoryTableBody";
+import './categories.css';
 
 function Categories() {
     const dispatch:AppDispatch = useDispatch();
@@ -41,11 +42,12 @@ function Categories() {
                 />
                 <button type="submit">Add Category</button>
             </form>
-            <div>
+            <div className="categories-table">
+                <div>
                 <thead>
                     <tr>
-                        <th scope="column">Id</th>
-                        <th scope="column">Category Name</th>
+                        <th scope="column" className="id-box">Id</th>
+                        <th scope="column" className="name-box">Category Name</th>
                         <th scope="column"></th>
                         <th scope="column"></th>
                         <th scope="column"></th>
@@ -58,6 +60,7 @@ function Categories() {
                         ))
                     }
                 </tbody>
+                </div>
             </div>
         </>
     );

@@ -1,0 +1,20 @@
+.categories-table {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.categories-table tr {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    max-width: fit-content;
+}
+
+.id-box {
+    width: 60px;
+}
+
+.name-box {
+    width: 225px;
+}

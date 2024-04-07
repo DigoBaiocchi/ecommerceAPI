@@ -2,6 +2,7 @@ import { SetStateAction, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { deleteCategory, getCategories, updateCategory } from "../../store/categoriesSlice";
 import { AppDispatch } from "../../store/store";
+import '../../pages/categories/categories.css';
 
 type CategoryTableBodyProps = {
     id: number;
@@ -42,6 +43,7 @@ export default function CategoryTableBody({ id, name }: CategoryTableBodyProps) 
         } else {
             setUpdateButtonName(updateButtonName === 'Update Name' ? 'Submit Changes' : 'Update Name');
             setdisableInput(!disableInput);
+            setHideSpanMessage(true);
         }
     };
     
@@ -51,8 +53,8 @@ export default function CategoryTableBody({ id, name }: CategoryTableBodyProps) 
 
     return (
             <tr key={id}>
-                <td>{id}</td>
-                <td>
+                <td className="id-box">{id}</td>
+                <td className="name-box">
                     <input 
                         type="text" 
                         value={categoryName} 
