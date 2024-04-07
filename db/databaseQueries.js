@@ -90,7 +90,7 @@ const Database = {
         return await query("DELETE FROM users WHERE email = $1", [email]);
     },
     async getAllItems(tableName) {
-        return await query(`SELECT * FROM ${tableName}`).then(results => results.rows);
+        return await query(`SELECT * FROM ${tableName} ORDER BY name`).then(results => results.rows);
     },
     async getItemByName(tableName, name) {
         return await query(`SELECT * FROM ${tableName} WHERE name = $1`, [name]).then(result => result.rows[0]);
