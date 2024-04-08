@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Header from "../../components/header/header";
 import { AppDispatch } from "../../store/store";
 import { addCategory, getCategories, selectCategories } from "../../store/categoriesSlice";
-import { SetStateAction, useEffect, useState } from "react";
+import { FormEvent, SetStateAction, useEffect, useState } from "react";
 import CategoryTableBody from "../../components/categoryTableBody/categoryTableBody";
 import './categories.css';
 
@@ -16,7 +16,7 @@ function Categories() {
         setCategoryName(e.target.value);
     };
 
-    const onSubmit = (event: { preventDefault: () => void; }) => {
+    const onSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         dispatch(addCategory(categoryName)).then(() => {
             setTriggerRefetch(true);
