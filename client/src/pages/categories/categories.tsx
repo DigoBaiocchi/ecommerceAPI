@@ -2,26 +2,22 @@ import { useDispatch, useSelector } from "react-redux";
 import Header from "../../components/header/header";
 import { AppDispatch } from "../../store/store";
 import { addCategory, getCategories, selectCategories } from "../../store/categoriesSlice";
-import { FormEvent, SetStateAction, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import CategoryTableBody from "../../components/categoryTableBody/categoryTableBody";
 import './categories.css';
 
 function Categories() {
     const dispatch:AppDispatch = useDispatch();
     const categories = useSelector(selectCategories);
-    const [categoryName, setCategoryName] = useState('');
+    const categoryName = useRef<HTMLInputElement>(null);
     const [triggerRefetch, setTriggerRefetch] = useState(false);
-
-    const onChangeCategoryname = (e: { target: { value: SetStateAction<string>; }; }) => {
-        setCategoryName(e.target.value);
-    };
 
     const onSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        dispatch(addCategory(categoryName)).then(() => {
+        dispatch(addCategory(categoryName.current!.value)).then(() => {
             setTriggerRefetch(true);
-            setCategoryName('');
         });
+        event.currentTarget.reset();
     };
     
     useEffect(() => {
@@ -36,9 +32,8 @@ function Categories() {
                 <label htmlFor="category-name">Category Name:</label>
                 <input 
                     type="text" 
-                    id="category-name" 
-                    value={categoryName}
-                    onChange={onChangeCategoryname}
+                    id="category-name"
+                    ref={categoryName}
                 />
                 <button type="submit">Add Category</button>
             </form>
