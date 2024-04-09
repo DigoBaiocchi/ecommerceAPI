@@ -2,6 +2,7 @@ import './App.css'
 import Header from './components/header/header';
 import Login from './pages/Login/login';
 import Categories from './pages/categories/categories';
+import Products from './pages/Products/Products';
 
 import { 
   RouterProvider,
@@ -19,6 +20,7 @@ const router = createBrowserRouter(createRoutesFromElements(
     </Route>
     <Route path='/login' element={<Login />} />
     <Route path='/categories' element={<Categories />} />
+    <Route path='/products' element={<Products />} />
   </>
 ));
 

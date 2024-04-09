@@ -13,10 +13,14 @@ function Header() {
 
     const handleClick = () => {
         dispatch(logoutUser());
-    };
+    }
 
     const handleCategoriesClick = () => {
         dispatch(getCategories());
+    }
+
+    const handleProductsClick = () => {
+
     }
 
     return (
@@ -29,7 +33,9 @@ function Header() {
                     <li>
                         <Link to={'/categories'} onClick={handleCategoriesClick}>Categories</Link>
                     </li>
-                    <li>Products</li>
+                    <li>
+                        <Link to={'/products'} onClick={handleProductsClick}>Products</Link>
+                    </li>
                     <li>Cart</li>
                     <li>
                         {
