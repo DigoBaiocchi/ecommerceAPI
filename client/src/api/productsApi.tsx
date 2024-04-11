@@ -11,14 +11,13 @@ type CategoriesParams = {
 }
 
 type ProductsParams = {
+    categoryId: number;
     name: string;
     quantity: number;
     price: number;
 }
 
 type FunctionParams = CategoriesParams | ProductsParams;
-
-const BASE_URL = 'http://localhost:3001/categories';
 
 const getAllApi = async (baseUrl: string) => {
     try {
@@ -30,12 +29,11 @@ const getAllApi = async (baseUrl: string) => {
         const result:ProductsResponse  = {
             responseStatus,
             response
-        }
-        console.log(result, 'test');
+        };
 
         return result;
     } catch (err) {
-        console.log(err);
+        throw new Error(`Not able to fetch data.`);
     }
 }
 
@@ -51,7 +49,7 @@ const postApi = async (baseUrl: string, pageName: 'category' | 'product', params
             body: JSON.stringify({...params})
         });
     } catch (err) {
-        throw new Error('Not able to add category.');
+        throw new Error(`Not able to add ${pageName}.`);
     }
 }
 
@@ -62,7 +60,7 @@ const deleteApi = async (baseUrl: string, pageName: string, id: number) => {
             credentials: 'include'
         });
     } catch (err) {
-        throw new Error(`Unable to delete category id: ${id}`);
+        throw new Error(`Unable to delete ${pageName} id: ${id}`);
     }
 }
 
@@ -80,7 +78,7 @@ const updateApi = async (baseUrl: string, pageName: string, id: number, params: 
 
         return response;
     } catch (err) {
-        throw new Error(`Unable to update category id: ${id}`);
+        throw new Error(`Unable to update ${pageName} id: ${id}`);
     }
 }
 
