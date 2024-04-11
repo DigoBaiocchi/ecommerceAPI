@@ -12,7 +12,7 @@ function Categories() {
     const categoryName = useRef<HTMLInputElement>(null);
     const [triggerRefetch, setTriggerRefetch] = useState(false);
 
-    const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         dispatch(addCategory(categoryName.current!.value)).then(() => {
             setTriggerRefetch(true);
@@ -28,7 +28,7 @@ function Categories() {
     return (
         <>
             <Header />
-            <form onSubmit={onSubmit}>
+            <form onSubmit={handleSubmit}>
                 <label htmlFor="category-name">Category Name:</label>
                 <input 
                     type="text" 
