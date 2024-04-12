@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "./store";
-import { getAllApi, postApi } from "../api/productsApi";
+import { deleteApi, getAllApi, postApi, updateApi } from "../api/productsApi";
 
 type Product = {
     id: number;
@@ -10,12 +10,15 @@ type Product = {
     price: number;
 };
 
-type PostProductParams = {
-    categoryId: number; 
+type ProductParams = {
     name: string; 
     quantity: number; 
     description:string; 
     price: number;
+};
+
+interface PostProductParams extends ProductParams {
+    categoryId: number; 
 };
 
 type Products = {
@@ -54,6 +57,14 @@ export const getProducts = () => async (dispatch:AppDispatch) => {
 
 export const addProduct = (params: PostProductParams) => async () => {
     await postApi(BASE_URL, "product", params);
+};
+
+export const deleteProduct = (id: number) => async () => {
+    await deleteApi(BASE_URL, "product", id);
+};
+
+export const updateProduct = (id: number, params: ProductParams) => async () => {
+    await updateApi(BASE_URL, "product", id, params);
 };
 
 export const selectProducts = (state:RootState) => state.product.products;

@@ -71,7 +71,7 @@ const updateApi = async (baseUrl: string, pageName: string, id: number, params: 
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
-            method: 'PATCH',
+            method: 'PUT',
             credentials: 'include',
             body: JSON.stringify({...params})
         });

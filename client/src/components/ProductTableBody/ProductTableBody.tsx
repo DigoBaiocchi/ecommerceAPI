@@ -1,43 +1,66 @@
-import { SetStateAction, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { deleteCategory, getCategories, updateCategory } from "../../store/categoriesSlice";
 import { AppDispatch } from "../../store/store";
 import '../../pages/categories/categories.css';
+import { deleteProduct, getProducts, updateProduct } from "../../store/productsSlice";
 
-type CategoryTableBodyProps = {
+type ProductTableBodyProps = {
     id: number;
     name: string;
+    quantity: number;
+    description: string;
+    price: number;
 }
 
-export default function ProductTableBody({ id, name }: CategoryTableBodyProps) {
+export default function ProductTableBody({ id, name, quantity, description, price }: ProductTableBodyProps) {
     const [disableInput, setdisableInput] = useState(true);
     const [updateButtonName, setUpdateButtonName] = useState('Update Name');
-    const [categoryName, setCategoryName] = useState(name);
+    const [productName, setProductName] = useState(name);
+    const [productQuantity, setProductQuantity] = useState(quantity);
+    const [productDescription, setProductDescription] = useState(description);
+    const [productPrice, setProductPrice] = useState(price);
     const [hideSpanMessage, setHideSpanMessage] = useState(true);
 
     const dispatch:AppDispatch = useDispatch();
 
-    const onChangeCategoryname = (e: { target: { value: SetStateAction<string>; }; }) => {
+    const onChangeProductname = (e: ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
-        setCategoryName(value);
+        setProductName(value);
+    };
+    const onChangeProductQuantity = (e: ChangeEvent<HTMLInputElement>) => {
+        const value= parseInt(e.target.value);
+        setProductQuantity(value);
+    };
+    const onChangeProductDescription = (e: ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target;
+        setProductDescription(value);
+    };
+    const onChangeProductPrice = (e: ChangeEvent<HTMLInputElement>) => {
+        const value= parseInt(e.target.value);
+        setProductPrice(value);
     };
     
     const onClickDelete = (id:number): React.MouseEventHandler<HTMLButtonElement> => () => {
-        dispatch(deleteCategory(id)).then(() => {
-            dispatch(getCategories());
+        dispatch(deleteProduct(id)).then(() => {
+            dispatch(getProducts());
         });
     };
     
     const handleUpdateButtonClick = () => {
-        if (updateButtonName === 'Submit Changes' && categoryName !== '' && categoryName !== name) {
-            dispatch(updateCategory(id, categoryName)).then(() => {
-                dispatch(getCategories());
+        if (updateButtonName === 'Submit Changes' && productName !== '' && productName !== name) {
+            dispatch(updateProduct(id, {
+                name: productName,
+                quantity: productQuantity,
+                description: productDescription,
+                price: productPrice
+            })).then(() => {
+                dispatch(getProducts());
                 setUpdateButtonName('Update Name');
                 setdisableInput(true);
                 setHideSpanMessage(true);
             });
         }
-        if (updateButtonName === 'Submit Changes' && categoryName === '') {
+        if (updateButtonName === 'Submit Changes' && productName === '') {
             setHideSpanMessage(false);
             setdisableInput(false);
         } else {
@@ -48,7 +71,7 @@ export default function ProductTableBody({ id, name }: CategoryTableBodyProps) {
     };
     
     useEffect(() => {
-        setCategoryName(name);
+        setProductName(name);
     }, [name]);
 
     return (
@@ -57,25 +80,33 @@ export default function ProductTableBody({ id, name }: CategoryTableBodyProps) {
                 <td className="name-box">
                     <input 
                         type="text" 
-                        value={categoryName} 
+                        value={productName} 
                         disabled={disableInput} 
-                        onChange={onChangeCategoryname}
+                        onChange={onChangeProductname}
                     />
                 </td>
                 <td className="quantity-box">
                     <input 
                         type="text" 
-                        value={categoryName} 
+                        value={productQuantity} 
                         disabled={disableInput} 
-                        onChange={onChangeCategoryname}
+                        onChange={onChangeProductQuantity}
+                    />
+                </td>
+                <td className="description-box">
+                    <input 
+                        type="text" 
+                        value={productDescription} 
+                        disabled={disableInput} 
+                        onChange={onChangeProductDescription}
                     />
                 </td>
                 <td className="price-box">
                     <input 
                         type="text" 
-                        value={categoryName} 
+                        value={productPrice} 
                         disabled={disableInput} 
-                        onChange={onChangeCategoryname}
+                        onChange={onChangeProductPrice}
                     />
                 </td>
                 <button onClick={onClickDelete(id)}>Delete</button>
