@@ -95,7 +95,7 @@ const checkingRequiredInformation = (req, res, next) => {
 */
 
 router.get('/', async (req, res, next) => {
-    const getAllProducts = await Database.getAllProducts();
+    const getAllProducts = await Database.getAllItems("products");
     
     return res.status(200).json({ message: "All products are loaded", data: getAllProducts });
     
