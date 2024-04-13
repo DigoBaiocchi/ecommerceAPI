@@ -1,8 +1,8 @@
-import './App.css'
-import Header from './components/header/header';
+import './App.css';
 import Login from './pages/Login/login';
 import Categories from './pages/categories/categories';
 import Products from './pages/Products/Products';
+import Home from './pages/Home/Home';
 
 import { 
   RouterProvider,
@@ -15,9 +15,7 @@ import { store } from './store/store';
 
 const router = createBrowserRouter(createRoutesFromElements(
   <>
-    <Route path='/' element={<Header />}>
-      {/* <Route path='/login' element={<Login />} /> */}
-    </Route>
+    <Route path='/' element={<Home />} />
     <Route path='/login' element={<Login />} />
     <Route path='/categories' element={<Categories />} />
     <Route path='/products' element={<Products />} />
