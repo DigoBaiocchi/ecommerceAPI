@@ -114,6 +114,11 @@ const Database = {
         return await query("UPDATE categories SET name = $2 WHERE id = $1", [id, name]);
     },
     async deleteCategory(id) {
+        const categoryProductData = await query("SELECT * FROM category_product WHERE category_id = $1", [id]).then(results => results.rows);
+        categoryProductData.forEach(async (data) => {
+            await this.deleteProduct(data.product_id);
+        });
+        
         return await query("DELETE FROM categories WHERE id = $1", [id]);
     },
     async getAllProducts() {
@@ -233,6 +238,25 @@ const Database = {
     },
     async deleteAllUserOrders(userId) {
         return await query(`DELETE FROM orders WHERE user_id = $1`, [userId]);
+    },
+    async selectCategoryProductData() {
+        const queryString = `
+            SELECT
+                categories.id as categoryId,
+                categories.name as categoryName, 
+                products.id as productId,
+                products.name as productName, 
+                products.quantity, 
+                products.description, 
+                products.price
+            FROM products
+            LEFT JOIN category_product
+                ON products.id = category_product.product_id
+            LEFT JOIN categories
+                ON categories.id = category_product.category_id;
+        `;
+
+        return await query(queryString).then(results => results.rows);
     }
 }
 
