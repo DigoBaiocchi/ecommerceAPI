@@ -14,7 +14,7 @@ function Categories() {
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        dispatch(addCategory(categoryName.current!.value)).then(() => {
+        dispatch(addCategory({name: categoryName.current!.value})).then(() => {
             setTriggerRefetch(true);
         });
         event.currentTarget.reset();

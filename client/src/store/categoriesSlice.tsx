@@ -1,12 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { 
-    addCategoryApi, 
-    categoriesApi, 
-    deleteCategoryApi,
-    updateCategoryApi,
-} from "../api/categoriesApi";
 
 import type { AppDispatch, RootState } from "../store/store";
+import { deleteApi, getAllApi, postApi, updateApi } from "../api/productsCategoriesApi";
 
 type Category = {
     id: number,
@@ -15,6 +10,10 @@ type Category = {
 
 type Categories = {
     categories: Array<Category>
+};
+
+type CategoryParams = {
+    name: string; 
 };
 
 const initialState:Categories = {
@@ -37,9 +36,11 @@ export const {
 
 export default categoriesSlice.reducer;
 
+const BASE_URL = 'http://localhost:3001/categories';
+
 export const getCategories = () => async (dispatch: AppDispatch) => {
     try {
-        const fetchCategories = await categoriesApi();
+        const fetchCategories = await getAllApi(BASE_URL);
         
         dispatch(setCategories(fetchCategories?.response.data));
     } catch (err) {
@@ -47,16 +48,17 @@ export const getCategories = () => async (dispatch: AppDispatch) => {
     }
 };
 
-export const addCategory = (name:string) => async () => {
-    await addCategoryApi(name);
+export const addCategory = (params: CategoryParams) => async () => {
+    console.log(params)
+    await postApi(BASE_URL, "category", params);
 };
 
 export const deleteCategory = (id:number) => async () => {
-    await deleteCategoryApi(id);
+    await deleteApi(BASE_URL, "category", id);
 }
 
-export const updateCategory = (id:number, name:string) => async () => {
-    const response = await updateCategoryApi(id, name);
+export const updateCategory = (id:number, params: CategoryParams) => async () => {
+    const response = await updateApi(BASE_URL, "category", id, params);
     
     return response;
 };

@@ -1,6 +1,6 @@
 import './App.css';
 import Login from './pages/Login/login';
-import Categories from './pages/categories/categories';
+import Categories from './pages/Categories/Categories';
 import Products from './pages/Products/Products';
 import Home from './pages/Home/Home';
 

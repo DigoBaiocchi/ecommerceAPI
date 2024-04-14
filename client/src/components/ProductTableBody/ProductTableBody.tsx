@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
-import '../../pages/categories/categories.css';
+import '../../pages/Products/Products.css';
 import { deleteProduct, getProducts, updateProduct } from "../../store/productsSlice";
 
 type ProductTableBodyProps = {

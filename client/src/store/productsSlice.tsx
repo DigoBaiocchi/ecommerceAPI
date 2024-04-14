@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "./store";
-import { deleteApi, getAllApi, postApi, updateApi } from "../api/productsApi";
+import { deleteApi, getAllApi, postApi, updateApi } from "../api/productsCategoriesApi";
 
 type Product = {
     id: number;
@@ -17,9 +17,9 @@ type ProductParams = {
     price: number;
 };
 
-interface PostProductParams extends ProductParams {
+type PostProductParams = {
     categoryId: number; 
-};
+} & ProductParams;
 
 type Products = {
     products: Product[];
