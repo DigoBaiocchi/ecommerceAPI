@@ -1,32 +1,45 @@
-type ProductsResponse = {
-    responseStatus: number,
-    response: {
-        message:String,
-        data:Array<Object>
-    }
-}
+type Id = {
+    id: number;
+};
+
+type Products = {
+    name: string;
+    quantity: number;
+    description: string;
+    price: string;
+} & Id;
 
 type CategoriesParams = {
     name: string;
-}
+};
+
+type Categories = Id & CategoriesParams;
 
 type ProductsParams = {
     categoryId: number;
     name: string;
     quantity: number;
     price: number;
-}
+};
+
+type Response = {
+    responseStatus: number,
+    response: {
+        message:String,
+        data: Products[] | Categories[]
+    }
+};
 
 type FunctionParams = CategoriesParams | ProductsParams;
 
-const getAllApi = async (baseUrl: string) => {
+const getAllApi = async (baseUrl: string): Promise<Response> => {
     try {
         const getData = await fetch(baseUrl);
     
         const responseStatus = getData.status;
         const response = await getData.json();
 
-        const result:ProductsResponse  = {
+        const result = {
             responseStatus,
             response
         };
