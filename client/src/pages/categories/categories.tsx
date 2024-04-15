@@ -4,7 +4,7 @@ import { AppDispatch } from "../../store/store";
 import { addCategory, getCategories, selectCategories } from "../../store/categoriesSlice";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import CategoryTableBody from "../../components/categoryTableBody/categoryTableBody";
-import './categories.css';
+import './Categories.css';
 
 function Categories() {
     const dispatch:AppDispatch = useDispatch();
@@ -38,24 +38,24 @@ function Categories() {
                 <button type="submit">Add Category</button>
             </form>
             <div className="categories-table">
-                <div>
-                <thead>
-                    <tr>
-                        <th scope="column" className="id-box">Id</th>
-                        <th scope="column" className="name-box">Category Name</th>
-                        <th scope="column"></th>
-                        <th scope="column"></th>
-                        <th scope="column"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        categories.map(category => (
-                            <CategoryTableBody id={category.id} name={category.name} />
-                        ))
-                    }
-                </tbody>
-                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="column" className="id-box">Id</th>
+                            <th scope="column" className="name-box">Category Name</th>
+                            <th scope="column"></th>
+                            <th scope="column"></th>
+                            <th scope="column"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            categories.map(category => (
+                                <CategoryTableBody key={category.id} id={category.id} name={category.name} />
+                            ))
+                        }
+                    </tbody>
+                </table>
             </div>
         </>
     );

@@ -23,9 +23,9 @@ export default function Products() {
         dispatch(addProduct({
             categoryId, 
             name: name.current!.value, 
-            quantity: parseInt(quantity.current!.value), 
+            quantity: +quantity.current!.value, 
             description: description.current!.value, 
-            price: parseInt(price.current!.value),
+            price: +price.current!.value,
         })).then(() => {
             setTriggerRefetch(true);
         });
@@ -33,8 +33,7 @@ export default function Products() {
     };
 
     const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        const newValue = parseInt(event.target.value, 10);
-        setCategoryId(newValue);
+        setCategoryId(+event.target.value);
         console.log(isNaN(categoryId), categoryId);
     };
     
@@ -52,11 +51,15 @@ export default function Products() {
                 <div className="form-container">
                     <div className="form-inputs">
                         <label htmlFor="category-name">Category:</label>
-                        <select name="categories" className="category-select" onChange={handleChange}>
-                            <option value={0} disabled selected  >Select a category</option>
+                        <select value={categoryId} className="category-select" onChange={handleChange}>
+                            <option key={0} value={0} disabled={true} >Select a category</option>
                             {
                                 categories.map(category => (
-                                    <option value={category.id} >{category.name}</option>
+                                    <option 
+                                        key={category.id} 
+                                        value={category.id}>
+                                            {category.name}
+                                    </option>
                                 ))
                             }
                         </select>
@@ -101,34 +104,35 @@ export default function Products() {
                 </div>
             </form>
             <div className="categories-table">
-                <div>
-                <thead>
-                    <tr>
-                        <th scope="column" className="id-box">Id</th>
-                        <th scope="column" className="name-box">Name</th>
-                        <th scope="column" className="name-box">Quantity</th>
-                        <th scope="column" className="name-box">Description</th>
-                        <th scope="column" className="name-box">Price</th>
-                        <th scope="column"></th>
-                        <th scope="column"></th>
-                        <th scope="column"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        products.map(product => (
-                            <ProductTableBody 
-                                id={product.id}
-                                name={product.name}
-                                quantity={product.quantity}
-                                description={product.description}
-                                price={product.price}
-                            />
-                            // <CategoryTableBody id={category.id} name={category.name} />
-                        ))
-                    }
-                </tbody>
-                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="column" className="id-box">Id</th>
+                            <th scope="column" className="name-box">Name</th>
+                            <th scope="column" className="name-box">Quantity</th>
+                            <th scope="column" className="name-box">Description</th>
+                            <th scope="column" className="name-box">Price</th>
+                            <th scope="column"></th>
+                            <th scope="column"></th>
+                            <th scope="column"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            products.map(product => (
+                                <ProductTableBody 
+                                    key={product.id}
+                                    id={product.id}
+                                    name={product.name}
+                                    quantity={product.quantity}
+                                    description={product.description}
+                                    price={product.price}
+                                />
+                                // <CategoryTableBody id={category.id} name={category.name} />
+                            ))
+                        }
+                    </tbody>
+                </table>
             </div>
         </>
     );

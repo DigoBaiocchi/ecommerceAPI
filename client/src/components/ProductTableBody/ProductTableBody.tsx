@@ -109,16 +109,22 @@ export default function ProductTableBody({ id, name, quantity, description, pric
                         onChange={onChangeProductPrice}
                     />
                 </td>
-                <button onClick={onClickDelete(id)}>Delete</button>
-                <button 
-                    onClick={handleUpdateButtonClick} 
-                    value={updateButtonName}>
-                        {updateButtonName}
-                </button>
-                <span 
-                    hidden={hideSpanMessage}
-                    >Category name can't be blank!
-                </span>
+                <td>
+                    <button onClick={onClickDelete(id)}>Delete</button>
+                </td>
+                <td>
+                    <button 
+                        onClick={handleUpdateButtonClick} 
+                        value={updateButtonName}>
+                            {updateButtonName}
+                    </button>
+                </td>
+                <td>
+                    <span 
+                        hidden={hideSpanMessage}
+                        >Category name can't be blank!
+                    </span>
+                </td>
             </tr>
                 
     );
