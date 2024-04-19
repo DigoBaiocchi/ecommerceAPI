@@ -1,12 +1,21 @@
-export default function ProductCard() {
+type ProductCardProps = {
+    name:string;
+    price: number;
+};
+
+export default function ProductCard({name, price}: ProductCardProps) {
     return (
         <div>
             <div>
                 <img src="" alt="" />
             </div>
             <div>
-                <span>Product A</span>
-                <span>$5.99</span>
+                <div>
+                    <span>{name}</span> 
+                </div>
+                <div>
+                    <span>{price}</span>
+                </div>
             </div>
         </div>
     );
